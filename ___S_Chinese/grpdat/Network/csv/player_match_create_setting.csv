@@ -1,0 +1,22 @@
+Create Room,,,,,,,,,,,,,
+Room Name,,,,,,,,,,,,,
+Room Capacity,2 People,3 People,4 People,5 People,6 People,7 People,8 People,,...,
+Reserved Invitations,0 People,1 People,2 People,3 People,4 People,5 People,6 People,7 People,,,,,
+Speed Restrictions,None,1 +,2 +,3 +,4 Only,,,,,,,,
+Network Restrictions,None,Similar Level,,,,,,,,,,,
+Consecutive Play,None,1 time,2 times,3 times,4 times,5 times,6 times,7 times,8 times,9 times,10 times,,
+Rematch Limit,No Rematch,Win 2 matches,Win 3 matches,Win 4 matches,Win 5 matches,Win 6 matches,Win 7 matches,Win 8 matches,Win 9 matches,Win 10 matches,UNLIMITED,
+Auto-Pass Function,Use OK,Don't Use,,,,,,,,,,,
+Skip Time,None,10,15,30,45,60,90,120,180,,,,
+Rotation Style,Winner Stays,Loser Stays,Don't Change,Both Change,Random,,,,,,,,
+Rounds for Victory,Best of 1,Best of 3,Best of 5,,,,,,,,,,
+Round Time,Slow,Normal,Fast,Fastest,,,,,,,,,
+Keyword,,,,,,,,,,,,,
+Hardware,Any,Same as you,,,,,,,,,,,
+Room Direction,All-Out Battle,Casual Battle,Practice,,,,,,,,,,
+Allow Share Functions,Any,Allow,Not Allowed,,,,,,,,,,,
+Room Type,Battle,Online Training,,,,,,,,,,,
+Revert to Defaults,,,,,,,,,,,,,
+
+
+

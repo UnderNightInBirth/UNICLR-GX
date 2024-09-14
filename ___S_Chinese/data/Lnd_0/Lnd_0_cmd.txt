@@ -1,0 +1,384 @@
+//コマンドテーブル skillは格ゲーコマンド表記
+btl_debPrint2("\n[LND_CommandTable]");
+const CDef_Lnd_PP_FFAddInput = 2;//FFの追加入力をしたかどうか。CmdとMvでも同じものを定義しているので注意
+const CDef_Lnd_PP_FreezeCheck = 3; // 凍結させ続けるかどうか。CmdとMvでも同じものを定義しているので注意
+
+
+local t =
+{
+	//Taunt = { command = ["5+A"] },
+	
+	Skill_DyingIWEAtk = 0,
+	
+	Atk_StdBandC = {},
+	// Atk_CroBandC = {},
+	Atk_StdBandC_Add = {
+		num = def_CN_Skill_AddCommand1,
+		command = ["A","B","C"],
+		CmdCheck = 
+		{
+			SkillType = "AddCommand", ParamFlagCheck = { Only = { [2]=2 } },
+			HitStatus = "Hit",
+			MvCheck = { Only = ["Mv_Atk_StdBandC"] },
+		},
+		function CmdAfterFunc()
+		{
+			//ここから先はコマンド成功扱い
+			//成功時
+			BMvTbl.SetPP(CDef_Lnd_PP_FFAddInput,1);
+			return 0;//Mvを変えない
+		}
+		UpdateTable = { name = "Mv_Atk_StdBandC_Add", }	
+	},
+	
+	Skill_41236SP = {},
+	Skill_41236SP_ABC = {},
+	
+	Skill_63214SP = {},
+	
+	Skill_0202EX_Add1 = {
+		num = def_CN_Skill_AddCommand1,
+		command = ["0202A"],
+		Check = function()
+		{
+			local findobj = BMvCore.CFindObject(); // クラス生成
+			local exflower = findobj.Get(1); // デバッグオブジェクトのIDを検索
+			if(exflower.push())
+			{
+				local flower_state = BMvTbl.GetLP(4);
+				local flower_status = BMvTbl.GetLP(0);
+				exflower.pop();
+				
+				if(flower_state != 0) return 0;
+				if(flower_status == 2) return 0;
+				
+				//Battle_Std.DrawDebugAttackInfo("hanetc "+flower_status );
+				
+				local checktbl1 =
+				{
+					SkillType = "ExSpecial",
+					CommandButton = def_PP_CBS_ButtonA,
+				};
+				
+				if( Battle_Std.CmdCheck( checktbl1 ) == 1 )
+				{
+					return 1;
+				}
+				
+				/*
+				local checktbl2 =
+				{
+					SkillType = "AddCommand", ParamFlagCheck = { Only = { [2]=1 } },
+					CommandButton = def_PP_CBS_ButtonA,
+					MvCheck = { Only = ["Mv_Skill_0202EX"] },
+				};
+				
+				if( Battle_Std.CmdCheck( checktbl2 ) == 1 ) // 追加コマンドの成功
+				{
+					return 1; //成功で抜ける
+				}
+				*/
+			}
+			return 0; //ここまでくると失敗
+		}
+	},
+	
+	Skill_0202EX_Add2 = {
+		num = def_CN_Skill_AddCommand1,
+		command = ["0202B"],
+		Check = function()
+		{
+			local findobj = BMvCore.CFindObject(); // クラス生成
+			local exflower = findobj.Get(1); // デバッグオブジェクトのIDを検索
+			if(exflower.push())
+			{
+				local flower_state = BMvTbl.GetLP(4);
+				local flower_status = BMvTbl.GetLP(0);
+				exflower.pop();
+				
+				if(flower_state != 0) return 0;
+				if(flower_status == 2) return 0;
+				
+				local checktbl1 =
+				{
+					SkillType = "ExSpecial",
+					CommandButton = def_PP_CBS_ButtonA,
+				};
+				
+				if( Battle_Std.CmdCheck( checktbl1 ) == 1 )
+				{
+					return 1;
+				}
+				
+				/*
+				local checktbl2 =
+				{
+					SkillType = "AddCommand", ParamFlagCheck = { Only = { [2]=1 } },
+					CommandButton = def_PP_CBS_ButtonB,
+					MvCheck = { Only = ["Mv_Skill_0202EX"] },
+				};
+				
+				if( Battle_Std.CmdCheck( checktbl2 ) == 1 ) // 追加コマンドの成功
+				{
+					return 1; //成功で抜ける
+				}
+				*/
+			}
+			return 0; //ここまでくると失敗
+		}
+	},
+	
+	Skill_0202EX = { CmdCheck = { BallLimit = { [2] = 1 } } },
+	Skill_0202BorC = { CmdCheck = { BallLimit = { [2] = 1 } } },
+	Skill_0202A = { CmdCheck = { BallLimit = { [2] = 1 } } },
+	
+	Skill_236EX = {},
+	Skill_236BorC = {},
+	Skill_236A = {},
+	
+	Skill_214C = {},
+	Skill_214B = {},
+	Skill_214A = {},
+	
+	Skill_J214C = {},
+	
+	Skill_214_AddC = {
+		num = def_CN_Skill_AddCommand7,
+		command = ["C"],
+		CmdCheck = 
+		{
+			SkillType = "Special", ParamFlagCheck = { Only = { [2]=1 } }, //214派生条件
+			MvCheck = { Only = ["Mv_Skill_214A","Mv_Skill_214B"] },
+		},
+	},
+	
+	Skill_214_AddB = {
+		num = def_CN_Skill_AddCommand8,
+		command = ["B"],
+		CmdCheck = 
+		{
+			SkillType = "Special", ParamFlagCheck = { Only = { [2]=1 } }, //214派生条件
+			MvCheck = { Only = ["Mv_Skill_214A","Mv_Skill_214C"] },
+		},
+	},
+	Skill_214_AddA = {
+		num = def_CN_Skill_AddCommand9,
+		command = ["A"],
+		CmdCheck = 
+		{
+			SkillType = "Special", ParamFlagCheck = { Only = { [2]=1 } }, //214派生条件
+			MvCheck = { Only = ["Mv_Skill_214B","Mv_Skill_214C"] },
+		},
+		function CmdAfterFunc()
+		{
+			if( BMvTbl.GetPP( def_PP_StdComboChain ) >= 5 )
+			{
+				// スマートステア中なので失敗
+				return 0;
+			}
+		}
+	},
+	Skill_214_Add_AddC = {
+		num = def_CN_Skill_AddCommand4,
+		command = ["C"],
+		CmdCheck = 
+		{
+			SkillType = "Special", ParamFlagCheck = { Only = { [2]=1 } }, //214派生条件
+			MvCheck = { Only = ["Mv_Skill_214_AddA","Mv_Skill_214_AddB","Mv_Skill_214_AddD"] },
+		},
+	},
+	Skill_214_Add_AddB = {
+		num = def_CN_Skill_AddCommand5,
+		command = ["B"],
+		CmdCheck = 
+		{
+			SkillType = "Special", ParamFlagCheck = { Only = { [2]=1 } }, //214派生条件
+			MvCheck = { Only = ["Mv_Skill_214_AddA","Mv_Skill_214_AddC","Mv_Skill_214_AddD"] },
+		},
+	},
+	Skill_214_Add_AddA = {
+		num = def_CN_Skill_AddCommand6,
+		command = ["A"],
+		CmdCheck = 
+		{
+			SkillType = "Special", ParamFlagCheck = { Only = { [2]=1 } }, //214派生条件
+			MvCheck = { Only = ["Mv_Skill_214_AddB","Mv_Skill_214_AddC","Mv_Skill_214_AddD"] },
+		},
+		function CmdAfterFunc()
+		{
+			if( BMvTbl.GetPP( def_PP_StdComboChain ) >= 5 )
+			{
+				// スマートステア中なので失敗
+				return 0;
+			}
+		}
+	},
+	Skill_214_CC = {
+		num = def_CN_Skill_AddCommand10,
+		command = ["C"]
+		CmdCheck = 
+		{
+			SkillType = "Special", ParamFlagCheck = { Only = { [2]=1 } }, //214派生条件
+			MvCheck = { Only = ["Mv_Skill_214C"] },
+		},
+		UpdateTable = { name = "Mv_Skill_214_AddD", }	
+	},
+	Skill_214_BB= {
+		num = def_CN_Skill_AddCommand11,
+		command = ["B"]
+		CmdCheck = 
+		{
+			SkillType = "Special", ParamFlagCheck = { Only = { [2]=1 } }, //214派生条件
+			MvCheck = { Only = ["Mv_Skill_214B"] },
+		},
+		UpdateTable = { name = "Mv_Skill_214_AddD", }	
+	},
+	Skill_214_AA = {
+		num = def_CN_Skill_AddCommand12,
+		command = ["A"]
+		CmdCheck = 
+		{
+			SkillType = "Special", ParamFlagCheck = { Only = { [2]=1 } }, //214派生条件
+			MvCheck = { Only = ["Mv_Skill_214A"] },
+		},
+		function CmdAfterFunc()
+		{
+			if( BMvTbl.GetPP( def_PP_StdComboChain ) >= 5 )
+			{
+				// スマートステア中なので失敗
+				return 0;
+			}
+		}
+		UpdateTable = { name = "Mv_Skill_214_AddD", }	
+	},
+	Skill_214_CCC = {
+		num = def_CN_Skill_AddCommand13,
+		command = ["C"]
+		CmdCheck = 
+		{
+			SkillType = "Special", ParamFlagCheck = { Only = { [2]=1 } }, //214派生条件
+			MvCheck = { Only = ["Mv_Skill_214_AddC"] },
+		},
+		UpdateTable = { name = "Mv_Skill_214_Add_AddD", }	
+	},
+	Skill_214_BBB = {
+		num = def_CN_Skill_AddCommand14,
+		command = ["B"]
+		CmdCheck = 
+		{
+			SkillType = "Special", ParamFlagCheck = { Only = { [2]=1 } }, //214派生条件
+			MvCheck = { Only = ["Mv_Skill_214_AddB"] },
+		},
+		UpdateTable = { name = "Mv_Skill_214_Add_AddD", }	
+	},
+	Skill_214_AAA = {
+		num = def_CN_Skill_AddCommand15,
+		command = ["A"]
+		CmdCheck = 
+		{
+			SkillType = "Special", ParamFlagCheck = { Only = { [2]=1 } }, //214派生条件
+			MvCheck = { Only = ["Mv_Skill_214_AddA"] },
+		},
+		function CmdAfterFunc()
+		{
+			if( BMvTbl.GetPP( def_PP_StdComboChain ) >= 5 )
+			{
+				// スマートステア中なので失敗
+				return 0;
+			}
+		}
+		UpdateTable = { name = "Mv_Skill_214_Add_AddD", }	
+	},
+	
+	Skill_623A = { CmdCheck = { BallLimit = { [6] = 1 } } },
+	Skill_623BorC = { CmdCheck = { BallLimit = { [6] = 1 } } },
+	Skill_623EX = {},
+	
+	//Skill_421A = {},
+	//Skill_421B = {},
+	Skill_421EX = {},
+	
+	//Skill_421A = { UpdateTable = { name = "Mv_Atk_4C_4C", }	 },
+
+	//Atk_Std6B = { CmdCheck = { BallLimit = { [6] = 1 } } },
+	Atk_Std4C = {},
+	Atk_4C_4C =
+	{
+		num = def_CN_Skill_AddCommand3, name = "Cmd_Atk_4C_4C", command = "C",
+		flags = [ "lastdelay" ], //1F増加
+		CmdCheck = 
+		{
+			SkillType = "Special",
+			MvCheck = { Only = ["Mv_Atk_Std4C"] },
+		},
+	},
+	
+	Atk_B_B = 
+	{
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Atk_StdB"] },
+			FrameIDCheck = { Only = 100 },
+		},
+	},
+	
+	Atk_Cro3C = {},	
+	Atk_Air6B = 
+	{
+		command = ["3+B","6+B"],
+	},
+	
+
+}
+
+local ar =
+[
+	{
+		CheckMoveName="Mv_Atk_StdA",
+		UpdateMoveName="Mv_Atk_StdB",
+	},
+	{
+		ResetTmplName="Atk_StdB",
+		CheckMoveName="Mv_Atk_StdB",
+		UpdateMoveName="Mv_Atk_Std4C",
+	},
+	{
+		ResetTmplName="Atk_Std4C",
+		CheckMoveName="Mv_Atk_Std4C",
+		UpdateMoveName="Mv_Atk_4C_4C",
+	},
+	{
+		ResetTmplName="Atk_4C_4C",
+		CheckMoveName="Mv_Atk_4C_4C",
+		UpdateMoveName="Mv_Skill_214A",
+	},
+	{
+		ResetTmplName="Skill_214A",
+		CheckMoveName="Mv_Skill_214A",
+		UpdateMoveName="Mv_Skill_214_AddB",
+		SrcCmdTmpl="Skill_214_AddB",
+	},
+	{
+		ResetTmplName="Skill_214_AddB",
+		CheckMoveName="Mv_Skill_214_AddB",
+		UpdateMoveName="Mv_Skill_214_Add_AddC",
+		SrcCmdTmpl="Skill_214_Add_AddC",
+		CmdTmplFlags=def_CMDFlags_AnnounceSmaetSteer, //スマートステアアナウンスの追加
+	},
+	{
+		ResetTmplName="Skill_214_Add_AddC",
+		CheckMoveName="Mv_Skill_214_Add_AddC",
+		UpdateMoveName="Mv_Skill_236EX",
+		CmdCheck = 
+		{
+			Cost = { ComboGauge = 10000 },
+			SkillType = "ExSpecial",
+			HitStatus="Damage",
+		}
+	},
+]
+Battle_Std.MakeStdCombo( t, ar );
+
+LND_CommandTable <- Battle_Std.MakeCommandTable( t );
+

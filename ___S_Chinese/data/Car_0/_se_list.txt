@@ -1,0 +1,394 @@
+print("\n>>_se_list");
+
+__dofile__("./script/btl_SEDefine.txt"); //ＳＥ定数
+
+local path = "./se/normal_se/"; // ファイルパス、登録しやすいように
+local btlpath = "./se/battle_se/";
+local chrpath = btlpath + "Car/";
+
+SeList_Table <-
+{
+	Status = [],
+};
+SeList_Table.Status.resize(700); // てきとう
+local st = SeList_Table.Status; // 登録しやすいように
+
+st[0] = { volumetype=0, file=btlpath+"SE_BloodCongeals", type=0, category=3, }; //通常技のブレード関係
+st[10] = { volumetype=0, file=btlpath+"SE_BloodPool", type=0, category=2, }; //236とかの血設置関係
+st[20] = { volumetype=0, file=btlpath+"SE_BloodSplashA", type=0, category=4, }; //6Bとか
+
+st[30] = { volumetype=0, file=btlpath+"SE_BloodSplashB", type=0, category=3, }; //236
+st[40] = { volumetype=0, file=btlpath+"SE_BloodSplashB", type=0, category=3, }; //214
+st[50] = { volumetype=0, file=btlpath+"SE_BloodSplashB", type=0, category=3, }; //623
+st[60] = { volumetype=0, file=btlpath+"SE_BloodSplashB", type=0, category=3, }; //22
+
+st[65] = { volumetype=0, file=btlpath+"SE_BigBomb", type=1, category=-1, }; //IWとどめ
+
+st[70] = { volumetype=0, file=btlpath+"SE_BigBomb", type=1, category=-1, }; //IWX柱破壊
+st[71] = { volumetype=0, file=btlpath+"SE_SpecialBrontides", type=1, category=-1, }; //IWX柱ゆれゆれ
+
+//登場
+st[100] = { volumetype=1, file=chrpath+"Car00_2000", type=0, category=1, }; //●ククク…後悔してももう遅ェ！
+//st[101] = { volumetype=1, file=chrpath+"Car00_2001", type=0, category=1, }; //×ガキはすっこんでろ…
+st[102] = { volumetype=1, file=chrpath+"Car00_2002", type=0, category=1, }; //×雑魚はすっこんでろ…
+//st[103] = { volumetype=1, file=chrpath+"Car00_2003", type=0, category=1, }; //●クックックッ…いいねぇいいねぇ！
+st[104] = { volumetype=1, file=chrpath+"Car00_2004", type=0, category=1, }; //●軽くひねってやんよォ
+//st[105] = { volumetype=1, file=chrpath+"Car00_2005", type=0, category=1, }; //●死刑宣告、だぜェ！？
+//st[106] = { volumetype=1, file=chrpath+"Car00_2006", type=0, category=1, }; //おゥおゥ、この俺様とやろうってのかァ？
+//st[107] = { volumetype=1, file=chrpath+"Car00_2007", type=0, category=1, }; //●チッ、しゃーねェ…
+//st[108] = { volumetype=1, file=chrpath+"Car00_2008", type=0, category=1, }; //●めんどくせェけど相手でもしてやっかなァ！
+
+//勝利
+st[110] = { volumetype=1, file=chrpath+"Car00_2100", type=0, category=1, }; //●格付け完了だ！
+//st[111] = { volumetype=1, file=chrpath+"Car00_2101", type=0, category=1, }; //×イタダキ…マス！
+//st[112] = { volumetype=1, file=chrpath+"Car00_2102", type=0, category=1, }; //無理、無駄、無謀ォ！！
+//st[113] = { volumetype=1, file=chrpath+"Car00_2103", type=0, category=1, }; //へっ、許してやんねェ！
+//st[114] = { volumetype=1, file=chrpath+"Car00_2104", type=0, category=1, }; //罵り足んねぇぜ！
+st[115] = { volumetype=1, file=chrpath+"Car00_2105", type=0, category=1, }; //まだまだ足んねーんだよォ！
+//st[116] = { volumetype=1, file=chrpath+"Car00_2106", type=0, category=1, }; //ッたく、どんだけ雑魚なんだっつう話だよ
+//st[117] = { volumetype=1, file=chrpath+"Car00_2107", type=0, category=1, }; //雑魚はそのまま死んでろよな？わーったか！？　 ※解ったか
+//st[118] = { volumetype=1, file=chrpath+"Car00_2108", type=0, category=1, }; //雑魚過ぎて話になんねーなァ！
+//st[119] = { volumetype=1, file=chrpath+"Car00_2109", type=0, category=1, }; //アーくっだらねェ…もうちょい楽しませろっつー話だぜ
+st[120] = { volumetype=1, file=chrpath+"Car00_2110_a", type=0, category=1, }; //クックックックックッ…ハァーッハッハッハッハッハァ！
+//st[121] = { volumetype=1, file=chrpath+"Car00_2111", type=0, category=1, }; //ずいぶん脆いオモチャだなあオイ
+
+//敗北
+st[130] = { volumetype=1, file=chrpath+"Car00_2200", type=0, category=1, }; //はあぁー！？
+st[131] = { volumetype=1, file=chrpath+"Car00_2201", type=0, category=1, }; //…チィッ…
+st[132] = { volumetype=1, file=chrpath+"Car00_2202", type=0, category=1, }; //はああァーッ！？オイオイマジかよ…
+//st[133] = { volumetype=1, file=chrpath+"Car00_2203", type=0, category=1, }; //はああァーッ！？勘弁してくれよオイ…
+//st[134] = { volumetype=1, file=chrpath+"Car00_2204", type=0, category=1, }; //はああァーッ！？やってらんねーよクソが
+
+//弱攻撃
+st[140] = { volumetype=1, file=chrpath+"Car00_2300", type=0, category=1, }; //ふっ
+st[141] = { volumetype=1, file=chrpath+"Car00_2301", type=0, category=1, }; //ふん
+//st[142] = { volumetype=1, file=chrpath+"Car00_2302", type=0, category=1, }; //へっ
+st[143] = { volumetype=1, file=chrpath+"Car00_2303", type=0, category=1, }; //けっ
+st[144] = { volumetype=1, file=chrpath+"Car00_2304", type=0, category=1, }; //シャッ
+//st[145] = { volumetype=1, file=chrpath+"Car00_2305", type=0, category=1, }; //シャア！
+st[146] = { volumetype=1, file=chrpath+"Car00_2306", type=0, category=1, }; //シッ！
+//st[147] = { volumetype=1, file=chrpath+"Car00_2307", type=0, category=1, }; //クソ！
+
+//中攻撃
+st[150] = { volumetype=1, file=chrpath+"Car00_2400", type=0, category=1, }; //はっ
+st[151] = { volumetype=1, file=chrpath+"Car00_2401", type=0, category=1, }; //へっ
+st[152] = { volumetype=1, file=chrpath+"Car00_2402", type=0, category=1, }; //そら
+st[153] = { volumetype=1, file=chrpath+"Car00_2403", type=0, category=1, }; //オラァ
+st[154] = { volumetype=1, file=chrpath+"Car00_2404", type=0, category=1, }; //クソが！
+
+//強攻撃
+st[160] = { volumetype=1, file=chrpath+"Car00_2500", type=0, category=1, }; //ヒュゥ！
+st[161] = { volumetype=1, file=chrpath+"Car00_2501", type=0, category=1, }; //ホアァ！
+st[162] = { volumetype=1, file=chrpath+"Car00_2502", type=0, category=1, }; //食らえ
+st[163] = { volumetype=1, file=chrpath+"Car00_2503", type=0, category=1, }; //おら！
+st[164] = { volumetype=1, file=chrpath+"Car00_2504", type=0, category=1, }; //どうした！
+st[165] = { volumetype=1, file=chrpath+"Car00_2505", type=0, category=1, }; //オラァ！
+st[166] = { volumetype=1, file=chrpath+"Car00_2506", type=0, category=1, }; //ダラァ！
+//st[167] = { volumetype=1, file=chrpath+"Car00_2507", type=0, category=1, }; //これでも食らっとけよ
+st[168] = { volumetype=1, file=chrpath+"Car00_2508", type=0, category=1, }; //クソがぁぁぁ！
+
+//特殊攻撃
+//st[170] = { volumetype=1, file=chrpath+"Car00_2600", type=0, category=1, }; //こいつはいてぇぞ？
+st[171] = { volumetype=1, file=chrpath+"Car00_2601", type=0, category=1, }; //死にな！
+st[172] = { volumetype=1, file=chrpath+"Car00_2602", type=0, category=1, }; //くたばりやがれ！
+st[173] = { volumetype=1, file=chrpath+"Car00_2603", type=0, category=1, }; //ボンクラァ！
+st[174] = { volumetype=1, file=chrpath+"Car00_2604", type=0, category=1, }; //オマケだ！
+st[175] = { volumetype=1, file=chrpath+"Car00_2605", type=0, category=1, }; //そォらァ…よッ！
+//st[176] = { volumetype=1, file=chrpath+"Car00_2606", type=0, category=1, }; //さっさと転がれよ
+//st[177] = { volumetype=1, file=chrpath+"Car00_2607", type=0, category=1, }; //無様によォ！
+//st[178] = { volumetype=1, file=chrpath+"Car00_2608", type=0, category=1, }; //クソ野郎がぁぁぁ！
+
+//投げ成功
+//st[180] = { volumetype=1, file=chrpath+"Car00_2700", type=0, category=1, }; //×裂けろォ！
+st[181] = { volumetype=1, file=chrpath+"Car00_2701", type=0, category=1, }; //爆ぜろ！
+st[182] = { volumetype=1, file=chrpath+"Car00_2702", type=0, category=1, }; //ブチまけろァ！
+//st[183] = { volumetype=1, file=chrpath+"Car00_2703", type=0, category=1, }; //×脳天…直撃だァヒャハハハ！
+//st[184] = { volumetype=1, file=chrpath+"Car00_2704", type=0, category=1, }; //×顔面…炸裂だァヒャハハハ！
+//st[185] = { volumetype=1, file=chrpath+"Car00_2705", type=0, category=1, }; //×クソがぁぁ……オネンネだぁ！
+
+//投げ失敗
+//st[190] = { volumetype=1, file=chrpath+"Car00_2800", type=0, category=1, }; //あ？
+//st[191] = { volumetype=1, file=chrpath+"Car00_2801", type=0, category=1, }; //ちぃ
+//st[192] = { volumetype=1, file=chrpath+"Car00_2802", type=0, category=1, }; //うぜぇ
+//st[193] = { volumetype=1, file=chrpath+"Car00_2803", type=0, category=1, }; //雑魚のくせに避けてんじゃねーよ
+//st[194] = { volumetype=1, file=chrpath+"Car00_2804", type=0, category=1, }; //お？なに避けてんだテメェ
+st[195] = { volumetype=1, file=chrpath+"Car00_2805", type=0, category=1, }; //逃げたか
+st[196] = { volumetype=1, file=chrpath+"Car00_2806", type=0, category=1, }; //クソッ
+
+//投げ抜け
+st[200] = { volumetype=1, file=chrpath+"Car00_2900", type=0, category=1, prio=Def_SEP_ThrowTech, check=1 }; //●うざってぇ！
+st[201] = { volumetype=1, file=chrpath+"Car00_2901", type=0, category=1, prio=Def_SEP_ThrowTech, check=1 }; //●さわんじゃねぇ！
+//st[202] = { volumetype=1, file=chrpath+"Car00_2902", type=0, category=1, prio=Def_SEP_ThrowTech, check=1 }; //×クソすぎんぞ！
+
+//振り向き
+st[210] = { volumetype=1, file=chrpath+"Car00_3000", type=0, category=1, prio=Def_SEP_Furimuki }; //●こっちかァ？
+
+//挑発
+//st[220] = { volumetype=1, file=chrpath+"Car00_3100", type=0, category=1, }; //×ヒャッハー！ 
+st[221] = { volumetype=1, file=chrpath+"Car00_3101", type=0, category=1, }; //どうした、かかってこいよオラァ！
+st[222] = { volumetype=1, file=chrpath+"Car00_3102", type=0, category=1, }; //なんだ、ビビッちまったかァ？
+//st[223] = { volumetype=1, file=chrpath+"Car00_3103", type=0, category=1, }; //ビビッてんじゃねーぞオラァ！
+//st[224] = { volumetype=1, file=chrpath+"Car00_3104", type=0, category=1, }; //ビビってチビッちまったかァ？ヒヒヒ
+
+//ジャンプ
+st[230] = { volumetype=1, file=chrpath+"Car00_3200", type=0, category=1, }; //しゅっ
+st[231] = { volumetype=1, file=chrpath+"Car00_3201", type=0, category=1, }; //へっ
+
+//ダッシュ
+//st[240] = { volumetype=1, file=chrpath+"Car00_3300", type=0, category=1, }; //おせェよ
+//st[241] = { volumetype=1, file=chrpath+"Car00_3301", type=0, category=1, }; //いいのか？
+st[242] = { volumetype=1, file=chrpath+"Car00_3302", type=0, category=1, }; //行くぜオラァ！
+st[243] = { volumetype=1, file=chrpath+"Car00_3303", type=0, category=1, }; //速攻だァ！
+
+//バックダッシュ
+//st[245] = { volumetype=1, file=chrpath+"Car00_3400", type=0, category=1, }; //でっ
+//st[246] = { volumetype=1, file=chrpath+"Car00_3401", type=0, category=1, }; //ちっ
+
+//ガード小
+st[250] = { volumetype=1, file=chrpath+"Car00_3500", type=0, category=1, prio=Def_SEP_GuardLv1, check=1, }; //ふん
+st[251] = { volumetype=1, file=chrpath+"Car00_3501", type=0, category=1, prio=Def_SEP_GuardLv1, check=1, }; //無駄無駄
+st[252] = { volumetype=1, file=chrpath+"Car00_3502", type=0, category=1, prio=Def_SEP_GuardLv1, check=1, }; //へっ(鼻で笑う)
+//st[253] = { volumetype=1, file=chrpath+"Car00_3503", type=0, category=1, prio=Def_SEP_GuardLv1, check=1, }; //ハッ
+
+//ガード中
+st[260] = { volumetype=1, file=chrpath+"Car00_3600", type=0, category=1, prio=Def_SEP_GuardLv2, check=1, }; //なんでェ
+//st[261] = { volumetype=1, file=chrpath+"Car00_3601", type=0, category=1, prio=Def_SEP_GuardLv2, check=1, }; //シケてんな
+//st[262] = { volumetype=1, file=chrpath+"Car00_3602", type=0, category=1, prio=Def_SEP_GuardLv2, check=1, }; //よっえ～(弱い)
+st[263] = { volumetype=1, file=chrpath+"Car00_3603", type=0, category=1, prio=Def_SEP_GuardLv2, check=1, }; //効かねェよ
+st[264] = { volumetype=1, file=chrpath+"Car00_3604", type=0, category=1, prio=Def_SEP_GuardLv2, check=1, }; //そのへんにしとけって
+
+//ガード大
+//st[270] = { volumetype=1, file=chrpath+"Car00_3700", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; //カスが
+//st[271] = { volumetype=1, file=chrpath+"Car00_3701", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; //クソッ
+st[272] = { volumetype=1, file=chrpath+"Car00_3702", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; //結構くるな
+st[273] = { volumetype=1, file=chrpath+"Car00_3703", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; //やべェなこれ
+st[274] = { volumetype=1, file=chrpath+"Car00_3704", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; //パワーだけはありやがる
+
+//余裕ガード
+st[280] = { volumetype=1, file=chrpath+"Car00_3800", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //ハイハイ
+//st[281] = { volumetype=1, file=chrpath+"Car00_3801", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //くっだらねェ
+//st[282] = { volumetype=1, file=chrpath+"Car00_3802", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //弱すぎるわ…
+//st[283] = { volumetype=1, file=chrpath+"Car00_3803", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //それじゃあ届かねェわ
+st[284] = { volumetype=1, file=chrpath+"Car00_3804", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //チッ…なめてんのか？
+//st[285] = { volumetype=1, file=chrpath+"Car00_3805", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //んだ？そりゃ（弱）
+st[286] = { volumetype=1, file=chrpath+"Car00_3806", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //んだァ？そりゃぁ（中）
+//st[287] = { volumetype=1, file=chrpath+"Car00_3807", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //なんだァー？そりゃぁーー（強）
+
+//ガード失敗
+st[290] = { volumetype=1, file=chrpath+"Car00_3900", type=0, category=1, prio=Def_SEP_GuardMiss, check=1, }; //ざっけ！
+st[291] = { volumetype=1, file=chrpath+"Car00_3901", type=0, category=1, prio=Def_SEP_GuardMiss, check=1, }; //調子にっ……（乗んじゃねぇ！）
+st[292] = { volumetype=1, file=chrpath+"Car00_3902", type=0, category=1, prio=Def_SEP_GuardMiss, check=1, }; //心底うぜぇ
+
+//受け身
+st[300] = { volumetype=1, file=chrpath+"Car00_4000", type=0, category=1, prio=Def_SEP_Recover, }; //１０倍返しだ
+st[301] = { volumetype=1, file=chrpath+"Car00_4001", type=0, category=1, prio=Def_SEP_Recover, }; //やってくれたな
+//st[302] = { volumetype=1, file=chrpath+"Car00_4002", type=0, category=1, prio=Def_SEP_Recover, }; //ただじゃおかねェ
+//st[303] = { volumetype=1, file=chrpath+"Car00_4003", type=0, category=1, prio=Def_SEP_Recover, }; //へっ
+//st[304] = { volumetype=1, file=chrpath+"Car00_4004", type=0, category=1, prio=Def_SEP_Recover, }; //後悔すんぜ
+//st[305] = { volumetype=1, file=chrpath+"Car00_4005", type=0, category=1, prio=Def_SEP_Recover, }; //後の祭りよ
+st[306] = { volumetype=1, file=chrpath+"Car00_4006", type=0, category=1, prio=Def_SEP_Recover, }; //っとやべえやべえ
+
+//シールド発動
+st[310] = { volumetype=1, file=chrpath+"Car00_4100", type=0, category=1, }; //へっ！
+st[311] = { volumetype=1, file=chrpath+"Car00_4101", type=0, category=1, }; //こいよ！
+st[312] = { volumetype=1, file=chrpath+"Car00_4102", type=0, category=1, }; //ふん
+
+//シールド成功
+st[320] = { volumetype=1, file=chrpath+"Car00_4200", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //バカが！
+//st[321] = { volumetype=1, file=chrpath+"Car00_4201", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //クソが！
+//st[322] = { volumetype=1, file=chrpath+"Car00_4202", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //ザコが！
+//st[323] = { volumetype=1, file=chrpath+"Car00_4203", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //効くわけネェだろ？ンなもん
+//st[324] = { volumetype=1, file=chrpath+"Car00_4204", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //ハイハイおつかれさん
+st[325] = { volumetype=1, file=chrpath+"Car00_4205", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //もうわかったっつの
+//st[326] = { volumetype=1, file=chrpath+"Car00_4206", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //ソレ何度目だよ
+st[327] = { volumetype=1, file=chrpath+"Car00_4207", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //バカの一つ覚えかァ？
+
+//やられ弱
+st[330] = { volumetype=1, file=chrpath+"Car00_4300", type=0, category=1, prio=Def_SEP_DamageLv1 }; //っ
+//st[331] = { volumetype=1, file=chrpath+"Car00_4301", type=0, category=1, prio=Def_SEP_DamageLv1 }; //くっ
+st[332] = { volumetype=1, file=chrpath+"Car00_4302", type=0, category=1, prio=Def_SEP_DamageLv1 }; //てっ
+st[333] = { volumetype=1, file=chrpath+"Car00_4303", type=0, category=1, prio=Def_SEP_DamageLv1 }; //クソ
+
+//やられ中
+////st[340] = { volumetype=1, file=chrpath+"Car00_4400", type=0, category=1, }; 
+st[341] = { volumetype=1, file=chrpath+"Car00_4401", type=0, category=1, prio=Def_SEP_DamageLv2, check=1 }; //つぅ
+//st[342] = { volumetype=1, file=chrpath+"Car00_4402", type=0, category=1, prio=Def_SEP_DamageLv2, check=1 }; //ぐっ
+st[343] = { volumetype=1, file=chrpath+"Car00_4403", type=0, category=1, prio=Def_SEP_DamageLv2, check=1 }; //がっ
+//st[344] = { volumetype=1, file=chrpath+"Car00_4404", type=0, category=1, prio=Def_SEP_DamageLv2, check=1 }; //げぇ
+//st[345] = { volumetype=1, file=chrpath+"Car00_4405", type=0, category=1, prio=Def_SEP_DamageLv2, check=1 }; //クソッ！
+
+//やられ強
+st[350] = { volumetype=1, file=chrpath+"Car00_4500", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; //があっ！
+//st[351] = { volumetype=1, file=chrpath+"Car00_4501", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; //がはぁ！
+//st[352] = { volumetype=1, file=chrpath+"Car00_4502", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; //グハッ！
+//st[353] = { volumetype=1, file=chrpath+"Car00_4503", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; //オゴッ！
+//st[354] = { volumetype=1, file=chrpath+"Car00_4504", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; //ドフッ！
+st[355] = { volumetype=1, file=chrpath+"Car00_4505", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; //グボッ！
+st[356] = { volumetype=1, file=chrpath+"Car00_4506", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; //クッソォッ！
+
+//ＫＯ１
+st[360] = { volumetype=1, file=chrpath+"Car00_4600", type=0, category=1, prio=Def_SEP_KO }; //このオレがッ！
+//st[361] = { volumetype=1, file=chrpath+"Car00_4601", type=0, category=1, prio=Def_SEP_KO }; //ヤキが回ったか
+st[362] = { volumetype=1, file=chrpath+"Car00_4602", type=0, category=1, prio=Def_SEP_KO }; //ちったぁできるみてェだなァ…
+//st[363] = { volumetype=1, file=chrpath+"Car00_4603", type=0, category=1, prio=Def_SEP_KO }; //チッ…次はこうはいかねえェ
+//st[364] = { volumetype=1, file=chrpath+"Car00_4604", type=0, category=1, prio=Def_SEP_KO }; //へへ…ちーっと油断しちまったなァ
+st[365] = { volumetype=1, file=chrpath+"Car00_4605", type=0, category=1, prio=Def_SEP_KO }; //テッメェ…やってくれるじゃねーか
+//st[366] = { volumetype=1, file=chrpath+"Car00_4606", type=0, category=1, prio=Def_SEP_KO }; //グアァッ…（1.5秒程度の余力を残した叫び）
+
+//ＫＯ２
+st[370] = { volumetype=1, file=chrpath+"Car00_4700", type=0, category=1, }; //ぐおあぁぁぁぁぁぁーーーーー※３秒程
+//st[371] = { volumetype=1, file=chrpath+"Car00_4701", type=0, category=1, }; //クソがぁぁぁーーー！※３秒程
+//st[372] = { volumetype=1, file=chrpath+"Car00_4702", type=0, category=1, }; //オイオイマジか…よ…
+//st[373] = { volumetype=1, file=chrpath+"Car00_4703", type=0, category=1, }; //このオレ様…が…
+//st[374] = { volumetype=1, file=chrpath+"Car00_4704", type=0, category=1, }; //血…血が…たり…ねぇ…
+//st[375] = { volumetype=1, file=chrpath+"Car00_4705", type=0, category=1, }; //クソがアアアアアアッ
+//st[376] = { volumetype=1, file=chrpath+"Car00_4706", type=0, category=1, }; //テメェのツラ…ぜってぇ忘れねェ…
+
+//起き上がり
+st[380] = { volumetype=1, file=chrpath+"Car00_4800", type=0, category=1, }; //１００倍返しだァ…！
+//st[381] = { volumetype=1, file=chrpath+"Car00_4801", type=0, category=1, }; //ああー…？
+//st[382] = { volumetype=1, file=chrpath+"Car00_4802", type=0, category=1, }; //クソッタレ…
+st[383] = { volumetype=1, file=chrpath+"Car00_4803", type=0, category=1, }; //上等だ
+//st[384] = { volumetype=1, file=chrpath+"Car00_4803_a", type=0, category=1, }; //…ッテェなこのぉ！
+//st[385] = { volumetype=1, file=chrpath+"Car00_4804", type=0, category=1, }; //なにしくさってんだテメェ…！
+st[386] = { volumetype=1, file=chrpath+"Car00_4805", type=0, category=1, }; //キレそうだぜオイィ…！
+//st[387] = { volumetype=1, file=chrpath+"Car00_4806", type=0, category=1, }; //すり潰すぞおらぁ※巻き舌
+//st[388] = { volumetype=1, file=chrpath+"Car00_4807", type=0, category=1, }; //なめてんじゃねえぞおらぁ※巻き舌
+
+//重傷起き上がり
+st[390] = { volumetype=1, file=chrpath+"Car00_4900", type=0, category=1, }; //あー…クソッ…
+//st[391] = { volumetype=1, file=chrpath+"Car00_4901", type=0, category=1, }; //わーってんのかオイ…
+st[392] = { volumetype=1, file=chrpath+"Car00_4902", type=0, category=1, }; //クソったれがァァ…ッ！
+//st[393] = { volumetype=1, file=chrpath+"Car00_4903", type=0, category=1, }; //頭がグラグラしやがる…
+st[394] = { volumetype=1, file=chrpath+"Car00_4904", type=0, category=1, }; //へっ…なかなかやるじゃねェか
+//st[395] = { volumetype=1, file=chrpath+"Car00_4905", type=0, category=1, }; //おいおい…一体何なんだよこいつァ！
+//st[396] = { volumetype=1, file=chrpath+"Car00_4906", type=0, category=1, }; //倒せると思ったかァ！？
+//st[397] = { volumetype=1, file=chrpath+"Car00_4907", type=0, category=1, }; //この程度で倒れると思ってんのかァ！？
+
+
+//ヴェールオフ
+//st[400] = { volumetype=1, file=chrpath+"Car00_5000", type=0, category=1, }; //ヒャッハー！
+st[401] = { volumetype=1, file=chrpath+"Car00_5001", type=0, category=1, }; //恐れろォ！
+st[402] = { volumetype=1, file=chrpath+"Car00_5002", type=0, category=1, }; //ブッ潰してやんぜ！
+//st[403] = { volumetype=1, file=chrpath+"Car00_5003", type=0, category=1, }; //ここからが…本当の地獄だぜ
+//st[404] = { volumetype=1, file=chrpath+"Car00_5004", type=0, category=1, }; //殺戮ショーの幕開けだァ！
+//st[405] = { volumetype=1, file=chrpath+"Car00_5005", type=0, category=1, }; //そろそろテメーにも飽きてきたぜ！
+
+//チェインシフト
+//st[410] = { volumetype=1, file=chrpath+"Car00_5100", type=0, category=1, }; //ディナーの時間だ！
+st[411] = { volumetype=1, file=chrpath+"Car00_5101", type=0, category=1, }; //ヒャッハー！
+st[412] = { volumetype=1, file=chrpath+"Car00_5102", type=0, category=1, }; //きたぜきたぜェ…！
+st[413] = { volumetype=1, file=chrpath+"Car00_5103", type=0, category=1, }; //ここだァ！
+
+//コンセントレーション
+//st[420] = { volumetype=1, file=chrpath+"Car00_5200", type=0, category=1, }; //こいよ！
+st[421] = { volumetype=1, file=chrpath+"Car00_5201", type=0, category=1, }; //クックックッ…
+//st[422] = { volumetype=1, file=chrpath+"Car00_5202", type=0, category=1, }; //オレ様はいつだってクールだぜ…
+st[423] = { volumetype=1, file=chrpath+"Car00_5203", type=0, category=1, }; //クールダウンだ…
+//st[424] = { volumetype=1, file=chrpath+"Car00_5204", type=0, category=1, }; //ククク…どうしたオラ…
+
+//バースト
+//st[430] = { volumetype=1, file=chrpath+"Car00_5300", type=0, category=1, }; //このカスがァー！！！
+//st[431] = { volumetype=1, file=chrpath+"Car00_5301", type=0, category=1, }; //させっかよォ！
+//st[432] = { volumetype=1, file=chrpath+"Car00_5302", type=0, category=1, }; //イテェだろがァ！
+//st[433] = { volumetype=1, file=chrpath+"Car00_5303", type=0, category=1, }; //ウッゼェーんだよ！
+//st[434] = { volumetype=1, file=chrpath+"Car00_5304", type=0, category=1, }; //いつまでも調子こいてんじゃねェ！
+
+//２３６
+st[440] = { volumetype=1, file=chrpath+"Car00_6000", type=0, category=1, }; //まわれェ！
+//st[441] = { volumetype=1, file=chrpath+"Car00_6001", type=0, category=1, }; //かかれェ！
+st[442] = { volumetype=1, file=chrpath+"Car00_6002", type=0, category=1, }; //ヒャッハー！
+st[443] = { volumetype=1, file=chrpath+"Car00_6003", type=0, category=1, }; //×ＢＢ　踊れェ！
+st[444] = { volumetype=1, file=chrpath+"Car00_6004", type=0, category=1, }; //飲み込め！
+st[445] = { volumetype=1, file=chrpath+"Car00_6005", type=0, category=1, }; //まわりやがれェ！
+st[446] = { volumetype=1, file=chrpath+"Car00_6006", type=0, category=1, }; //巻かれな！
+st[447] = { volumetype=1, file=chrpath+"Car00_6007", type=0, category=1, }; //切り刻め！
+st[448] = { volumetype=1, file=chrpath+"Car00_6008", type=0, category=1, }; //微塵切りだァ！
+
+//６２３
+st[450] = { volumetype=1, file=chrpath+"Car00_6100", type=0, category=1, }; //シャァァ！
+//st[451] = { volumetype=1, file=chrpath+"Car00_6101", type=0, category=1, }; //ブザマに舞えェ！
+//st[452] = { volumetype=1, file=chrpath+"Car00_6102", type=0, category=1, }; //微塵も残さねぇ！
+//st[453] = { volumetype=1, file=chrpath+"Car00_6103", type=0, category=1, }; //炙り出しだァ！
+st[454] = { volumetype=1, file=chrpath+"Car00_6104", type=0, category=1, }; //すり潰せ！
+//st[455] = { volumetype=1, file=chrpath+"Car00_6105", type=0, category=1, }; //おっと、それ以上近づくと…
+st[456] = { volumetype=1, file=chrpath+"Car00_6106", type=0, category=1, }; //痛い目みるぜェ？
+st[457] = { volumetype=1, file=chrpath+"Car00_6107", type=0, category=1, }; //撒き散らす！
+st[458] = { volumetype=1, file=chrpath+"Car00_6108", type=0, category=1, }; //ブチ撒けろ！
+
+//２１４
+st[470] = { volumetype=1, file=chrpath+"Car00_6200", type=0, category=1, }; //×6Ｂ　オラァ！
+st[471] = { volumetype=1, file=chrpath+"Car00_6201", type=0, category=1, }; //串刺しだオラァ！
+st[472] = { volumetype=1, file=chrpath+"Car00_6202", type=0, category=1, }; //ギロチンだオラァ！
+st[473] = { volumetype=1, file=chrpath+"Car00_6203", type=0, category=1, }; //オラァ！
+st[474] = { volumetype=1, file=chrpath+"Car00_6204", type=0, category=1, }; //ブチ抜け！
+st[475] = { volumetype=1, file=chrpath+"Car00_6205", type=0, category=1, }; //貫け！
+//st[476] = { volumetype=1, file=chrpath+"Car00_6206", type=0, category=1, }; //これでも…食らいやがれ！
+st[477] = { volumetype=1, file=chrpath+"Car00_6207", type=0, category=1, }; //大サービスだ！
+//st[478] = { volumetype=1, file=chrpath+"Car00_6208", type=0, category=1, }; //俺のは…痛ェだろ？
+
+//２２
+st[480] = { volumetype=1, file=chrpath+"Car00_6300", type=0, category=1, }; //そこだ
+st[481] = { volumetype=1, file=chrpath+"Car00_6301", type=0, category=1, }; //ケケケ
+st[482] = { volumetype=1, file=chrpath+"Car00_6302", type=0, category=1, }; //足元ォ
+st[483] = { volumetype=1, file=chrpath+"Car00_6303", type=0, category=1, }; //ぶち抜けぇ！
+st[484] = { volumetype=1, file=chrpath+"Car00_6304", type=0, category=1, }; //嬲ってやんよォ！
+st[485] = { volumetype=1, file=chrpath+"Car00_6305", type=0, category=1, }; //根こそぎィ！
+st[486] = { volumetype=1, file=chrpath+"Car00_6306", type=0, category=1, }; //突き上げろ！
+st[487] = { volumetype=1, file=chrpath+"Car00_6307", type=0, category=1, }; //突き出せ！
+st[488] = { volumetype=1, file=chrpath+"Car00_6308", type=0, category=1, }; //食われちまえよ！
+
+//６３２１４
+st[490] = { volumetype=1, file=chrpath+"Car00_6600", type=0, category=1, }; //見えたぜ…
+st[491] = { volumetype=1, file=chrpath+"Car00_6601", type=0, category=1, }; //はああっ！
+//st[492] = { volumetype=1, file=chrpath+"Car00_6602", type=0, category=1, }; //…ごっそさん。
+//st[493] = { volumetype=1, file=chrpath+"Car00_6603", type=0, category=1, }; //血を…よこしやがれェ！
+st[494] = { volumetype=1, file=chrpath+"Car00_6604", type=0, category=1, }; //いただきだぜ！
+//st[495] = { volumetype=1, file=chrpath+"Car00_6605", type=0, category=1, }; //あ～うめぇ！　
+//st[496] = { volumetype=1, file=chrpath+"Car00_6606", type=0, category=1, }; //さっさと…くたばれよ
+st[497] = { volumetype=1, file=chrpath+"Car00_6610", type=0, category=1, }; //（失敗）ちぃ…
+
+//浮いた相手を能力で滅多打ち
+st[500] = { volumetype=1, file=chrpath+"Car00_6700", type=0, category=1, }; //避けてみやがれ…！
+//st[501] = { volumetype=1, file=chrpath+"Car00_6710", type=0, category=1, }; //（フィニッシュ）　しまいだ…喰らい尽くせェ！！
+st[502] = { volumetype=1, file=chrpath+"Car00_6711", type=0, category=1, }; //ヒャァーッハッハッハァ！
+st[503] = { volumetype=1, file=chrpath+"Car00_6712", type=0, category=1, }; //喰らい尽くせ！
+//st[504] = { volumetype=1, file=chrpath+"Car00_6713", type=0, category=1, }; //喰いつぶせ！
+//st[505] = { volumetype=1, file=chrpath+"Car00_6714", type=0, category=1, }; //全てを飲み込め！
+//st[506] = { volumetype=1, file=chrpath+"Car00_6715", type=0, category=1, }; //ああァ？イテェだァ？
+//st[507] = { volumetype=1, file=chrpath+"Car00_6716", type=0, category=1, }; //イテェにきまってんだろが！
+
+//凡庸台詞
+//st[510] = { volumetype=1, file=chrpath+"Car00_7000", type=0, category=1, }; //これがほんとの出血大サービスってやつだぁ！
+//st[511] = { volumetype=1, file=chrpath+"Car00_7001", type=0, category=1, }; //死んじまえよぉ！
+//st[512] = { volumetype=1, file=chrpath+"Car00_7002", type=0, category=1, }; //こいつで御陀仏だぁ！
+
+//対キャラ別
+//st[520] = { volumetype=1, file=chrpath+"Car00_7100", type=0, category=1, }; //（対女性キャラ汎用）女ぁ！
+//st[521] = { volumetype=1, file=chrpath+"Car00_7101", type=0, category=1, }; //（対女性キャラ汎用）クソおんなぁ！
+//st[522] = { volumetype=1, file=chrpath+"Car00_7102", type=0, category=1, }; //（対女性キャラ汎用）クソあまぁ！
+//st[523] = { volumetype=1, file=chrpath+"Car00_7103", type=0, category=1, }; //（対男性キャラ汎用）ヤロウ！
+//st[524] = { volumetype=1, file=chrpath+"Car00_7104", type=0, category=1, }; //（対男性キャラ汎用）クソヤロウ！
+//st[525] = { volumetype=1, file=chrpath+"Car00_7105", type=0, category=1, }; //（対ハイド）黄色いのぉ！
+//st[526] = { volumetype=1, file=chrpath+"Car00_7106", type=0, category=1, }; //（対ワレン、ゴルドー）おっさん！
+//st[527] = { volumetype=1, file=chrpath+"Car00_7107", type=0, category=1, }; //（対オリエ、ケイアス）クソまじめ！
+//st[528] = { volumetype=1, file=chrpath+"Car00_7108", type=0, category=1, }; //（対メルカヴァ）　ばけもん！
+//st[529] = { volumetype=1, file=chrpath+"Car00_7109", type=0, category=1, }; //（対セト）　ヒョロガキ！
+//st[530] = { volumetype=1, file=chrpath+"Car00_7110", type=0, category=1, }; //（対ナナセ、セト、バティスタ）クソガキぃ！
+//st[531] = { volumetype=1, file=chrpath+"Car00_7111", type=0, category=1, }; //（対ケイアス）メガネぇ！
+
+//ＩＷＥ
+//st[600] = { volumetype=1, file=chrpath+"Car00_6800", type=0, category=1, }; //クソが、遊びはここまでだぜぇ
+//st[601] = { volumetype=1, file=chrpath+"Car00_6801", type=0, category=1, }; //飽きちまったよ、お開きだ
+//st[602] = { volumetype=1, file=chrpath+"Car00_6802", type=0, category=1, }; //いい加減にしろぉ、こんザコがぁ！
+
+//ＩＷＥ成立
+//st[603] = { volumetype=1, file=chrpath+"Car00_6810", type=0, category=1, }; //クックックッ……、これを喰らって死ねんだ、幸運に思いなぁ
+//st[604] = { volumetype=1, file=chrpath+"Car00_6811_a", type=0, category=1, }; //どうだぁ？特製の棺桶の住み心地はぁ？
+//st[605] = { volumetype=1, file=chrpath+"Car00_6812", type=0, category=1, }; //痛いかぁ？苦しいかぁ？泣き声もあげられねーだろぉよぉ？
+st[606] = { volumetype=1, file=chrpath+"Car00_6813", type=0, category=1, }; //赤きひつぎ棺に抱かれ、赤きし刺しん針に貫かれ、死んで還るんだなぁ、原初の赤に！
+st[607] = { volumetype=1, file=chrpath+"Car00_6814", type=0, category=1, }; //クソがぁ！これで仕舞いだぁ！！
+
+//st[608] = { volumetype=1, file=chrpath+"Car00_6820", type=0, category=1, }; //すっきりだぜぇ……。最高だよ、テメェはぁ……。（相手を倒した場合）
+//st[609] = { volumetype=1, file=chrpath+"Car00_6821", type=0, category=1, }; //おいおい……マジでうざってーぞ、おまえ。（相手が生きてる場合）
+

@@ -1,0 +1,14 @@
+[System]
+ProjectName=Elt
+[DataFile]
+FileNum= 4
+File00=_temp.HA6
+File01=Elt.HA6
+File02=Elt_GX.HA6
+File03=../BaseData.HA6
+[BmpcutFile]
+FileNum= 1
+File00=Elt.cg
+[PAniFile]
+FileNum= 1
+File00=Elt_ef00.pat

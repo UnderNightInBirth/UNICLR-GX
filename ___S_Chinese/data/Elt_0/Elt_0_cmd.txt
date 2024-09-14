@@ -1,0 +1,213 @@
+//コマンドテーブル skillは格ゲーコマンド表記
+btl_debPrint2("\n[ELT_CommandTable]");
+
+local t =
+{
+	Skill_41236SP_ABC = {},
+	Skill_41236SP = {},
+
+	Skill_236EX =
+	{
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.GetPP(def_PP_Elt_Bullet) >= def_CHR_Elt_BulletMax ) return 0; // 弾丸があるか
+			return 1;
+		}
+	},
+	Skill_236BorC = {},
+	Skill_236A = {}
+	
+	Skill_623EX = {},
+	Skill_623BorC = {},
+	Skill_623A = {},
+	
+	Skill_63214A = {},
+	Skill_63214BorC = {},
+	Skill_63214EX = {},
+	
+	Skill_214EX = {},
+	Skill_214BorC = {},
+	Skill_214A = {},
+	
+	Skill_421EX = {},
+	Skill_421BorC = {},
+	Skill_421A = {},
+
+	Skill_0202C = {},
+	Skill_0202B = {},
+	Skill_0202A = {},
+	
+	Skill_J214EX = {},
+	Skill_J214BorC = {},
+	Skill_J214A = {},
+	
+	Skill_J623EX = {},
+	Skill_J623BorC = 
+	{
+		CmdCheck = 
+		{
+			MvCheck = { Fail = ["Mv_Skill_J623A"] },
+		},
+	},
+	Skill_J623A = 
+	{
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.AddAirCount( 0, 0 ) ) return 0;
+			return 1;
+		}
+	},
+	
+	Atk_Std6B = {},
+	Atk_Std6C = {},
+	Atk_Std3C = {},	
+
+	Atk_Air2B = {
+		// CmdCheck = { HeightLimit = def_POS_AirDashLimitHeight, }
+	},	
+
+	// C追加C
+	Atk_C_C = 
+	{
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Atk_StdC"] },
+			ParamFlagCheck = { Only = { [2]=8 } },
+		},
+	},	
+	
+	//コンボ中１回のみにしておきたい
+	Skill_AerialJump = 
+	{
+		//num = def_CN_Skill_AddCommand1,
+		num = 0,
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Atk_Std3C","Mv_Skill_IC214B_Hit"] },
+			HitStatus = "Damage",
+			FrameIDCheck = { Only = [100,200] },
+		},
+		function CmdBeforeFunc()
+		{
+			if( Battle_Std.EnemyDamageFlag_Check(def_DF_AerialJumpCanseled) ) return 0; //コンボ中は１回のみ
+			return 1;
+		},
+		command = "8", //↑要素
+		UpdateTable = { name = "Mv_Skill_AerialJump", }
+	},
+
+	//エリアル中のみにする
+	MultiJumpCancel_F =
+	{ 
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.GetPP(def_PP_Elt_AerialStatus)!=1 ) return 0; //エリアル状態じゃなかったらダメ
+			return 1;
+		},
+		CmdCheck = { HeightLimit = def_POS_AirDashLimitHeight, }
+	},
+	MultiJumpCancel_N =
+	{
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.GetPP(def_PP_Elt_AerialStatus)!=1 ) return 0; //エリアル状態じゃなかったらダメ
+			return 1;
+		},
+		CmdCheck = { HeightLimit = def_POS_AirDashLimitHeight, }
+	},
+	MultiJumpCancel_B =
+	{
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.GetPP(def_PP_Elt_AerialStatus)!=1 ) return 0; //エリアル状態じゃなかったらダメ
+			return 1;
+		},
+		CmdCheck = { HeightLimit = def_POS_AirDashLimitHeight, }
+	},
+	
+	Throw_A = {},
+	
+	Atk_StdBandC = {},
+	
+	BackDash_Cancel =
+	{
+		num = def_CN_Skill_AddCommand2, name = "Cmd_BackDash_Cancel", command = ["0404","4+A+B"],
+		flags = [ "lastdelay" ],
+		function CmdBeforeFunc()
+		{
+			if( BMvEff.GRD_GetJudgeResult() <= 0 ) return 0; // VORPAL中のみ
+			if( Battle_Std.CancelCheck_SpecialSkill()==0 ) return 0;
+			return 1;
+		}
+		CmdCheck = { SkillType = "SpecialDouji" },
+		UpdateTable = { name = "Mv_Dash_B", }
+	}
+	Skill_J0202B = 
+	{
+		command = ["0404","4+A+B"],
+		flags = [ "lastdelay" ],
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.AddAirCount( 1, 0 ) != 0 ) return 0; // 回数制限チェック
+			
+			return 1;
+		}
+		//高度制限をつける
+		CmdCheck = {
+			//HeightLimit = 64*128, //def_POS_AirDashLimitHeight だとDBから出せないので制限をゆるくした
+			SkillType="SpecialDouji",
+		}
+	},
+}
+
+
+//CheckMoveName	: この攻撃中にＡを押すとでる
+//UpdateMoveName	: 出る攻撃
+//ResetTmplName	: この攻撃を本来のコマンドで入力して出した場合、Ａ連状態は解除される
+
+local ar =
+[
+	{
+		UpdateMoveName="Mv_Atk_StdB", //B
+		CheckMoveName="Mv_Atk_StdA",
+	},
+	{
+		UpdateMoveName="Mv_Atk_CroB", //2B
+		CheckMoveName="Mv_Atk_StdB",
+		ResetTmplName="Atk_CroB",
+	},
+	{
+		UpdateMoveName="Mv_Atk_StdC", //C
+		CheckMoveName="Mv_Atk_CroB",
+		ResetTmplName="Atk_StdB",
+	},
+	{
+		UpdateMoveName="Mv_Atk_CroC", //2C
+		CheckMoveName="Mv_Atk_StdC",
+		ResetTmplName="Atk_CroC",
+	},
+	{
+		UpdateMoveName="Mv_Skill_214A", //214A
+		CheckMoveName="Mv_Atk_CroC",
+		ResetTmplName="Atk_StdC",
+		CmdTmplFlags=def_CMDFlags_AnnounceSmaetSteer, //スマートステアアナウンスの追加
+	},
+	{
+		UpdateMoveName="Mv_Skill_214EX", //214EX
+		CheckMoveName="Mv_Skill_214A_Hit",
+		ResetTmplName="Skill_214A",
+		CmdCheck = 
+		{
+			Cost = { ComboGauge = 10000 },
+			SkillType = "ExSpecial",
+			HitStatus=0,
+		}	
+	},
+]
+
+Battle_Std.MakeStdCombo( t, ar );
+
+ELT_CommandTable <- Battle_Std.MakeCommandTable( t );
+

@@ -1,0 +1,7 @@
+t.Mv_Atk_StdA <-
+{
+	function Init_After()
+	{
+		BMvTbl.SetPattern("236B_AddA");
+	}
+}

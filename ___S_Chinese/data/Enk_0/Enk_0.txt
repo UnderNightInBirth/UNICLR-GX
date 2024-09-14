@@ -1,0 +1,14 @@
+[System]
+ProjectName=Enk
+[DataFile]
+FileNum= 4
+File00=_temp.HA6
+File01=Enk.HA6
+File02=Enk_GX.HA6
+File03=../BaseData.HA6
+[BmpcutFile]
+FileNum= 1
+File00=Enk.cg
+[PAniFile]
+FileNum= 1
+File00=Enk_ef00.pat

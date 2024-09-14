@@ -1,0 +1,780 @@
+//
+local tmp = [];
+
+// 入門
+{	tmp.append( { title=Def_TCName_BNBLv0,
+	cat=Def_TCNum_Level0,
+	enemy = "立",
+	stringID="hyd_lv0_fastpushback01",
+	expl = Def_TCInfo_Expl_FastPushBack,
+	skill={ recipe = ["2A","2B","C","2C"] }, } );
+}
+
+{	tmp.append( { title=Def_TCName_BNBLv0,
+	cat=Def_TCNum_Level0,
+	stringID="hyd_lv0_pokepushback01",
+	expl = Def_TCInfo_Expl_PokePushBack,
+	skill={ recipe = ["C","236B"] }, } );
+}
+
+{	tmp.append( { title=Def_TCName_BNBLv0,
+	cat=Def_TCNum_Level0,
+	enemy = "立",
+	stringID="hyd_lv0_useaerial01",
+	expl = Def_TCInfo_Expl_UseAerial,
+	skill={ recipe = ["2A","2B","2C","C","jc","JA","JB","JC"] }, } );
+}
+
+// 初級
+{	tmp.append( { title=Def_TCName_BNBLv1,
+	cat=Def_TCNum_Level1,
+	enemy = "立",
+	stringID = "hyd_lv1_rampage01",
+	expl = Def_TCInfo_Expl_Rampage,
+	poin = "\\@214+B@の追加入力は方向キーを\\@4@に入れながら\\@B@ボタンを連打するだけで出すことができます。",
+	skill={ recipe = ["2A","2B","2C","214B",">214_4B",">214_4B_4B"] }, } );
+}
+
+{	tmp.append( { title=Def_TCName_BNBLv1,
+	cat=Def_TCNum_Level1,
+	stringID="hyd_lv1_poke01",
+	expl = Def_TCInfo_Expl_Poke,
+	skill={ recipe = ["6B","214B",">214_4B",">214_4B_4B"] }, } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_Poke,
+	cat=Def_TCNum_Level1,
+	stringID="hyd_lv1_poke02",
+	expl = Def_TCInfo_Expl_Poke,
+	skill={ recipe = ["B","C","236B",">hyd_236_236B"] }, } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_Poke,
+	pos="中距離",cat=Def_TCNum_Level1,
+	stringID="hyd_lv1_poke03",
+	expl = Def_TCInfo_Expl_Poke,
+	poin = "ダッシュ\\@C@の後は一度方向キーをニュートラルに戻してから\\n"+
+	"\\@236+B@を入力しましょう。",
+	skill={ recipe = ["66C","236B",">hyd_236_236A"] }, } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_UseGauge,
+	cat=Def_TCNum_Level1,
+	enemy = "立",
+	gauge = "EX",
+	stringID="hyd_lv1_usegauge01",
+	expl = Def_TCInfo_Expl_UseGauge,
+	poin = "\\@41236+C@の入力は着地の少し前から始めて、着地と同時にボタンを押しましょう。",
+	skill={ recipe = ["2A","2B","2C","214B",">214_4B",">214_4B_4B","41236EX"] }, } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_UseGauge,
+	cat=Def_TCNum_Level1,
+	gauge = "IW",
+	stringID="hyd_lv1_usegauge02",
+	expl = Def_TCInfo_Expl_UseGauge,
+	skill={ recipe = ["A","B","C","236B",">hyd_236_236B","IW"] }, } );
+}
+
+// 中級
+{	tmp.append( { title=Def_TCName_BNBLv2,
+	cat=Def_TCNum_Level2,
+	enemy = "立",
+	stringID = "hyd_lv2_rampage01",
+	expl = Def_TCInfo_Expl_Rampage,
+	poin = "\\@236+A@の追加入力は飛び道具が相手にヒットしたタイミングで入力しましょう。",
+	skill={ recipe = ["2A","2B","2C","236B",">236_236A","66C","214B",">214_4B",">214_4B_4B"] }, } );
+}
+
+{	tmp.append( { title=Def_TCName_BNBLv2,
+	cat=Def_TCNum_Level2,
+	stringID="hyd_lv2_poke01",
+	expl = Def_TCInfo_Expl_Poke,
+	skill={ recipe = ["6B(1)","iC","214B",">214_4B",">214_4B_4B"] }, } );
+}
+
+{	tmp.append( { title=Def_TCName_BNBLv2,
+	pos="端", cat = Def_TCNum_Level2,
+	stringID="hyd_lv2_throw01",
+	expl = Def_TCInfo_Expl_Throw,
+	skill= { recipe = ["AD","B","iC","214B",">214_4B",">214_4B_4B" ] } } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_Poke,
+	pos="中距離",cat=Def_TCNum_Level2,
+	stringID="hyd_lv2_poke02",
+	expl = Def_TCInfo_Expl_Poke,
+	skill={ recipe = ["66C","236B",">hyd_236_236A","66C","236A",">hyd_236_236B"] }, } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_Overhead,
+	pos="微遠", cat=Def_TCNum_Level2,
+	stringID="hyd_lv2_assault01",
+	enemy = "屈",
+	expl = Def_TCInfo_Expl_Assault,
+	skill={ recipe = ["6D","*JB","2A","2B","2C","236B",">236_236A","66C","214B",">214_4B",">214_4B_4B"] }, } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_UseGauge,
+	cat=Def_TCNum_Level2,
+	enemy = "立",
+	stringID="hyd_lv2_usegauge01",
+	gauge = "EX",
+	expl = Def_TCInfo_Expl_UseGauge,
+	skill={ recipe = ["2A","2B","2C","236B",">236_236A","66C","623A","214EX"] }, } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_CVO,
+	cat=Def_TCNum_Level2,
+	enemy = "立",
+	stringID="hyd_lv2_cvo01",
+	gauge = "EXCS",
+	expl = Def_TCInfo_Expl_CVO,
+	skill={ recipe = ["2A","2B","2C","236B",">236_236A","66C","214B",">214_4B",">214_4B_4B","CVO","2C","CIW"] }, } );
+}
+
+// 上級
+{	tmp.append( { title=Def_TCName_BNBLv3,
+	cat = Def_TCNum_Level3,
+	enemy = "立",
+	stringID = "hyd_lv3_rampage01",
+	expl = Def_TCInfo_Expl_Rampage+
+	"相手を画面端へと運んで、得意な画面端に行った後は投げやアサルトで崩すのが強力です。",
+	poin = "\\@ZC@のあとの空中\\@B@は早めに出さないと空中\\@6+C@が出る前に着地してしまいます。"+
+	"\\nまた、空中\\@6+C@後のダッシュは画面端近くでは省略しましょう。",
+	skill= { recipe = ["2A","2A","2B","2C","iC","jc","JB","JC","J6C","66","C","214B",">214_4B",">214_4B_4B"] } } );
+}
+
+{	tmp.append( { title=Def_TCName_BNBLv3,
+	cat = Def_TCNum_Level3,
+	stringID = "hyd_lv3_poke01",
+	expl = Def_TCInfo_Expl_Poke,
+	poin = "最初の\\@214+B@の追加入力はなるべく遅らせることで、着地後の\\@3+B@が間に合うようになります。",
+	skill= { recipe = ["6B(1)","iC","214B","d>214_4B","d>214_4B_4B","3B","iC","214B",">214_4B",">214_4B_4B"] } } );
+}
+
+{	tmp.append( { title=Def_TCName_BNBLv3,
+	pos = "端",
+	cat = Def_TCNum_Level3,
+	stringID = "hyd_lv3_throw01",
+	expl = Def_TCInfo_Expl_Throw,
+	poin = "立ち\\@B@を当てる高さを調節して、\\@6+B@の2ヒット目だけ当たるようにしましょう。",
+	skill= { recipe = ["AD","B","iC","6B(1)","jc","iJC","2C","236B",">236_236A","66C","236A",">236_236B" ] } } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_Overhead,
+	pos="微遠", cat = Def_TCNum_Level3,
+	stringID = "hyd_lv3_assault01",
+	enemy = "屈",
+	expl = Def_TCInfo_Expl_Assault,
+	poin = "\\@ZC@のあとの空中\\@B@は早めに出さないと空中\\@6+C@が出る前に着地してしまいます。"+
+	"\\nまた、空中\\@6+C@後のダッシュは画面端近くでは省略しましょう。",
+	skill= { recipe = ["6D","*JB","2A","2B","2C","iC","jc","JB","JC","J6C","66","C","214B",">214_4B",">214_4B_4B"] } } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_Low,
+	cat = Def_TCNum_Level3,
+	enemy = "立",
+	stringID = "hyd_lv3_low01",
+	enemy = "立",
+	expl = Def_TCInfo_Expl_Low,
+	skill= { recipe = ["2C","B","iC","d6B(1)","jc","iJC","3B","d2C","236B",">hyd_236_236A","66C","214B",">214_4B",">214_4B_4B"] } } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_Rampage,
+	cat = Def_TCNum_Level3,
+	enemy = "立",
+	pos = "中央",
+	stringID = "hyd_lv3_rampage02",
+	expl = Def_TCInfo_Expl_Rampage+
+	"相手を運ぶ距離が非常に長い連続技です。",
+	poin = "空中\\@6+C@はなるべく低めに当てると、その後の攻撃を当てやすくなります。",
+	skill= { recipe = ["2A","2A","2B","C","6B(1)","jc","dJC","J6C","66","JA","JC","J6C","66C","214B",">214_4B",">214_4B_4B"] } } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_Rampage,
+	cat = Def_TCNum_Level3,
+	enemy = "立",
+	pos = "端",
+	stringID = "hyd_lv3_rampage03",
+	expl = Def_TCInfo_Expl_Rampage,
+	skill= { recipe = ["2A","2A","2C","FF","22A","3B","d236B",">hyd_236_236A","214B",">214_4B",">214_4B_4B"] } } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_Poke,
+	cat = Def_TCNum_Level3,
+	enemy = "立",
+	stringID = "hyd_lv3_poke02",
+	expl = Def_TCInfo_Expl_Poke,
+	skill= { recipe = ["3B","C","236B",">236_236B","3B","C","214B",">214_4B",">214_4B_4B"] } } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_Poke,
+	cat = Def_TCNum_Level3,
+	stringID = "hyd_lv3_poke03",
+	expl = Def_TCInfo_Expl_Poke,
+	poin="空中\\@6+C@後のダッシュは画面端近くでは省略しましょう。",
+	skill= { recipe = ["B","C","2C","214B","d>214_4B","d>214_4B_4B","3C","jc","dJC","dJ6C","66",
+	"JA","JB","JC","3B","d6B","214B",">214_4B",">214_4B_4B"] } } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_Poke,
+	cat = Def_TCNum_Level3,
+	pos="端",
+	stringID = "hyd_lv3_poke04",
+	expl = Def_TCInfo_Expl_Poke,
+	skill= { recipe = ["B","C","236B",">hyd_236_236B","22A","3B","FF","236A",">hyd_236_236A","66C","236A",">hyd_236_236B"] } } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_RampageSmash,
+	cat = Def_TCNum_Level3,
+	stringID = "hyd_lv3_rampagesmash01",
+	expl = Def_TCInfo_Expl_RampageSmash,
+	poin = "最初の\\@214+B@は追加入力をなるべく遅めに入力しましょう。",
+	skill= { recipe = ["C","236B",">236_236A","66C","214B","d>214_4B","d>214_4B_4B","3C","jc","JC","JA","JB","B","214B",">214_4B",">214_4B_4B" ] } } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_Antiair,
+	cat = Def_TCNum_Level3,
+	enemy = "COM",
+	stringID = "hyd_lv3_antiair01",
+	expl = Def_TCInfo_Expl_Antiair,
+	skill= { recipe = ["c3C","(2A)","2C","214B","d>214_4B","d>214_4B_4B","3C","jc","dJC","dJ6C","66",
+	"JA","JB","JC","3B","d236B",">hyd_236_236A","66C","236A",">hyd_236_236B"] } } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_Reversal,
+	cat = Def_TCNum_Level3,
+	gauge = "IW",
+	stringID = "hyd_lv3_reversal01",
+	expl = Def_TCInfo_Expl_Reversal,
+	skill= { recipe = ["IW","2C","iC","d236B",">hyd_236_236A","66C","214B",">214_4B",">214_4B_4B"] } } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_Punishment,
+	cat = Def_TCNum_Level3,
+	stringID = "hyd_lv3_punishment01",
+	expl = Def_TCInfo_Expl_Punishment,
+	skill= { recipe = ["C","2C","214B","d>214_4B","d>214_4B_4B","3C","jc","dJC","dJ6C","66",
+	"JA","JB","JC","3B","d236B",">hyd_236_236A","66C","236A",">hyd_236_236B"] } } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_Punishment,
+	pos = "端",
+	enemy = "立",
+	cat = Def_TCNum_Level3,
+	stringID = "hyd_lv3_punishment02",
+	gauge="EX",
+	expl = Def_TCInfo_Expl_Punishment,
+	skill= { recipe = ["22A","B","FF","2C","22B","236B",">236_236A","C","214B",">214_4B",">214_4B_4B","J236EX" ] } } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_VOInsert,
+	cat = Def_TCNum_Level3,
+	enemy = "立",
+	pos = "中央",
+	gauge="EX",
+	stringID = "hyd_lv3_voinsert01",
+	expl = Def_TCInfo_Expl_VOInsert,
+	skill= { recipe = ["2A","2A","2B","C","6B(1)","jc","dJC","J6C","66","JA","JC","J6C","66","VO_Hit"] } } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_CVO,
+	cat = Def_TCNum_Level3,
+	enemy = "立",
+	stringID = "hyd_lv3_cvo01",
+	gauge = "CVO",
+	expl = Def_TCInfo_Expl_CVO,
+	skill= { recipe = ["2A","2A","2B","2C","iC","jc","JB","JC","J6C","66","C","214B",">214_4B",">214_4B_4B",
+	"CVO","236EX","CIW" ] } } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_Dying,
+	cat = Def_TCNum_Level3,
+	enemy = "立",
+	stringID = "hyd_lv3_dying01",
+	gauge = "DCVO",
+	expl = Def_TCInfo_Expl_Dying,
+	poin = "クロスキャストヴェールオフ後の空中\\@236+C@は、\\@2369+C@という入力をすることで低空で出すことができます。",
+	skill= { recipe = ["2A","2A","2B","2C","iC","jc","JB","JC","J6C","66","C","214B",">214_4B",">214_4B_4B","CVO","66","J236EX","236EX","CIW" ] } } );
+}
+
+// 戦術指南
+{	tmp.append( { title = Def_Tactics_Title_Footsies,
+	cat = Def_TCNum_TacticsLv1,
+	expl = Def_TCInfo_Expl_BattleTactics,
+	stringID="hyd_tactics_footsies",
+	endtype = 1,
+
+start = @"\\@MESSAGE@
+ハイドは飛び道具や無敵技を持つスタンダードなキャラクターです。\n
+どの距離でも戦うことができますが、特に接近戦での戦いを得意としています。
+\k
+
+\\@MESSAGE@
+立ち\@B@や\@2+B@などの隙の少ない攻撃を使ってのけん制が基本です。\n
+空中ではリーチの長い空中\@6+C@が優秀です。\n
+けん制で相手の動きを止めたらダッシュやアサルトで近づきましょう。\n
+\n
+不利な状況では隙の少ないバックステップで距離を取る戦法も有効です。\n
+立ち\@B@や\@2+B@が届かない間合いでは\@236+A@や\@22+A@などを使いましょう。\n
+\k
+
+",
+skill= { recipe = [
+		{ skill="B", add={ reset=0  } },
+		{ skill="2B", add={ reset=0 } },
+		{ skill="J6C", add={ reset=0 } },
+		{ skill="236A", add={ reset=0 } },
+		{ skill="22A", add={ reset=0} },
+		{ skill="44", add={ reset=0} },
+		] }
+	} );
+}
+
+// 戦術指南
+{	tmp.append( { title = Def_Tactics_Title_Sequence,
+	cat = Def_TCNum_TacticsLv1,
+	expl = Def_TCInfo_Expl_BattleTactics,
+	stringID = "hyd_tactics_pressure",
+	enemy="COM",		
+	skilltype = 0,//1ステップずつチェック
+	endtype = 1,
+	viewtype = 0, //矢型
+start = @"\\@MESSAGE@
+けん制の立ち\@B@からは「\@B@>\@C@」とつなぎ、\n
+さらに「\@236+B@>追加\@236+A@」へと連携します。\n
+ガードされていたら「\@236+B@>追加\@236+A@」で止めて距離を離しましょう。\n
+\n
+攻撃が相手にヒットしていたら\n
+「ダッシュ\@C@>\@214+B@」までつなげてダメージを与えましょう。\n
+\k
+
+",
+skill= { recipe = [
+		// ガード時の固め連携
+		{ skill="B", add={ reset=3, instext=TCW_Pressure_Guard } },
+		{ skill="C", add={ reset=3, resetX=(1<<8), postype=1 } },
+		{ skill="236B", add={ reset=3, resetX=(1<<8), postype=1 } },
+		{ skill=">236_236A", add={ reset=3, resetX=(1<<8), postype=1  } },
+		{ skill="checkpoint" },
+		// ヒット時の固め連携
+		{ skill="B", add={ instext=TCW_Pressure_Hit } },
+		{ skill="C", add={ postype=1 } },
+		{ skill="236B", add={ postype=1 } },
+		{ skill=">236_236A", add={ postype=1 } },
+		{ skill="66C", add={ postype=1 } },
+		{ skill="214B", add={ postype=1 } },
+		{ skill=">214_4B", add={ postype=1 } },
+		{ skill=">214_4B_4B", add={ postype=1 } },
+		] }
+	} );
+}
+
+// 戦術指南
+{	tmp.append( { title = Def_Tactics_Title_Mixup,
+	cat = Def_TCNum_TacticsLv1,
+	expl = Def_TCInfo_Expl_BattleTactics,
+	stringID = "hyd_tactics_mixup",
+	enemy="COM",
+
+	skilltype = 0,//1ステップずつチェック
+	endtype = 1,
+	viewtype = 0, //矢型
+start = @"\\@MESSAGE@
+相手に近寄ることができたら中段の\@ZB+C@と下段の\@2+C@の二択を狙いましょう。\n
+固めの「\@B@>\@C@」などから狙うとよいでしょう。\n
+\n
+アサルトからは空中\@B@がすばやい中段となり強力です。\n
+ダッシュから下段の\@2+A@との二択を狙いましょう。
+\k
+
+",
+skill= { recipe = [
+		{ skill="B", add={ reset=3, instext=TCW_Mixup_Low } },
+		{ skill="C", add={ reset=3, resetX=(1<<8), postype=1 } },
+		{ skill="2C", add={ reset=3, postype=1, mvcode1=def_MC1_SidouHitSkill } },
+		{ skill="checkpoint" },
+		{ skill="B", add={ reset=3, instext=TCW_Mixup_Overhead  } },
+		{ skill="C", add={ reset=3, resetX=(1<<8), postype=1 } },
+		{ skill="iFF", add={ reset=3, resetX=(1<<8), postype=1, mvcode1=def_MC1_SidouHitSkill } },
+		{ skill="checkpoint" },
+		{ skill="66", add={ reset=4, instext=TCW_Mixup_Low } },
+		{ skill="2A", add={ reset=3, resetX=(1<<8), postype=1, mvcode1=def_MC1_SidouHitSkill } },
+		{ skill="checkpoint" },
+		{ skill="Dash_Assault", add={ instext=TCW_Mixup_Overhead } },
+		{ skill="*JB", add={ reset=3, postype=1, mvcode1=def_MC1_SidouHitSkill } },
+		{ skill="checkpoint" },
+		] }
+	} );
+}
+
+// 戦術指南
+{	tmp.append( { title = Def_Tactics_Title_Throw,
+	cat = Def_TCNum_TacticsLv1,
+	expl = Def_TCInfo_Expl_BattleTactics,
+	stringID = "hyd_tactics_throw",
+	pos = "端",
+	enemy= "ガード",
+	
+	skilltype = 0,//1ステップずつチェック
+	endtype=1,
+	viewtype = 0, //矢型
+
+start = @"\\@MESSAGE@
+ハイドの投げは画面端なら追撃することができます。\n
+相手のガードが固い時は狙ってみましょう。\n
+\k
+
+",
+skill= { recipe = [
+		{ skill="AD" },
+		{ skill="214B", add={ postype=1 } },
+		{ skill=">214_4B", add={ postype=1 } },
+		{ skill=">214_4B_4B", add={ postype=1 } },
+		{ skill="checkpoint" },
+		] }
+	} );
+}
+
+// 戦術指南
+{	tmp.append( { title = Def_Tactics_Title_Invincible,
+	cat = Def_TCNum_TacticsLv1,
+	expl = Def_TCInfo_Expl_BattleTactics,
+	gauge = "EXCS",
+	stringID = "hyd_tactics_invincible",
+	enemy="COM",
+	
+	endtype=1,
+
+start = @"\\@MESSAGE@
+相手に攻め込まれた時は無敵技の\@623+B@、\@623+C@や\n
+\@41236+C@で切り返してみましょう。\n
+\n
+チェインシフトで状況を確認してから使うことで、\n
+確実にダメージを与えることができます。\n
+\k
+
+",
+skill= { recipe = [
+		{ skill="623B", add={ mvcode1=def_MC1_SidouHitSkill } },
+		{ skill="623EX", add={ mvcode1=def_MC1_SidouHitSkill } },
+		{ skill="41236EX", add={ mvcode1=def_MC1_SidouHitSkill } },
+		] }
+	} );
+}
+
+// 戦術指南
+{	tmp.append( { title = Def_Tactics_Title_Antiair,
+	cat = Def_TCNum_TacticsLv1,
+	expl = Def_TCInfo_Expl_BattleTactics,
+	stringID = "hyd_tactics_antiair",
+	enemy="COM",
+	
+	skilltype = 0,//1ステップずつチェック
+	endtype = 1,
+	viewtype = 0, //矢型
+
+start = @"\\@MESSAGE@
+相手が空中から攻め込んでくる場合は\@3+C@で対空をしましょう。\n
+\@3+C@はカウンターヒットすれば\@2+B@で拾って連続技を狙うこともできます。
+\k
+
+",
+skill= { recipe = [
+		{ skill="3C", add={ mvcode1=def_MC1_SidouHitSkill } },
+		{ skill="2B", add={ postype=1 } },
+		{ skill="iC", add={ postype=1 } },
+		{ skill="214B", add={ postype=1 } },
+		{ skill=">214_4B", add={ postype=1 } },
+		{ skill=">214_4B_4B", add={ postype=1 } },
+		] }
+	} );
+}
+
+// new entries from here on
+
+{	tmp.append( { title="big carry",
+	pos = "端背負い",
+	cat = Def_TCNum_Level20,
+	stringID = "bigcarry",
+	expl = Def_TCInfo_Expl_Poke+" only attempt \\nat point blank",
+	poin = "big carry off two hit 6b",
+	skill= { recipe = ["6B","214B","d>214_4B","d>214_4B_4B","2C","C","jc","JC","J2C","lJB","JC","J6C","66C","214B",">214_4B",">214_4B_4B"] } } );
+}
+
+{	tmp.append( { title="big carry 2",
+	pos = "backwall_withdist",
+	cat = Def_TCNum_Level20,
+	stringID = "bigcarry_2",
+	expl = Def_TCInfo_Expl_Poke+" only attempt \\nat longer distance",
+	poin = "big carry off two hit 6b \\nyou can end at \\@2+C@ to make it more stable \\ne.g. \\@2+C B 214+B@",
+	skill= { recipe = ["6B","214B","d>214_4B","d>214_4B_4B","C","jc","dJ6C","66","JA","JB","JC","3B","d2C","d236B","236_236A","66C","236A","236_236B"] } } );
+}
+
+{	tmp.append( { title="6b transition",
+	//pos = "s11",
+	cat = Def_TCNum_Level20,
+	stringID = "hyd_6btocorner_1_",
+	expl = Def_TCInfo_Expl_Poke,
+	poin = "big carry off two hit 6b",
+	skill= { recipe = ["6B","214B","d>214_4B","d>214_4B_4B","2C","22B","66C","d236A",">236_236A","236B",">236_236B"] } } );
+}
+
+{	tmp.append( { title="6b transition 2",
+	//pos = "s11",
+	cat = Def_TCNum_Level20,
+	stringID = "hyd_6btocorner_5_",
+	expl = Def_TCInfo_Expl_Poke,
+	poin = "big carry off two hit 6b",
+	skill= { recipe = ["6B","214B","d>214_4B","d>214_4B_4B","C","FF","w236A",">236_236A","d66C","22B","214B",">214_4B",">214_4B_4B"] } } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_Antiair,
+	cat = Def_TCNum_Level20,
+	pos="中距離",
+	enemy="ジャンプ",
+	stringID = "hyd_w236236b_1_",
+	expl = Def_TCInfo_Expl_Poke,
+	skill= { recipe = [">236_236B","C","214B",">214_4B",">214_4B_4B","2C","d236B",">236_236A","66C","214B",">214_4B",">214_4B_4B"] } } );
+}
+
+{	tmp.append( { title="big damage no ff",
+	pos = "端",
+	cat = Def_TCNum_Level20,
+	stringID = "bigdamagenoff",
+	expl = Def_TCInfo_Expl_Poke+" probably optimal \\n\\@6+B@ without ff",
+	poin = "nobody reads this",
+	skill= { recipe = ["6B","214B","d>214_4B","d>214_4B_4B","22A","3B","2C","22B","C","214B",">214_4B",">214_4B_4B"] } } );
+}
+
+{	tmp.append( { title="big damage no ff ch",
+	pos = "端",
+	cat = Def_TCNum_Level20,
+	stringID = "bigdamagenoffchextend",
+	expl = Def_TCInfo_Expl_Poke+" probably optimal ch\\n\\@6+B@ without ff",
+	poin = "nobody reads this",
+	skill= { recipe = ["c6B","214B","d>214_4B","d>214_4B_4B","22A","3B","2C","22B","d236A",">236_236A","236B",">236_236B"] } } );
+}
+
+{	tmp.append( { title="22a corner starter god combo",
+	pos = "端",
+	cat = Def_TCNum_Level20,
+	stringID = "22a_corner_god",
+	expl = Def_TCInfo_Expl_Punishment+" pretty decent \\@22+A@",
+	poin = "fireball juggles are cool",
+	skill= { recipe = ["22A","6B(1)","236A","214B","d>214_4B","d>214_4B_4B","3B","2C","d236B",">236_236A","d66C","236A","236_236B"] } } );
+}
+
+{	tmp.append( { title="\\@214+A@ starter corner optimal",
+	cat = Def_TCNum_Level20,
+	pos="端",
+	stringID = "214a_opti",
+	expl = Def_TCInfo_Expl_Poke,
+	skill= { recipe = ["214A","d>214_4A","3C","d6B(1)","jc","iJC","22A","3B","2C","22B","C","214B",">214_4B",">214_4B_4B"] } } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_Antiair,
+	cat = Def_TCNum_Level20,
+	pos="端",
+	enemy="ジャンプ",
+	stringID = "hyd_w236236b_corner_1_",
+	expl = Def_TCInfo_Expl_Poke,
+	skill= { recipe = [">236_236B","22A","2C","d6B","214B",">214_4B",">214_4B_4B","3B","d2C","d236B",">236_236A","d66C","236A",">236_236B"] } } );
+}
+
+{	tmp.append( { title=Def_TCName_BNBLv3,
+	cat = Def_TCNum_Level20,
+	pos="端",
+	startdistance = 600,
+	stringID = "hyd_236b236a_distantcorner_1_",
+	expl = Def_TCInfo_Expl_Poke,
+	skill= { recipe = ["236B",">236_236A","66C","22B","66","3B","2C","iC","3C","214B",">214_4B",">214_4B_4B"] } } );
+}
+
+{	tmp.append( { title=Def_TCName_BNBLv3,
+	cat = Def_TCNum_Level20,
+	pos="端",
+	startdistance = 600,
+	stringID = "hyd_236b236a_distantcorner_2_",
+	expl = Def_TCInfo_Expl_Poke,
+	skill= { recipe = ["236B",">236_236A","66C","214B",">214_4B",">214_4B_4B","3B","2C","d22A","6B(1)","214B",">214_4B",">214_4B_4B"] } } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_Reversal,
+	//pos = "端背負い",
+	cat = Def_TCNum_Level20,
+	gauge = "IW",
+	stringID = "hyd_iw_1_",
+	expl = Def_TCInfo_Expl_Reversal,
+	skill= { recipe = ["IW","d6B(1)","jc","JC","J6C","66","JA","JB","JC","d3C","214B",">214_4B",">214_4B_4B"] } } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_Reversal,
+	pos = "端背負い",
+	cat = Def_TCNum_Level20,
+	gauge = "IW",
+	stringID = "hyd_iw_2_",
+	expl = Def_TCInfo_Expl_Reversal,
+	skill= { recipe = ["IW","d6B(1)","ic","djc","JC","J2C","lJB","JC","J6C","66","66C","236B",">236_236B"] } } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_Reversal,
+	cat = Def_TCNum_Level20,
+	gauge = "IW",
+	stringID = "hyd_iw_3_",
+	expl = Def_TCInfo_Expl_Reversal,
+	skill= { recipe = ["IW","d6B(1)","d2C","iC","d236B",">236_236A","66","C","214B",">214_4B",">214_4B_4B"] } } );
+}
+
+{	tmp.append( { title="slightly distant easy throw",
+	pos = "端",
+	cat = Def_TCNum_Level20,
+	stringID = "easy_throw_far",
+	expl = Def_TCInfo_Expl_Throw+" prefer this \\nwhen slightly distant from the corner",
+	poin = "description",
+	skill= { recipe = ["AD","C","6B(1)","jc","iJC","3B","2C","d236A",">236_236A","236B",">236_236B"] } } );
+}
+
+{	tmp.append( { title="point blank easy throw",
+	pos = "端",
+	cat = Def_TCNum_Level20,
+	stringID = "easy_throw_near",
+	expl = Def_TCInfo_Expl_Throw+" prefer this \\nwhen closer to the corner",
+	poin = "description",
+	skill= { recipe = ["AD","d3B","2C","iC","22B","214B",">214_4B",">214_4B_4B"] } } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_Throw,
+	//pos = "端",
+	gauge = "CVO",
+	cat = Def_TCNum_Level20,
+	stringID = "hyd_throw_cvo_1_",
+	expl = Def_TCInfo_Expl_Throw,
+	poin = "description",
+	skill= { recipe = ["AD","CVO","66C","d236A",">236_236A","236B",">236_236B","22EX","66","dIW"] } } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_Throw,
+	//pos = "端",
+	gauge = "DCVO",
+	cat = Def_TCNum_Level20,
+	stringID = "hyd_throw_cvo_2_",
+	expl = Def_TCInfo_Expl_Throw,
+	poin = "description",
+	skill= { recipe = ["AD","CVO","66C","d236EX","iJC","3B","d2C","22EX","66","dIW"] } } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_Throw,
+	pos = "端",
+	gauge = "CVO",
+	cat = Def_TCNum_Level20,
+	stringID = "hyd_throw_cvo_corner_1_",
+	expl = Def_TCInfo_Expl_Throw+" prefer this \\nwhen slightly distant from the corner",
+	poin = "description",
+	skill= { recipe = ["AD","d3B","2C","iC","22B","B","623A","236EX","623A","CVO","66C","IW"] } } );
+}
+
+{	tmp.append( { title=Def_TCInfo_Title_Throw,
+	pos = "端",
+	gauge = "DCVO",
+	cat = Def_TCNum_Level20,
+	stringID = "hyd_throw_cvo_corner_2_",
+	expl = Def_TCInfo_Expl_Throw+" prefer this \\nwhen closer to the corner",
+	poin = "description",
+	skill= { recipe = ["AD","d3B","2C","iC","22B","623A","236EX","3C","623A","CVO","236EX","IW"] } } );
+}
+
+//tactics+
+
+{
+	tmp.append( { title = Def_Tactics_Title_HeadInvincible,
+	cat = Def_TCNum_TacticsLv21,
+	expl = Def_TCInfo_Expl_BattleTactics,
+	stringID = "hyd_tactics_antiair",
+	enemy="COM",
+	endtype = 1,
+	
+start = @"\\@MESSAGE@
+\@3+C@ and \@623+A@ have Head invincibility\nallowing you to circumvent specific attacks.
+\k
+
+",
+skill= { recipe = [
+		{ skill="3C", add={ reset=0, mvcode1=def_MC1_TutoBallMuteki, instext=TCW_HeadInvincible } },
+		{ skill="checkpoint" }
+		//{ skill="623A", add={ reset=0, mvcode1=def_MC1_TutoBallMuteki, instext=TCW_HeadInvincible } },
+
+		] }
+	} );
+}
+
+{
+	tmp.append( { title = Def_Tactics_Title_LegsInvincible,
+	enemychara=Def_ChrNo_Bya,
+	cat = Def_TCNum_TacticsLv21,
+	expl = Def_TCInfo_Expl_BattleTactics,
+	stringID = Comstr_LegsInvincible,
+	enemy="COM",
+	skilltype = 0,//1ステップずつチェック
+	endtype = 1,
+	viewtype = 0, //矢型
+	
+start = @"\\@MESSAGE@
+\@66+C@ has legs invincibility\nallowing you to circumvent specific attacks
+\n
+\n\@66+C@/ legs invuln ends before active, it may trade with more active attacks
+\k
+
+",
+skill= { recipe = [
+		{ skill="66C", add={ reset=0, mvcode1=def_MC1_TutoBallMuteki, instext=TCW_LegsInvincible } },
+		] }
+	} );
+}
+
+{
+	tmp.append( { title = Def_Tactics_Title_DiveInvincible,
+	enemychara=Def_ChrNo_Set,
+	cat = Def_TCNum_TacticsLv21,
+	expl = Def_TCInfo_Expl_BattleTactics,
+	stringID = Comstr_DiveInvincible,
+	enemy="COM",
+	gauge="EX",
+	skilltype = 0,//1ステップずつチェック
+	endtype = 1,
+	viewtype = 0, //矢型
+	
+start = @"\\@MESSAGE@
+\@623+A@ has dive invincibility\nallowing you to circumvent specific attacks\k"
+skill= { recipe = [
+		{ skill="623A", add={ reset=0, mvcode1=def_MC1_TutoBallMuteki, instext=TCW_DiveInvincible } },
+		] }
+	} );
+}
+
+
+//
+Table  <- GetMissionListTable(); // ミッションのカテゴリーの定義は共通
+
+//
+local skillParam = 
+{
+	charaNo = Def_ChrNo_Hyd,
+}
+
+Table.listcount = tmp.len();
+Table.list.resize( Table.listcount );
+for( local i=0; i<tmp.len(); i++ )
+{
+	if( "skill" in tmp[i] )
+	{
+		tmp[i].skill.param <- skillParam;
+	}
+	tmp[i].player <- Def_ChrNo_Hyd;
+	tmp[i].num <- i;//英語版用
+	local skillTable = GetSkillCheckTable( tmp[i] );
+	
+	Table.list[i] = skillTable;
+}
+

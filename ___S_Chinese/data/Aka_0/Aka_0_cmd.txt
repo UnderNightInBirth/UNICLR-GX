@@ -1,0 +1,301 @@
+//コマンドテーブル skillは格ゲーコマンド表記
+btl_debPrint2("\n[AKA_CommandTable]");
+
+local t =
+{
+	Skill_DyingIWEAtk = 0,
+	
+	MultiJump_F = { CmdCheck = { HeightLimit = def_POS_AirDashLimitHeight, }	},
+	MultiJump_N = { CmdCheck = { HeightLimit = def_POS_AirDashLimitHeight, }	},
+	MultiJump_B = { CmdCheck = { HeightLimit = def_POS_AirDashLimitHeight, }	},
+
+	// MultiJumpCancel_F = { CmdCheck = { HeightLimit = def_POS_AirDashLimitHeight, }	},
+	// MultiJumpCancel_N = { CmdCheck = { HeightLimit = def_POS_AirDashLimitHeight, }	},
+	// MultiJumpCancel_B = { CmdCheck = { HeightLimit = def_POS_AirDashLimitHeight, }	},
+	
+	//JumpCancel_F = { num=0	},
+
+	Atk_StdBandC = 
+	{
+		Check = function()
+		{
+			// B+CだしたあとB+Cを離すまでフラグがたっているのでそれで弾く
+			if( BMvTbl.GetPP(def_PP_Aka_Status)&def_PPFlag_Aka_KouseiHold)
+			{
+				return 0;
+			}
+			
+			local checktbl1 =
+			{
+				SkillType = "NoneDouji",
+				ComboLimit = DEF_BS_CL_ATKBANDC,
+				MvCheck={ Fail="Mv_Atk_StdBandC"},
+				flags=Def_CmdCh_GenDoujiCheck|Def_CmdCh_KeepDoujiCheck,
+				CommandButton = def_PP_CBS_ButtonB|def_PP_CBS_ButtonC,
+			};
+			
+			if( Battle_Std.CmdCheck( checktbl1 ) == 1 ) // 最初の成功
+			{
+				BMvTbl.SetPP(def_PP_Aka_StdBandCType,0); //初回なのでリセット
+				return 1; //成功で抜ける
+			}
+
+			//追加B+Cのチェック
+			if( BMvTbl.GetPP(def_PP_Aka_KouseiSuccess) == 0 ) return 0; //こうせい成功中じゃないと失敗
+			
+			local kousei_sc_frame = BMvTbl.GetLP(6);
+			//_dp("\n ★ kousei_sc_frame:"+kousei_sc_frame );
+			if( kousei_sc_frame <= 5 ) return 0; // 最初の方は失敗(同時押しズラし押しで再度暴発する、飛び道具とってすぐ動けるのでこれも暴発する)
+
+
+			
+			local checktbl2 =
+			{
+				SkillType = "AddCommand"
+				CommandButton = def_PP_CBS_ButtonB|def_PP_CBS_ButtonC,
+				MvCheck = { Only = ["Mv_Atk_StdBandC","Mv_Atk_CroBandC"] },
+			};
+			
+			if( Battle_Std.CmdCheck( checktbl2 ) == 1 ) // 追加コマンドの成功
+			{
+				//Battle_Std.DrawDebugAttackInfo("checktbl 2 good");
+				return 1; //成功で抜ける
+			}
+			else
+			{
+				//Battle_Std.DrawDebugAttackInfo("checktbl 2 bad");
+			}
+			
+			return 0; //ここまでくると失敗
+		}
+	},
+	
+	Atk_CroBandC = 
+	{
+		Check = function()
+		{
+			// B+CだしたあとB+Cを離すまでフラグがたっているのでそれで弾く
+			if( BMvTbl.GetPP(def_PP_Aka_Status)&def_PPFlag_Aka_KouseiHold)
+			{
+				return 0;
+			}
+			
+			local checktbl1 =
+			{
+				SkillType = "NoneDouji",
+				ComboLimit = DEF_BS_CL_ATKCBANDC,
+				MvCheck={ Fail="Mv_Atk_CroBandC"},
+				flags=Def_CmdCh_GenDoujiCheck|Def_CmdCh_KeepDoujiCheck,
+				CommandButton = def_PP_CBS_ButtonB|def_PP_CBS_ButtonC,
+			};
+			
+			if( Battle_Std.CmdCheck( checktbl1 ) == 1 ) // 最初の成功
+			{
+				BMvTbl.SetPP(def_PP_Aka_StdBandCType,0); //初回なのでリセット
+				return 1; //成功で抜ける
+			}
+
+			//追加B+Cのチェック
+			if( BMvTbl.GetPP(def_PP_Aka_KouseiSuccess) == 0 ) return 0; //こうせい成功中じゃないと失敗
+			
+			local kousei_sc_frame = BMvTbl.GetLP(6);
+			//_dp("\n ★ kousei_sc_frame:"+kousei_sc_frame );
+			if( kousei_sc_frame <= 5 ) return 0; // 最初の方は失敗(同時押しズラし押しで再度暴発する、飛び道具とってすぐ動けるのでこれも暴発する)
+
+			
+			local checktbl2 =
+			{
+				SkillType = "AddCommand"
+				MvCheck = { Only = ["Mv_Atk_StdBandC","Mv_Atk_CroBandC"] },
+			};
+			
+			if( Battle_Std.CmdCheck( checktbl2 ) == 1 ) // 追加コマンドの成功
+			{
+				return 1; //成功で抜ける
+			}
+			
+			return 0; //ここまでくると失敗
+		}
+	},
+	Atk_AirBandC = 
+	{
+		Check = function()
+		{
+			local checktbl1 =
+			{
+				SkillType = "NoneDouji",
+				PosState="Air",
+				ComboLimit = DEF_BS_CL_ATKBANDC,
+				MvCheck={ Fail="Mv_Atk_AirBandC"},
+				flags=Def_CmdCh_GenDoujiCheck|Def_CmdCh_KeepDoujiCheck,
+				CommandButton = def_PP_CBS_ButtonB|def_PP_CBS_ButtonC,
+			};
+			
+			if( Battle_Std.CmdCheck( checktbl1 ) == 1 ) // 最初の成功
+			{
+				BMvTbl.SetPP(def_PP_Aka_StdBandCType,0); //初回なのでリセット
+				return 1; //成功で抜ける
+			}
+			
+			//追加B+Cのチェック
+			if( BMvTbl.GetPP(def_PP_Aka_KouseiSuccess) == 0 ) return 0; //こうせい成功中じゃないと失敗
+			
+			local kousei_sc_frame = BMvTbl.GetLP(6);
+			//_dp("\n ★ kousei_sc_frame:"+kousei_sc_frame );
+			if( kousei_sc_frame <= 5 ) return 0; // 最初の方は失敗(同時押しズラし押しで再度暴発する、飛び道具とってすぐ動けるのでこれも暴発する)
+			
+			// B+CだしたあとB+Cを離すまでフラグがたっているのでそれで弾く
+			if( BMvTbl.GetPP(def_PP_Aka_Status)&def_PPFlag_Aka_KouseiHold)
+			{
+				return 0;
+			}			
+			
+			local checktbl2 =
+			{
+				SkillType = "AddCommand", ComboLimit = DEF_BS_CL_ATKBANDC,
+				CommandButton = def_PP_CBS_ButtonB|def_PP_CBS_ButtonC,
+				MvCheck = { Only = ["Mv_Atk_AirBandC"] },
+			};
+			
+			if( Battle_Std.CmdCheck( checktbl2 ) == 1 ) // 追加コマンドの成功
+			{
+				return 1; //成功で抜ける
+			}
+			
+			return 0; //ここまでくると失敗
+		}
+	},
+	
+	Skill_41236SP_ABC = {},
+	Skill_41236SP = {},
+	
+	Skill_63214SP = {},
+
+	Skill_236EX = { CmdCheck = { BallLimit = { [5] = 1 } } },
+	Skill_236BorC = { CmdCheck = { BallLimit = { [4] = 1 } } },
+	Skill_236A = { CmdCheck = { BallLimit = { [4] = 1 } } },
+	
+	Skill_0202EX = {},	
+	Skill_0202BorC = {},
+	Skill_0202A = {},	
+	
+	Skill_214EX = {},
+	Skill_214BorC = {},
+	Skill_214A = {},	
+
+	Skill_J236EX = { CmdCheck = { BallLimit = { [7] = 1 } } },
+	Skill_J236BorC = { CmdCheck = { BallLimit = { [6] = 1 } } },
+	Skill_J236A = { CmdCheck = { BallLimit = { [6] = 1 } } },
+
+	Skill_J214EX = {},
+	Skill_J214BorC = {},
+	Skill_J214A = {},
+
+	Atk_Std6B = {},
+	Atk_Std6C = {},	
+	Atk_Air2C = {},
+	Atk_Air6C = {},
+
+	Throw_A = 
+	{
+		CmdCheck = { SkillType = "NoneDouji" },
+	},
+	
+	//連打キャンセルコマンド定義
+	Skill_CroA_A = 
+	{
+		num = def_CN_Atk_AddCommand1,
+		command = ["v+A"],
+		function CmdBeforeFunc()
+		{
+			local s = BMvTbl.GetMvStatus();
+			if( s.FrameID != 110 && s.FrameID != 210 ) return 0;
+			return 1;
+		},
+		CmdCheck = 
+		{
+			SkillType = "AddCommand", MvCheck = { Only = ["Mv_Atk_CroA"] },
+		},
+		UpdateTable = { name = "Mv_Atk_CroA", }
+	},
+	
+	Skill_StdA_A = 
+	{
+		num = def_CN_Atk_AddCommand2,
+		command = ["0+A","4+A","6+A","^+A"],
+		function CmdBeforeFunc()
+		{
+			local s = BMvTbl.GetMvStatus();
+			if( s.FrameID != 110 && s.FrameID != 210 ) return 0;
+			return 1;
+		},
+		CmdCheck = 
+		{
+			SkillType = "AddCommand", MvCheck = { Only = ["Mv_Atk_StdA"] },
+		},		
+		UpdateTable = { name = "Mv_Atk_StdA", }
+	},
+	
+	Atk_A_A = {},
+	Atk_B_B =
+	{
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.GetPP(def_PP_Aka_Near_StdB) == 0 ) return 0;
+			return 1;
+		},	
+	},
+}
+
+local ar =
+[
+	{
+		CheckMoveName="Mv_Atk_StdA",
+		UpdateMoveName="Mv_Atk_A_A",
+	},
+	{
+		CheckMoveName="Mv_Atk_A_A",
+		UpdateMoveName="Mv_Atk_StdB",
+		ResetTmplName="Atk_A_A",
+	},
+	{
+		CheckMoveName="Mv_Atk_StdB",
+		UpdateMoveName="Mv_Atk_StdC",
+		ResetTmplName="Atk_StdB",
+	},
+	{
+		CheckMoveName="Mv_Atk_StdC",
+		UpdateMoveName="Mv_Atk_CroC",
+		ResetTmplName="Atk_StdC",
+	},
+	{
+		CheckMoveName="Mv_Atk_CroC",
+		UpdateMoveName="Mv_Atk_Std6C",
+		ResetTmplName="Atk_CroC",
+	},
+	{
+		CheckMoveName="Mv_Atk_Std6C",
+		UpdateMoveName="Mv_Skill_214B",
+		ResetTmplName="Atk_Std6C",
+		CmdTmplFlags=def_CMDFlags_AnnounceSmaetSteer, //スマートステアアナウンスの追加
+	},
+	{
+		CheckMoveName="Mv_Skill_214B",
+		UpdateMoveName="Mv_Skill_J236EX",
+		ResetTmplName="Skill_214BorC",
+		CmdCheck = 
+		{
+			Cost = { ComboGauge = 10000 },
+			SkillType = "ExSpecial",
+			HitStatus="Damage",
+			PosState="Air",
+			FrameIDCheck = { Only = 100 },
+		},
+		posstatus = _PosState_Air,
+	},
+
+]
+Battle_Std.MakeStdCombo( t, ar );
+
+AKA_CommandTable <- Battle_Std.MakeCommandTable( t );
+

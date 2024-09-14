@@ -1,0 +1,453 @@
+
+sampler2D TexSample_Empty = sampler_state
+{
+//   MagFilter = Linear;  MinFilter = Linear;
+}; // テクスチャサンプラ（空
+
+
+texture tTexSample_Target = NULL; // TecMonoFillの時はここにレンダリングテクスチャを入れる
+sampler2D TexSample_Target = sampler_state
+{
+	texture = <tTexSample_Target>;
+}; // テクスチャサンプラ
+
+
+
+
+
+texture diffuse_texture;
+sampler DiffuseTextureSampler = 
+	sampler_state
+	{
+		Texture = <diffuse_texture>;
+		MinFilter = Point;
+		MagFilter = Point;
+	};
+
+texture tTex_2toneSampler;
+sampler Tex_2toneSampler = 
+	sampler_state
+	{
+		Texture = <tTex_2toneSampler>;
+		MinFilter = Linear;
+		MagFilter = Linear;
+	};
+
+sampler Tex_2toneSampler_point = 
+	sampler_state
+	{
+		Texture = <tTex_2toneSampler>;
+		MinFilter = Point;
+		MagFilter = Point;
+	};
+
+texture temp_textureA = NULL; // 
+sampler2D Tex_TempA = 
+	sampler_state
+	{
+		texture = <temp_textureA>;
+		MinFilter = Linear;
+		MagFilter = Linear;
+	}; // 
+
+texture temp_textureB = NULL; // 
+sampler2D Tex_TempB = 
+	sampler_state
+	{
+		texture = <temp_textureB>;
+		MinFilter = Linear;
+		MagFilter = Linear;
+	}; // 
+
+sampler2D Tex_TempB_Point = 
+	sampler_state
+	{
+		texture = <temp_textureB>;
+		MinFilter = Point;
+		MagFilter = Point;
+	}; // 
+
+
+texture src_texture = NULL; // 
+sampler2D Tex_Src = 
+	sampler_state
+	{
+		texture = <src_texture>;
+		MinFilter = Point;
+		MagFilter = Point;
+	}; // 
+
+
+float fValue = 1.0f; // 割合
+float fShift = 1.0f; // 
+float2 diff_uv = { 1.0f/256.0f, 1.0f/256.0f };
+float2 diff_wh = { 1.0f/256.0f, 1.0f/256.0f };
+float2 diff_texel;
+
+float2 src_uv = { 1.0f/256.0f, 1.0f/256.0f };
+float2 src_wh = { 1.0f/256.0f, 1.0f/256.0f };
+float2 src_texel;
+
+
+struct OUTPUT_PS0
+{
+	float4 c0 : COLOR0;
+	float4 c1 : COLOR1;
+};
+
+struct OUTPUT_PS1
+{
+	float4 c0 : COLOR0;
+	float4 c1 : COLOR1;
+	float4 c2 : COLOR2;
+};
+
+
+
+
+struct VS_INPUT
+{
+	float4 pos   : POSITION;
+    float4 color : COLOR0;
+    float4 speculer : COLOR1;
+    float2 texuv : TEXCOORD0;
+};
+
+struct PS_INPUT
+{
+    float4 color : COLOR0;
+    float4 speculer : COLOR1;
+    float2 texuv : TEXCOORD0;
+};
+
+// TecMask用
+struct VS_OUTPUT_TECMASK
+{
+    float4 pos   : POSITION0;
+    float4 color : COLOR0;
+    float4 speculer : COLOR1;
+    float2 texuv0 : TEXCOORD0;
+    float2 texuv1 : TEXCOORD1;
+};
+
+
+// モノクロ比率 1.0 で原色
+float4 fPower = { 0.0f, 0.0f, 0.0f, 1.0f };
+
+
+
+// 関数テスト モノクロ
+void PSFunc_Mono( inout float4 pF )
+{
+	float col;
+
+	// アルファ以外の平均値を求め、rgb値に代入
+	col = ( pF.x + pF.y + pF.z ) / 3.0f;
+
+	pF.x = col + (pF.x - col) * fPower.x;
+	pF.y = col + (pF.y - col) * fPower.y;
+	pF.z = col + (pF.z - col) * fPower.z;
+}
+
+float4 PS_TecMono( PS_INPUT In ) : COLOR
+{
+	float4 OutColor;
+
+	// テクスチャ設定
+	OutColor = tex2D( TexSample_Empty, In.texuv) * In.color;
+	OutColor += In.speculer;
+
+	PSFunc_Mono( OutColor);
+
+    return OutColor;
+}
+
+float4 PS_TecMonoFill( PS_INPUT In ) : COLOR
+{
+	float4 OutColor;
+
+	// テクスチャ設定
+	OutColor = tex2D( TexSample_Target, In.texuv) * In.color;
+	OutColor += In.speculer;
+
+	PSFunc_Mono( OutColor);
+
+    return OutColor;
+}
+
+// ２色テーブル
+float4 f2ToneTbl[2] = 
+{
+	{ 0.3f, 0.0f, 0.0f, 1.0f },
+	{ 0.8f, 0.0f, 0.0f, 1.0f }
+};
+
+float g_fTargetAlphaValue;
+// ２色
+float4 PS_Tec2Tone( PS_INPUT In ) : COLOR
+{
+	float4 OutColor;
+
+	// テクスチャ設定
+	float4 DiffColor = tex2D( Tex_2toneSampler, In.texuv) * In.color;
+	//OutColor += In.speculer;
+
+	float4 SmpColor = tex2D( TexSample_Target, In.texuv );
+	SmpColor.rgb *= g_fTargetAlphaValue;
+
+	// 輝度を出す
+	float col = max( max( SmpColor.x, SmpColor.y), SmpColor.z );
+	// しきい値で０か１にする
+	int val = ( col >= 0.45f)? 1: 0;
+
+	OutColor = f2ToneTbl[val];
+	OutColor.a = DiffColor.r;
+
+    return OutColor;
+}
+
+float g_fToneValue = 1.0f;
+float4 g_fTexUVWH;
+// ２色
+float4 PS_Tec2Tone_Alpha( PS_INPUT In ) : COLOR
+{
+	float4 OutColor;
+	// テクスチャ設定
+	float2 tex_uv = g_fTexUVWH.xy + In.texuv * g_fTexUVWH.zw;
+	float4 DiffColor = tex2D( Tex_2toneSampler_point, tex_uv ) * In.color;
+
+	//OutColor += In.speculer;
+	if( DiffColor.a == 0.0f ) return 0.0f;
+
+	float4 SmpColor = tex2D( TexSample_Target, In.texuv );
+
+	// 輝度を出す
+	float col = max( max( SmpColor.x, SmpColor.y), SmpColor.z );
+#if 0
+	// しきい値で０か１にする
+	int val = ( col >= 0.45f)? 1: 0;
+
+	OutColor = lerp( SmpColor, f2ToneTbl[val], g_fToneValue);
+	OutColor.a = DiffColor.a;
+#else
+	OutColor = float4( col, 0.0f, 0.0f, DiffColor.a );
+#endif
+	
+    return OutColor;
+}
+
+
+//
+float4x4 g_mTransform;    // 変換行列
+// 
+VS_OUTPUT_TECMASK VS_TecTexMask( VS_INPUT In )
+{
+	VS_OUTPUT_TECMASK Out = (VS_OUTPUT_TECMASK)0;
+
+    Out.pos = mul( In.pos, g_mTransform );
+	Out.texuv0 = In.texuv;
+	Out.color = In.color;
+	Out.speculer = In.speculer;
+
+	// UV1に座標保存
+	Out.texuv1.x = (Out.pos.x + 1.0f) * 0.5f;
+	Out.texuv1.y = 1.0f - (Out.pos.y + 1.0f) * 0.5f;
+
+    return Out;
+}
+
+// 
+float4 PS_TecTexMask( VS_OUTPUT_TECMASK In ) : COLOR
+{
+	// テクスチャ設定
+	float4 DiffColor = tex2D( TexSample_Target, In.texuv1 );
+
+	//if( DiffColor.r < 0.8f ) return float4( 0.0f, 0.0f, 1.0f, 1.0f ); // テスト用
+	if( DiffColor.r < 0.8f ) return 0.0f;
+	
+	//return float4( In.texuv1.x, In.texuv1.y, 0.0f, 1.0f ); // テスト用
+    return In.color;
+}
+
+
+
+// 横７点サンプル
+OUTPUT_PS1 PS_TecBloom_0( PS_INPUT In )
+{
+	OUTPUT_PS1 Out = (OUTPUT_PS1)0;
+
+	float4 output;
+	float2 uvsample, uvstep, uvtmp;
+
+
+	output = 0; // 元の点
+
+	uvsample = (In.texuv * diff_wh);
+	uvstep = float2( diff_texel.x * fValue * fShift, 0.0f);
+	uvsample -= uvstep * 3.0f;
+
+	for( int i=0; i<7; i++ ) {
+
+		uvtmp.x = clamp( uvsample.x, 0.0f, diff_wh.x-diff_texel.x*0.5f );
+		uvtmp.y = uvsample.y;
+
+		output += tex2D( DiffuseTextureSampler, diff_uv + uvtmp );
+
+		uvsample += uvstep;
+	}
+	output /= 7;
+
+	Out.c1 = output; // 0 -> 1
+
+    return Out;
+}
+
+// 縦７点サンプル
+OUTPUT_PS1 PS_TecBloom_1( PS_INPUT In )
+{
+	OUTPUT_PS1 Out = (OUTPUT_PS1)0;
+
+	float4 output;
+	float2 uvsample, uvstep, uvtmp;
+
+
+	output = 0; // 元の点
+
+	uvsample = (In.texuv * diff_wh);
+	uvstep = float2( 0.0f, diff_texel.y * fValue * fShift );
+	uvsample -= uvstep * 3.0f;
+
+	for( int i=0; i<7; i++ ) {
+
+		uvtmp.x = uvsample.x;
+		uvtmp.y = clamp( uvsample.y, 0.0f, diff_wh.y-diff_texel.y*0.5f );
+
+		output += tex2D( Tex_TempA, diff_uv + uvtmp );
+
+		uvsample += uvstep;
+	}
+	output /= 7;
+
+	Out.c2 = output; // 1 -> 2
+
+    return Out;
+}
+
+// 参照しながらもどす
+OUTPUT_PS1 PS_TecBloom_2( PS_INPUT In )
+{
+	OUTPUT_PS1 Out = (OUTPUT_PS1)0;
+
+	float4 output;
+	float2 tc = diff_uv + (In.texuv * diff_wh); // UV
+
+	float4 srctx_color;
+	float2 srctx_uv = src_uv + (In.texuv * src_wh);
+
+	srctx_color = tex2D( Tex_Src, srctx_uv );
+	output = tex2D( Tex_TempB, tc );
+
+	output = lerp( output, srctx_color, srctx_color.a * fValue );
+	output.a = (srctx_color.a == 0.0f)? 0.0f: 1.0f;
+
+	Out.c0 = output * In.color + In.speculer; // 2 -> 0
+
+    return Out;
+}
+
+// 参照テクスチャなしでもどす
+OUTPUT_PS1 PS_TecBloom_2_Fill( PS_INPUT In )
+{
+	OUTPUT_PS1 Out = (OUTPUT_PS1)0;
+
+	float4 output;
+	float2 tc = diff_uv + (In.texuv * diff_wh); // UV
+
+	output = tex2D( Tex_TempB_Point, tc );
+
+	Out.c0 = output * In.color + In.speculer; // 2 -> 0
+
+    return Out;
+}
+
+
+// 戻す
+technique TecBloom_Blt {
+    pass P0 {
+        pixelShader  = compile ps_2_0 PS_TecBloom_2();
+    }
+}
+
+// 戻す
+technique TecBloom_Fill {
+    pass P0 {
+        pixelShader  = compile ps_2_0 PS_TecBloom_2_Fill();
+    }
+}
+
+// 生成だけ
+technique TecBloom_Make {
+    pass P0 {
+        pixelShader  = compile ps_2_0 PS_TecBloom_0();
+    }
+    pass P1 {
+        pixelShader  = compile ps_2_0 PS_TecBloom_1();
+    }
+}
+
+/*
+technique TecBloom {
+    pass P0 {
+        pixelShader  = compile ps_2_0 PS_TecBloom_0();
+    }
+    pass P1 {
+        pixelShader  = compile ps_2_0 PS_TecBloom_1();
+    }
+    pass P2 {
+        pixelShader  = compile ps_2_0 PS_TecBloom_2();
+    }
+}
+*/
+
+// ターゲットをモノクロ描画
+technique TecMono {
+    pass P0 {
+        pixelShader  = compile ps_2_0 PS_TecMono();
+    }
+}
+
+// ターゲットをテクスチャとしてモノクロ描画
+technique TecMonoFill {
+    pass P0 {
+        pixelShader  = compile ps_2_0 PS_TecMonoFill();
+    }
+}
+
+
+// ターゲットを２色描画
+technique Tec2Tone {
+    pass P0 {
+        pixelShader  = compile ps_2_0 PS_Tec2Tone();
+    }
+}
+
+// ターゲットを２色描画
+technique Tec2Tone_Alpha {
+    pass P0 {
+        pixelShader  = compile ps_3_0 PS_Tec2Tone_Alpha();
+    }
+}
+
+
+// ターゲットを２色描画
+technique TecTexMask {
+    pass P0
+    {
+        vertexShader  = compile vs_3_0 VS_TecTexMask();
+        pixelShader  = compile ps_3_0 PS_TecTexMask();
+    }
+}
+
+
+
+

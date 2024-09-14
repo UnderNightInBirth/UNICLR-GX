@@ -1,0 +1,123 @@
+0,eDlgType_NoMenu,KEY_TEXT_NONE,,
+0,eDlgType_Ok,KEY_TEXT_OK,Failed to initialize the Network.,
+0,eDlgType_Ok,KEY_TEXT_OK,Failed signing in to the Network.,
+0,eDlgType_Ok,KEY_TEXT_OK,An error occurred while connecting to the Network.,
+0,eDlgType_Ok,KEY_TEXT_OK,Failed to acquire login information.,
+0,eDlgType_Ok,KEY_TEXT_OK,"Your Sony Entertainment Network account has parental lock settings,",so online services have been disabled.
+0,eDlgType_Ok,KEY_TEXT_OK,"Your Sony Entertainment Network account has chat restriction settings,",so the chat function has been disabled.
+0,eDlgType_NoMenu,KEY_TEXT_NONE,Disconnecting from the Network...,
+0,eDlgType_Ok,KEY_TEXT_OK,An error occurred while disconnecting from the Network.,
+0,eDlgType_NoMenu,KEY_TEXT_NONE,Accessing the Network...,
+0,eDlgType_Ok,KEY_TEXT_OK,Failed to initialize access to the Network.,
+0,eDlgType_Ok,KEY_TEXT_OK,An error occurred while accessing the Network.,
+0,eDlgType_Ok,KEY_TEXT_OK,Failed to load the Network data.,
+0,eDlgType_NoMenu,KEY_TEXT_NONE,Waiting for the Network process to complete.,
+0,eDlgType_NoMenu,KEY_TEXT_CANCEL,Searching for an opponent...,
+0,eDlgType_NoMenu,KEY_TEXT_NONE,Searching for an opponent...,
+0,eDlgType_Ok,KEY_TEXT_OK,An error has occurred.,
+0,eDlgType_NoMenu,KEY_TEXT_NONE,Disconnecting...,
+0,eDlgType_Ok,KEY_TEXT_OK,A communication error occurred during the match.,
+0,eDlgType_Ok,KEY_TEXT_OK,You canceled the match.,
+0,eDlgType_Ok,KEY_TEXT_OK,The match has been canceled.,
+0,eDlgType_Ok,KEY_TEXT_OK,Connection to the opponent has been lost.,
+0,eDlgType_Ok,KEY_TEXT_OK,You couldn't link to the opponent.,
+0,eDlgType_Ok,KEY_TEXT_OK,An error occurred during the wait.,
+0,eDlgType_Ok,KEY_TEXT_OK,A timeout occurred during the match.,
+0,eDlgType_Ok,KEY_TEXT_OK,An unknown error has occurred.,
+0,eDlgType_NoMenu,KEY_TEXT_CANCEL,Searching...,
+0,eDlgType_Ok,KEY_TEXT_OK,No rooms were found.,
+0,eDlgType_NoMenu,KEY_TEXT_CANCEL,Creating a room...,
+0,eDlgType_NoMenu,KEY_TEXT_CANCEL,Joining a room...,
+0,eDlgType_Ok,KEY_TEXT_OK,A communication error occurred during the match.,
+0,eDlgType_Ok,KEY_TEXT_OK,A communication error occurred during room creation.,
+0,eDlgType_Ok,KEY_TEXT_OK,A communication error occurred during room search.,
+0,eDlgType_Ok,KEY_TEXT_OK,A communication error occurred during room search.,
+0,eDlgType_Ok,KEY_TEXT_OK,A communication error occurred while joining a room.,
+0,eDlgType_Ok,KEY_TEXT_OK,The room is full.,You were not able to join the room.
+0,eDlgType_Ok,KEY_TEXT_OK,No rooms were found.,
+0,eDlgType_Ok,KEY_TEXT_OK,Failed to join the room.,
+0,eDlgType_Ok,KEY_TEXT_OK,A timeout occurred while joining a room.,
+0,eDlgType_Ok,KEY_TEXT_OK,A communication error occurred during room processing.,
+0,eDlgType_Ok,KEY_TEXT_OK,A communication error occurred between the server and the room.,Exiting the room and returning to the menu.
+0,eDlgType_Ok,KEY_TEXT_OK,Disconnected from the host.,Exiting the room and returning to the menu.
+0,eDlgType_Ok,KEY_TEXT_OK,A timeout occurred with the connection to the host.,Exiting the room and returning to the menu.
+0,eDlgType_Ok,KEY_TEXT_OK,You have been kicked.,
+0,eDlgType_Ok,KEY_TEXT_OK,A room connection error has occurred.,
+0,eDlgType_NoMenu,KEY_TEXT_NONE,A communication error occurred during battle.,Ended the battle and returned to the room.
+0,eDlgType_NoMenu,KEY_TEXT_NONE,A communication error occurred during battle.,Ended the battle.
+0,eDlgType_NoMenu,KEY_TEXT_NONE,A timeout occurred while sending and receiving data.,
+0,eDlgType_Ok,KEY_TEXT_OK,A timeout occurred during battle.,Exiting the room and returning to the menu.
+0,eDlgType_Ok,KEY_TEXT_OK,A timeout occurred during communication.,Exiting the room and returning to the menu.
+0,eDlgType_Ok,KEY_TEXT_OK,Connection to the room has been canceled.,
+0,eDlgType_Ok,KEY_TEXT_OK,A timeout occurred during communication.,Exiting the room and returning to the menu.
+0,eDlgType_Ok,KEY_TEXT_OK,A communication error has occurred.,Exiting the room and returning to the menu.
+0,eDlgType_YesNo,KEY_TEXT_NONE,Restart the match?,
+0,eDlgType_YesNo,KEY_TEXT_NONE,Restart accepting matches in training mode?,
+0,eDlgType_Ok,KEY_TEXT_OK,"There was a communication error with the opponent,",so the match has been canceled.
+0,eDlgType_Ok,KEY_TEXT_OK,An unknown disconnection occurred during the match.,
+0,eDlgType_Ok,KEY_TEXT_OK,Failed to update Network player information.,
+0,eDlgType_Ok,KEY_TEXT_OK,An error occurred during ad hoc initialization.,
+0,eDlgType_NoMenu,KEY_TEXT_NONE,Terminating ad hoc.,
+0,eDlgType_Ok,KEY_TEXT_OK,An error occurred while terminating ad hoc.,
+0,eDlgType_Ok,KEY_TEXT_OK,A communication error occurred while acquiring ranking information.,
+0,eDlgType_Ok,KEY_TEXT_OK,Signed out from the Network.,You cannot use the Network functions.
+0,eDlgType_Ok,KEY_TEXT_OK,The Network connection has been disconnected.,
+0,eDlgType_Ok,KEY_TEXT_OK,A communication error has occurred.,You cannot use the Network functions.
+0,eDlgType_Ok,KEY_TEXT_OK,Ad hoc has been disconnected.,You cannot use ad hoc functions.
+0,eDlgType_NoMenu,KEY_TEXT_NONE,Searching for your rank...,
+0,eDlgType_Ok,KEY_TEXT_OK,You are not registered to be ranked.,
+1,eDlgType_YesNo,KEY_TEXT_NONE,Disbanding the room.,Proceed?
+1,eDlgType_YesNo,KEY_TEXT_NONE,Exiting the room.,Proceed?
+0,eDlgType_Ok,KEY_TEXT_OK,A communication error occurred while uploading the ranking data.,
+0,eDlgType_Ok,KEY_TEXT_OK,You cannot kick yourself.,
+0,eDlgType_Ok,KEY_TEXT_OK,In process...,
+0,eDlgType_Ok,KEY_TEXT_SEARCH_NO_HIT,No rooms were found.,
+0,eDlgType_Cancel,KEY_TEXT_SEARCH_NO_HIT_NO_OK,No rooms were found.,
+0,eDlgType_Ok,KEY_TEXT_OK,Cannot send while in process.,
+0,eDlgType_NoMenu,KEY_TEXT_NONE,Please press the START button on your controller.,
+0,eDlgType_NoMenu,KEY_TEXT_NONE,Checking the communication speed...,
+0,eDlgType_NoMenu,KEY_TEXT_CANCEL,Checking the communication speed...,
+0,eDlgType_Ok,KEY_TEXT_OK,You cannot enter the room because you do not meet the communication speed criteria.,
+0,eDlgType_Ok,KEY_TEXT_OK,Failed to verify connection speed.,
+0,eDlgType_Ok,KEY_TEXT_OK,You cannot enter the room because your Match Completion Rate is too low.,
+0,eDlgType_Ok,KEY_TEXT_OK,You cannot start the battle because you do not meet the player consecutive battle criteria.,
+0,eDlgType_NoMenu,KEY_TEXT_NONE,Preparing to start the Network.,
+0,eDlgType_Ok,KEY_TEXT_OK,Failed to connect to the Network.,
+0,eDlgType_Ok,KEY_TEXT_OK,An error occurred while starting the Network.,
+0,eDlgType_Ok,KEY_TEXT_OK,Failed to start the Network.
+0,eDlgType_Ok,KEY_TEXT_OK,Failed to start the Network.
+0,eDlgType_Ok,KEY_TEXT_OK,A new system software is available.,Please update the system software.
+0,eDlgType_Ok,KEY_TEXT_OK,There is a new update file available.,Please update the game.
+0,eDlgType_Ok,KEY_TEXT_OK,The Network process was terminated.,
+0,eDlgType_Ok,KEY_TEXT_OK,The space is blank.,Please enter again.
+0,eDlgType_Ok,KEY_TEXT_OK,A forbidden word was used for the room name.,Please enter again.
+0,eDlgType_Ok,KEY_TEXT_OK,You cannot enter the room because the hardware criteria was not met.,
+0,eDlgType_Ok,KEY_TEXT_OK,You were denied access to the room.,
+0,eDlgType_NoMenu,KEY_TEXT_NONE,Preparing to accept matches...,
+0,eDlgType_NoMenu,KEY_TEXT_CANCEL,Preparing to accept matches...,
+0,eDlgType_NoMenu,KEY_TEXT_NONE,Sending the challenge...,
+0,eDlgType_Cancel,KEY_TEXT_SEARCH_NO_HIT_NO_OK,No opponent was found.,
+0,eDlgType_Ok,KEY_TEXT_OK,Failed to connect.,
+0,eDlgType_Ok,KEY_TEXT_OK,The opponent has been lost.,
+1,eDlgType_YesNo,KEY_TEXT_NONE,Do you wish to return to the main menu?,
+1,eDlgType_YesNo,KEY_TEXT_NONE,Would you like to train while accepting matches?,
+0,eDlgType_NoMenu,KEY_TEXT_NONE,Checking the communication speed...,
+0,eDlgType_Ok,KEY_TEXT_OK,You cannot view this replay with your current version.,Please update.
+0,eDlgType_YesNo,KEY_TEXT_NONE,Download the replay?,
+0,eDlgType_NoMenu,KEY_TEXT_NONE,Downloading the replay...,
+0,eDlgType_Ok,KEY_TEXT_OK,The replay has been downloaded.,
+0,eDlgType_Ok,KEY_TEXT_OK,An error has occurred during the replay download.,
+0,eDlgType_NoMenu,KEY_TEXT_NONE,Saving the replay...,
+0,eDlgType_Ok,KEY_TEXT_OK,The replay has been saved.,
+0,eDlgType_YesNo,KEY_TEXT_NONE,Upload the replay?,
+0,eDlgType_NoMenu,KEY_TEXT_NONE,Uploading the replay...,
+0,eDlgType_YesNo,KEY_TEXT_NONE,Replay?,
+0,eDlgType_NoMenu,KEY_TEXT_NONE,Processing...,
+0,eDlgType_Ok,KEY_TEXT_OK,"Your Sony Entertainment Network account has user-generated content settings,",replays cannot be downloaded from other players.
+0,eDlgType_Ok,KEY_TEXT_OK,You are now connected to the Network.,
+0,eDlgType_Ok,KEY_TEXT_OK,"Your Sony Entertainment Network account has user-generated content settings,",so replays cannot be uploaded.
+0,eDlgType_Ok,KEY_TEXT_OK,"Your Sony Entertainment Network account has user-generated content settings,",so downloaded replays cannot be played back.
+0,eDlgType_NoMenu,KEY_TEXT_NONE,Uploading the player profile...,
+0,eDlgType_Ok,KEY_TEXT_OK,"The invitation data could not be acquired, or the room was disbanded,",so you could not join the room you were invited to.
+0,eDlgType_Ok,KEY_TEXT_OK,An error has occurred during the invitation.,
+0,eDlgType_Ok,KEY_TEXT_OK,An error has occurred during the player profile upload.,

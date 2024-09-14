@@ -1,0 +1,20 @@
+
+FinishList_Table <- [];
+
+FinishList_Table.resize(500); // ‚Ä‚«‚Æ‚¤
+local st = FinishList_Table; // “o˜^‚µ‚â‚·‚¢‚æ‚¤‚É
+
+// name = •¶Žš—ñ
+// type = nameŽí•Ê  0 s“®Mv  1 ƒpƒ^[ƒ“•¶Žš—ñ
+// category = 1 ’ÊíKOi‘‚©‚È‚¢‚Å‚¢‚¢j  2 ’´‹Z  3 ‚³‚ç‚É’´‹Z
+
+st[0] = { name="Mv_Skill_41236SP", type=0,  category=2, };
+st[1] = { name="Mv_Obj_IWIceRock1", type=0,  category=2, };
+st[2] = { name="Mv_Obj_IWIceRock2", type=0,  category=2, };
+st[3] = { name="Mv_Obj_IWIceRock3", type=0,  category=2, };
+st[4] = { name="Mv_Obj_IWIceRock4", type=0,  category=2, };
+st[5] = { name="Mv_Skill_41236SP_Hit", type=0,  category=2, };
+st[6] = { name="Mv_Obj_Eff_IW_IceStorm", type=0, category=2,};
+st[7] = { name="Mv_Skill_IWEXIST_Hit", type=0,  category=3, };
+st[8] = { name="Mv_Obj_Eff_IWE_Finish", type=0,  category=3, };
+st[9] = { name="Mv_Obj_IWIceRockFinish", type=0,  category=2, }; 

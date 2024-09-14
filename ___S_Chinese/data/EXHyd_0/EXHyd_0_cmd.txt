@@ -1,0 +1,341 @@
+//コマンドテーブル skillは格ゲーコマンド表記
+btl_debPrint2("\n[HYD_CommandTable]");
+
+local t =
+{
+	Skill_41236SP_ABC = {},
+	Skill_41236SP = {},
+	
+	Skill_236236SP = {},
+	
+	
+	Skill_41236EX = {},
+	Skill_63214EX = {},
+	
+	Skill_236EX = {},
+	Skill_236BorC = {},
+	Skill_236A = {},
+
+	// 行動可能時（空振り）とかで出せる派生
+	Skill_236_236A =
+	{
+		num = def_CN_Skill_AddCommand1,
+		command = "236A",
+		CmdCheck =
+		{
+			BallCount = { [6] = 1 },
+			BallLimit = { [7] = 1 }, //EX波動のときはでない
+		}
+		UpdateTable = { name = "Mv_Skill_236_236A", }
+	},
+
+	// モーション中に出す追加派生
+	Skill_236_236A_ADD =
+	{
+		num = def_CN_Skill_AddCommand2,
+		// command = ["236A","6+A"],
+		command = ["236A"],
+		function CmdBeforeFunc()
+		{
+			//FrameIDが20　か　飛び道具がヒットしてれば追加は出せる
+			local mvs = BMvTbl.GetMvStatus();
+			local hs = BMvTbl.GetMvHitStatus();
+			if( mvs.FrameID!=20 && !(hs.Type & _HitType_Hit) ) return 0;
+			return 1;
+		},
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_236A","Mv_Skill_236B"] },
+			BallCount = { [6] = 1 },
+			BallLimit = { [7] = 1 }, //EX波動のときはでない
+		}	
+		UpdateTable = { name = "Mv_Skill_236_236A", }
+	},	
+	
+	Skill_236_236B =
+	{
+		num = def_CN_Skill_AddCommand3,
+		command = ["236B","236C"],
+		CmdCheck = 
+		{
+			BallCount = { [6] = 1 },
+			BallLimit = { [7] = 1 }, //EX波動のときはでない
+		},
+		UpdateTable = { name = "Mv_Skill_236_236B", }
+	},	
+	
+	Skill_236_236B_ADD =
+	{
+		num = def_CN_Skill_AddCommand4,
+		// command = ["236B","236C","6+B","6+C"],
+		command = ["236B","236C"],
+		function CmdBeforeFunc()
+		{
+			//FrameIDが20　か　飛び道具がヒットしてれば追加は出せる
+			local mvs = BMvTbl.GetMvStatus();
+			local hs = BMvTbl.GetMvHitStatus();
+			if( mvs.FrameID!=20 && !(hs.Type & _HitType_Hit) ) return 0;
+			return 1;
+		},		
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_236A","Mv_Skill_236B"] },
+			BallCount = { [6] = 1 },
+			BallLimit = { [7] = 1 }, //EX波動のときはでない
+		},
+		UpdateTable = { name = "Mv_Skill_236_236B", }
+	},
+	
+	Skill_623EX = {},
+	Skill_623BorC = {},
+	Skill_623A = 
+	{
+	},
+	
+	Skill_623A_Add =
+	{
+		num = def_CN_Skill_AddCommand2,
+		command = ["A","B","C"], posstatus = _PosState_Air,
+		function CmdBeforeFunc()
+		{
+			if(BMvTbl.GetLP(0) != 1) return 0;
+			
+			return 1;
+		},
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_623A"] },
+		}	
+		UpdateTable = { name = "Mv_Skill_623A_JHit", }
+	},
+	
+	Skill_623B_Add =
+	{
+		num = def_CN_Skill_AddCommand2,
+		command = ["A","B","C"], posstatus = _PosState_Air,
+		function CmdBeforeFunc()
+		{
+			if(BMvTbl.GetLP(0) != 1) return 0;
+			
+			return 1;
+		},
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_623B"] },
+		}	
+		UpdateTable = { name = "Mv_Skill_623B_JHit", }
+	},
+	
+	Skill_623EX_Add =
+	{
+		num = def_CN_Skill_AddCommand2,
+		command = ["A","B","C"], posstatus = _PosState_Air,
+		function CmdBeforeFunc()
+		{
+			if(BMvTbl.GetLP(0) != 1) return 0;
+			
+			return 1;
+		},
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_623EX"] },
+		}	
+		UpdateTable = { name = "Mv_Skill_623EX_JHit", }
+	},
+	
+	Skill_214EX = {},
+	Skill_214BorC = {},
+	Skill_214A = 
+	{
+		function CmdBeforeFunc()
+		{
+			if( Battle_Std.MoveCode.CheckFlag( def_MC_Shield ) )
+			{
+				// _dp("\n シールドされてる…");
+				return 0;
+			}	
+		}
+	},
+	
+	
+
+	
+	Skill_214A_AddA =
+	{
+		num = def_CN_Skill_AddCommand2,
+		command = ["4+A","6+A"], posstatus = _PosState_Air,
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_214A","Mv_Skill_214B"] },
+			FrameIDCheck = {Only = 100},
+			HitStatus="Hit",
+		}	
+		function CmdBeforeFunc()
+		{
+			if( Battle_Std.MoveCode.CheckFlag( def_MC_Shield ) )
+			{
+				// _dp("\n シールドされてる…");
+				return 0;
+			}	
+		}
+		UpdateTable = { name = "Mv_Skill_214_JAddA", }
+	},
+	
+	Skill_214A_AddB =
+	{
+		num = def_CN_Skill_AddCommand2,
+		command = ["4+B","4+C","6+B","6+C"], posstatus = _PosState_Air,
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_214A","Mv_Skill_214B"] },
+			FrameIDCheck = {Only = 100},
+			HitStatus="Hit",
+		}	
+		function CmdBeforeFunc()
+		{
+			if( Battle_Std.MoveCode.CheckFlag( def_MC_Shield ) )
+			{
+				// _dp("\n シールドされてる…");
+				return 0;
+			}	
+		}
+		UpdateTable = { name = "Mv_Skill_214_JAddB", }
+	},
+	
+	Skill_DashStdB_Add =
+	{
+		num = def_CN_Skill_AddCommand5,
+		command = ["A","B","C"], posstatus = _PosState_Air,
+		
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Atk_DashStdB"] },
+			FrameIDCheck = { Only = 100 },
+			PosState = "Air",
+		},
+		
+		UpdateFrameID = 101,
+		UpdateTable = { name = "Mv_Skill_DashStdB_JAdd", },
+	},
+	
+	
+	//Skill_J214A = {},
+	//Skill_J214BorC = {},
+	Skill_J214EX = {},
+	
+	
+	Skill_214_JAdd2 = 
+	{
+		num = def_CN_Skill_AddCommand6,
+		command = ["4+A","4+B","4+C"], posstatus = _PosState_Air,
+
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_J214A","Mv_Skill_J214B"] },
+			FrameIDCheck = { Only = 100 },
+			PosState = "Air",
+		},		
+		UpdateFrameID = 101,
+		UpdateTable = { name = "Mv_Skill_214_JAdd2", },
+	},
+	
+	Skill_214_JAdd3 = 
+	{
+		num = def_CN_Skill_AddCommand6,
+		command = ["4+A","4+B","4+C"], posstatus = _PosState_Air,
+
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_214_JAdd2","Mv_Skill_214_JAdd2"] },
+			FrameIDCheck = { Only = 200 },
+			PosState = "Air",
+		},		
+		UpdateFrameID = 201,
+		UpdateTable = { name = "Mv_Skill_214_JAdd3", },
+	},
+	
+	
+	
+	Skill_0202EX = {},	
+	Skill_0202BorC = {},
+	Skill_0202A = {
+	},
+
+	Skill_J236EX = {},
+	Skill_J236BorC = { CmdCheck = { MvCheck={ SkillFail=["Mv_Skill_J236B_Hit","Mv_Skill_J236B"] } }  },
+	
+	Skill_J236A = {},
+	
+	
+	Skill_J214A = {},
+	Skill_J214B = {},
+	
+	Atk_Std6B = {},
+	Atk_Std4B = {},
+	
+	Atk_Std6C = {},
+	
+	Atk_Cro3B = {},
+	Atk_Cro3C = {},
+	
+	Atk_Air2B = {},
+	Atk_Air6C = {},
+	Atk_Air2C = {},
+	
+	Atk_Air6Atk_Clear = {}, // 低空6+攻の暴発を防ぐ
+	
+	Atk_StdBandC = {},
+
+}
+
+local ar =
+[
+	{
+		CheckMoveName="Mv_Atk_StdA",
+		UpdateMoveName="Mv_Atk_StdB",
+	},
+	{
+		ResetTmplName="Std_Atk_StdB",
+		CheckMoveName="Mv_Atk_StdB",
+		UpdateMoveName="Mv_Atk_Std6B",
+	},
+	{
+		ResetTmplName="Atk_Std6B",
+		CheckMoveName="Mv_Atk_Std6B",
+		UpdateMoveName="Mv_Skill_214B",
+	},
+	{
+		ResetTmplName="Skill_214B",
+		CheckMoveName="Mv_Skill_214B",
+		UpdateMoveName="Mv_Skill_214_JAddA",
+		SrcCmdTmpl="Skill_214A_AddA",
+		CmdTmplFlags=def_CMDFlags_AnnounceSmaetSteer, //スマートステアアナウンスの追加
+		posstatus = _PosState_Air,
+	},
+	{
+		ResetTmplName="Skill_214A_AddA",
+		CheckMoveName="Mv_Skill_214_JAddA",
+		UpdateMoveName="Mv_Skill_41236EX",
+		CmdCheck = 
+		{
+			Cost = { ComboGauge = 10000 },
+			SkillType = "ExSpecial",
+			HitStatus="Damage",
+		}
+	},
+
+]
+Battle_Std.MakeStdCombo( t, ar );
+
+EXHYD_CommandTable <- Battle_Std.MakeCommandTable( t );
+

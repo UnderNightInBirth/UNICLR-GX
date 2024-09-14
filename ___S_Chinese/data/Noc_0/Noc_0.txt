@@ -1,0 +1,13 @@
+[System]
+ProjectName=Bya
+[DataFile]
+FileNum= 3
+File00=_temp.HA6
+File01=Bya.HA6
+File02=../BaseData.HA6
+[BmpcutFile]
+FileNum= 1
+File00=Bya.cg
+[PAniFile]
+FileNum= 1
+File00=Bya_ef00.pat

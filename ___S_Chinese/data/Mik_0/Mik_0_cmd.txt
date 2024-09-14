@@ -1,0 +1,653 @@
+//コマンドテーブル skillは格ゲーコマンド表記
+btl_debPrint2("\n[MIK_CommandTable]");
+
+
+local checkRocketMoveAdd = function( param={} )
+{
+	local checkHeight = 0;
+	switch( param.move )
+	{
+	case "2":
+	case "1":
+	case "3":
+		checkHeight = 1;
+		break;
+	}
+	
+	local checkMoveAddCnt = 0;
+	
+	switch( param.type )
+	{
+	case "Normal":
+		break;
+	case "EX":
+		checkMoveAddCnt = 1;
+		break;
+	}
+
+	if( !BCMDTbl.CheckCancel(_SkillType_Special ) )
+	{
+		local mvs = BMvTbl.GetMvStatus();
+		if( !(mvs.Param2&1) ) return 0;
+		if( (mvs.Param2&8) && !Battle_Std.CheckEnemyisDamage() ) return 0;
+	}
+		if( Battle_Std.MoveCode.CheckFlag( def_MC_Shield ) ) return 0; // シールドを取られてたら出せない
+	if( BCMDTbl.CheckCancel( _SkillType_None ) ) return 0; // 行動可能時は出せない
+
+	if( checkMoveAddCnt )
+	{
+		if( BMvTbl.GetPP(def_PP_Mik_MoveAtkAddCount)>2 ) return 0;
+	}
+	
+	// 高度制限をつける
+	if( checkHeight )
+	{
+		local height = -BMvTbl.GetPosition(0).y;
+		if( height < 25600 ) return 0;
+	}
+	
+	return 1;
+}
+
+local t =
+{
+	Atk_Std3B = {},
+	Atk_Cro3C = {},
+
+	Atk_JA_JA =	{	
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Atk_AirA"] },
+		ParamFlagCheck = { Only = { [2]=4 } },
+		}	
+	},
+	Atk_B_B = {
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Atk_StdB"] },
+			FrameIDCheck = { Only = 100 },
+		},
+	},	
+	
+	Skill_214EX = {},
+	Skill_214BorC = {},
+	Skill_214A = {},
+	
+	Skill_236EX = {},	
+	Skill_236BorC = {},	
+	Skill_236A = {},	
+	
+	Skill_623EX = {},
+	Skill_623BorC = {},
+	Skill_623A = {},
+	
+	Skill_J623EX = {},
+	Skill_J623BorC = {},
+	Skill_J623A = {},
+	
+	Skill_623_AddA = {
+		num = def_CN_Skill_AddCommand9,
+		posstatus = _PosState_Ground, command=["A"],// 6+だと位置入れ替わりで出しにくい
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = { Only = [
+				"Mv_Skill_623A",
+				"Mv_Skill_623B",
+				],
+			},
+		},
+		function CmdBeforeFunc()
+		{
+			// ヒット時のみ
+			if( !BCMDTbl.CheckCancel(_SkillType_Special ) )
+			{
+				if( BCMDTbl.CheckCancelFlag(1) == _CancelFlag_Hit )
+				{
+					// ここはOK
+					// _dp("\n いいよ");
+				}
+				else
+				{
+					return 0;
+				}
+			}
+			
+			return 1;
+		}
+	}
+	
+	Skill_623_AddB = {
+		num = def_CN_Skill_AddCommand10,
+		posstatus = _PosState_Ground, command=["B","C"],// 6+だと位置入れ替わりで出しにくい
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = { Only = [
+				"Mv_Skill_623A",
+				"Mv_Skill_623B",
+				],
+			},
+		},
+		function CmdBeforeFunc()
+		{
+			// ヒット時のみ
+			if( !BCMDTbl.CheckCancel(_SkillType_Special ) )
+			{
+				if( BCMDTbl.CheckCancelFlag(1) == _CancelFlag_Hit )
+				{
+					// ここはOK
+					// _dp("\n いいよ");
+				}
+				else
+				{
+					return 0;
+				}
+			}
+			
+			return 1;
+		}
+	}	
+	
+	Skill_41236SP_ABC = {},
+	Skill_41236SP = {},
+
+	Skill_J236EX = {
+		command=["236C","214C"],
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.AddAirCount( def_ACS_MIK_236EX, 0 ) ) return 0; // ジャンプ中は1度しか出せない
+			return 1;
+		},
+		function CmdAfterFunc()
+		{
+			BMvTbl.SetPP(def_PP_Mik_PP_J236InputType,0); // 初期化
+			
+			if( BMvTbl.IsCpu()==0 ) // プレイヤーの時
+			{
+				local cmdpos = BCMDTbl.GetSuccessButtonPos();
+				_dp("\n cmdpos:"+cmdpos );
+				
+				if( cmdpos == 1 )
+				{
+					// 振り向きが必要でキャンセル時のみ214Cを有効にする
+					if( BMvTbl.CheckFurimuki() )
+					{
+						_dp("\n 振り向きいる");
+					}
+					else
+					{
+						return 0;
+					}
+					
+					BMvTbl.SetPP(def_PP_Mik_PP_J236InputType,1);
+				}
+			}
+			return 1;
+		}
+	},
+	
+	Skill_J236BorC = {
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.AddAirCount( def_ACS_MIK_236, 0 ) ) return 0; // ジャンプ中は1度しか出せない
+			return 1;
+		},
+	},
+	Skill_J236A = {
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.AddAirCount( def_ACS_MIK_236, 0 ) ) return 0; // ジャンプ中は1度しか出せない
+			return 1;
+		},
+	},
+	
+	Skill_236_JAdd6 = {
+		num = def_CN_Skill_AddCommand1,
+		posstatus = _PosState_Air, command=["6+A","6+B","6+C"],
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = { Only = [
+					"Mv_Skill_236A",
+					"Mv_Skill_236B",
+					"Mv_Skill_J236A",
+					"Mv_Skill_J236B",
+					],
+			},
+			// HeightLimit = 25600,
+		},
+		function CmdBeforeFunc() : (checkRocketMoveAdd)
+		{
+			if( !checkRocketMoveAdd( { move="6", type="Normal" } ) ) return 0;
+			return 1;
+		}
+	}
+	
+	Skill_236_JAdd4 = {
+		num = def_CN_Skill_AddCommand2,
+		posstatus = _PosState_Air, command=["4+A","4+B","4+C"],
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = { Only = [
+					"Mv_Skill_236A",
+					"Mv_Skill_236B",
+					"Mv_Skill_J236A",
+					"Mv_Skill_J236B",
+					],
+			},
+			// HeightLimit = 25600,
+		},
+		function CmdBeforeFunc() : (checkRocketMoveAdd)
+		{
+			if( !checkRocketMoveAdd( { move="4", type="Normal" } ) ) return 0;
+			return 1;
+		}
+	}	
+	
+	Skill_236_JAdd1 = {
+		num = def_CN_Skill_AddCommand3,
+		posstatus = _PosState_Air, command=["1+A","1+B","1+C"],
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = { Only = [
+					// "Mv_Skill_236A",
+					"Mv_Skill_236B",
+					"Mv_Skill_J236A",
+					"Mv_Skill_J236B",
+					],
+			},
+			// HeightLimit = 25600,
+		},
+		function CmdBeforeFunc() : (checkRocketMoveAdd)
+		{
+			if( !checkRocketMoveAdd( { move="1", type="Normal" } ) ) return 0;
+			return 1;
+		}
+	}
+	
+	Skill_236_JAdd3 = {
+		num = def_CN_Skill_AddCommand4,
+		posstatus = _PosState_Air, command=["3+A","3+B","3+C"],
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = { Only = [
+					// "Mv_Skill_236A",
+					"Mv_Skill_236B",
+					"Mv_Skill_J236A",
+					"Mv_Skill_J236B",
+					],
+			},
+			// HeightLimit = 25600,
+		},
+		function CmdBeforeFunc() : (checkRocketMoveAdd)
+		{
+			if( !checkRocketMoveAdd( { move="3", type="Normal" } ) ) return 0;
+			return 1;
+		}
+	}
+	
+	Skill_236_JAdd7 = {
+		num = def_CN_Skill_AddCommand5,
+		posstatus = _PosState_Air, command=["7+A","7+B","7+C"],
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = { Only = [
+					"Mv_Skill_236A",
+					"Mv_Skill_236B",
+					"Mv_Skill_J236A",
+					"Mv_Skill_J236B",
+					],
+			},
+			// HeightLimit = 25600,
+		},
+		function CmdBeforeFunc() : (checkRocketMoveAdd)
+		{
+			if( !checkRocketMoveAdd( { move="7", type="Normal" } ) ) return 0;
+			return 1;
+		}
+	}
+	
+	Skill_236_JAdd9 = {
+		num = def_CN_Skill_AddCommand6,
+		posstatus = _PosState_Air, command=["9+A","9+B","9+C"],
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = { Only = [
+					"Mv_Skill_236A",
+					"Mv_Skill_236B",
+					"Mv_Skill_J236A",
+					"Mv_Skill_J236B",
+					],
+			},
+			// HeightLimit = 25600,
+		},
+		function CmdBeforeFunc() : (checkRocketMoveAdd)
+		{
+			if( !checkRocketMoveAdd( { move="9", type="Normal" } ) ) return 0;
+			return 1;
+		}
+	}	
+	
+	Skill_236_JAdd8 = {
+		num = def_CN_Skill_AddCommand7,
+		posstatus = _PosState_Air, command=["8+A","8+B","8+C"],
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = { Only = [
+					"Mv_Skill_236A",
+					"Mv_Skill_236B",
+					"Mv_Skill_J236A",
+					"Mv_Skill_J236B",
+					],
+			},
+			// HeightLimit = 25600,
+		},
+		function CmdBeforeFunc() : (checkRocketMoveAdd)
+		{
+			if( !checkRocketMoveAdd( { move="8", type="Normal" } ) ) return 0;
+			return 1;
+		}
+	}
+	
+	Skill_236_JAdd2 = {
+		num = def_CN_Skill_AddCommand8,
+		posstatus = _PosState_Air, command=["2+A","2+B","2+C"],
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = { Only = [
+					// "Mv_Skill_236A",
+					"Mv_Skill_236B",
+					"Mv_Skill_J236A",
+					"Mv_Skill_J236B",
+					],
+			},
+			// HeightLimit = 25600,
+		},
+		function CmdBeforeFunc() : (checkRocketMoveAdd)
+		{
+			if( !checkRocketMoveAdd( { move="2", type="Normal" } ) ) return 0;
+			return 1;
+		}
+	}
+
+	
+	//EX派生
+	Skill_236EX_JAdd6EX = {
+		num = def_CN_Skill_AddCommand11,
+		posstatus = _PosState_Air, command=["6+A","6+B","6+C"],
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = { Only = [
+					"Mv_Skill_236EX",
+					"Mv_Skill_J236EX",
+					"Mv_Skill_236EX_JAdd6EX",
+					"Mv_Skill_236EX_JAdd4EX",
+					"Mv_Skill_236EX_JAdd1EX",
+					"Mv_Skill_236EX_JAdd3EX",
+					"Mv_Skill_236EX_JAdd7EX",
+					"Mv_Skill_236EX_JAdd9EX",
+					"Mv_Skill_236EX_JAdd8EX",
+					"Mv_Skill_236EX_JAdd2EX",
+					],
+			},
+			// HeightLimit = 25600,
+		},
+		function CmdBeforeFunc() : (checkRocketMoveAdd)
+		{
+			if( !checkRocketMoveAdd( { move="6", type="EX" } ) ) return 0;
+			return 1;
+		}
+	}
+	
+	Skill_236EX_JAdd4EX = {
+		num = def_CN_Skill_AddCommand12,
+		posstatus = _PosState_Air, command=["4+A","4+B","4+C"],
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = { Only = [
+					"Mv_Skill_236EX",
+					"Mv_Skill_J236EX",
+					"Mv_Skill_236EX_JAdd6EX",
+					"Mv_Skill_236EX_JAdd4EX",
+					"Mv_Skill_236EX_JAdd1EX",
+					"Mv_Skill_236EX_JAdd3EX",
+					"Mv_Skill_236EX_JAdd7EX",
+					"Mv_Skill_236EX_JAdd9EX",
+					"Mv_Skill_236EX_JAdd8EX",
+					"Mv_Skill_236EX_JAdd2EX",
+					],
+			},
+			// HeightLimit = 25600,
+		},
+		function CmdBeforeFunc() : (checkRocketMoveAdd)
+		{
+			if( !checkRocketMoveAdd( { move="4", type="EX" } ) ) return 0;
+			return 1;
+		}
+	}	
+	
+	Skill_236EX_JAdd1EX = {
+		num = def_CN_Skill_AddCommand13,
+		posstatus = _PosState_Air, command=["1+A","1+B","1+C"],
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = { Only = [
+					"Mv_Skill_J236EX",
+					"Mv_Skill_236EX_JAdd6EX",
+					"Mv_Skill_236EX_JAdd4EX",
+					"Mv_Skill_236EX_JAdd1EX",
+					"Mv_Skill_236EX_JAdd3EX",
+					"Mv_Skill_236EX_JAdd7EX",
+					"Mv_Skill_236EX_JAdd9EX",
+					"Mv_Skill_236EX_JAdd8EX",
+					"Mv_Skill_236EX_JAdd2EX",
+					
+					],
+			},
+			// HeightLimit = 25600,
+		},
+		function CmdBeforeFunc() : (checkRocketMoveAdd)
+		{
+			if( !checkRocketMoveAdd( { move="3", type="EX" } ) ) return 0;
+			return 1;
+		}
+	}
+	
+	Skill_236EX_JAdd3EX = {
+		num = def_CN_Skill_AddCommand14,
+		posstatus = _PosState_Air, command=["3+A","3+B","3+C"],
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = { Only = [
+					"Mv_Skill_J236EX",
+					"Mv_Skill_236EX_JAdd6EX",
+					"Mv_Skill_236EX_JAdd4EX",
+					"Mv_Skill_236EX_JAdd1EX",
+					"Mv_Skill_236EX_JAdd3EX",
+					"Mv_Skill_236EX_JAdd7EX",
+					"Mv_Skill_236EX_JAdd9EX",
+					"Mv_Skill_236EX_JAdd8EX",
+					"Mv_Skill_236EX_JAdd2EX",
+					],
+			},
+			// HeightLimit = 25600,
+		},
+		function CmdBeforeFunc() : (checkRocketMoveAdd)
+		{
+			if( !checkRocketMoveAdd( { move="3", type="EX" } ) ) return 0;
+			return 1;
+		}
+	}
+	
+	Skill_236EX_JAdd7EX = {
+		num = def_CN_Skill_AddCommand15,
+		posstatus = _PosState_Air, command=["7+A","7+B","7+C"],
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = { Only = [
+					"Mv_Skill_236EX",
+					"Mv_Skill_J236EX",
+					"Mv_Skill_236EX_JAdd6EX",
+					"Mv_Skill_236EX_JAdd4EX",
+					"Mv_Skill_236EX_JAdd1EX",
+					"Mv_Skill_236EX_JAdd3EX",
+					"Mv_Skill_236EX_JAdd7EX",
+					"Mv_Skill_236EX_JAdd9EX",
+					"Mv_Skill_236EX_JAdd8EX",
+					"Mv_Skill_236EX_JAdd2EX",
+					],
+			},
+			// HeightLimit = 25600,
+		},
+		function CmdBeforeFunc() : (checkRocketMoveAdd)
+		{
+			if( !checkRocketMoveAdd( { move="7", type="EX" } ) ) return 0;
+			return 1;
+		}
+	}
+	
+	Skill_236EX_JAdd9EX = {
+		num = def_CN_Skill_AddCommand16,
+		posstatus = _PosState_Air, command=["9+A","9+B","9+C"],
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = { Only = [
+					"Mv_Skill_236EX",
+					"Mv_Skill_J236EX",
+					"Mv_Skill_236EX_JAdd6EX",
+					"Mv_Skill_236EX_JAdd4EX",
+					"Mv_Skill_236EX_JAdd1EX",
+					"Mv_Skill_236EX_JAdd3EX",
+					"Mv_Skill_236EX_JAdd7EX",
+					"Mv_Skill_236EX_JAdd9EX",
+					"Mv_Skill_236EX_JAdd8EX",
+					"Mv_Skill_236EX_JAdd2EX",
+					],
+			},
+			// HeightLimit = 25600,
+		},
+		function CmdBeforeFunc() : (checkRocketMoveAdd)
+		{
+			if( !checkRocketMoveAdd( { move="9", type="EX" } ) ) return 0;
+			return 1;
+		}
+	}	
+	
+	Skill_236EX_JAdd8EX = {
+		num = def_CN_Skill_AddCommand17,
+		posstatus = _PosState_Air, command=["8+A","8+B","8+C"],
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = { Only = [
+					"Mv_Skill_236EX",
+					"Mv_Skill_J236EX",
+					"Mv_Skill_236EX_JAdd6EX",
+					"Mv_Skill_236EX_JAdd4EX",
+					"Mv_Skill_236EX_JAdd1EX",
+					"Mv_Skill_236EX_JAdd3EX",
+					"Mv_Skill_236EX_JAdd7EX",
+					"Mv_Skill_236EX_JAdd9EX",
+					"Mv_Skill_236EX_JAdd8EX",
+					"Mv_Skill_236EX_JAdd2EX",
+					],
+			},
+			// HeightLimit = 25600,
+		},
+		function CmdBeforeFunc() : (checkRocketMoveAdd)
+		{
+			if( !checkRocketMoveAdd( { move="8", type="EX" } ) ) return 0;
+			return 1;
+		}
+	}
+	
+	Skill_236EX_JAdd2EX = {
+		num = def_CN_Skill_AddCommand18,
+		posstatus = _PosState_Air, command=["2+A","2+B","2+C"],
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = { Only = [
+					"Mv_Skill_J236EX",
+					"Mv_Skill_236EX_JAdd6EX",
+					"Mv_Skill_236EX_JAdd4EX",
+					"Mv_Skill_236EX_JAdd1EX",
+					"Mv_Skill_236EX_JAdd3EX",
+					"Mv_Skill_236EX_JAdd7EX",
+					"Mv_Skill_236EX_JAdd9EX",
+					"Mv_Skill_236EX_JAdd8EX",
+					"Mv_Skill_236EX_JAdd2EX",
+					],
+			},
+			// HeightLimit = 25600,
+		},
+		function CmdBeforeFunc() : (checkRocketMoveAdd)
+		{
+			if( !checkRocketMoveAdd( { move="2", type="EX" } ) ) return 0;
+			return 1;
+		}
+	}
+		
+	
+	
+	Skill_CircleEX = {},
+
+	Atk_StdBandC = {
+		CmdCheck = { MvCheck={ SkillFail=["Mv_Atk_StdBandC","Mv_Atk_AirBandC"] }, }
+	},	
+	Atk_AirBandC = {
+		CmdCheck = { MvCheck={ SkillFail=["Mv_Atk_StdBandC","Mv_Atk_AirBandC"] }, }
+	},	
+}
+
+local ar =
+[
+	{
+		CheckMoveName="Mv_Atk_StdA",
+		UpdateMoveName="Mv_Atk_StdB",
+	},
+	{
+		CheckMoveName="Mv_Atk_StdB",
+		UpdateMoveName="Mv_Atk_CroC",
+		ResetTmplName="Atk_StdB",
+	},
+	{
+		CheckMoveName="Mv_Atk_CroC",
+		UpdateMoveName="Mv_Skill_214A",
+		ResetTmplName="Skill_214BorC",
+		CmdTmplFlags=def_CMDFlags_AnnounceSmaetSteer, //スマートステアアナウンスの追加
+	},
+	{
+		CheckMoveName="Mv_Skill_214A_Hit",
+		UpdateMoveName="Mv_Skill_623EX",
+		ResetTmplName="Skill_623EX",
+		CmdCheck = 
+		{
+			Cost = { ComboGauge = 10000 },
+			SkillType = "ExSpecial",
+			HitStatus="Damage",
+		}
+	},
+]
+Battle_Std.MakeStdCombo( t, ar );
+
+
+
+MIK_CommandTable <- Battle_Std.MakeCommandTable( t );
+

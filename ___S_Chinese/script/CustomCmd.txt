@@ -1,0 +1,19 @@
+merge_cmdtbl <- function( t )
+{
+
+	t.Taunt <-
+	{
+		cmdtmplflags = Def_SCT_Common,
+		num = def_CN_Dash_B_Douji, name = "Cmd_Std_Taunt", command = ["E"],
+		flags = [ "lastdelay" ],
+		CmdBeforeStdFunc = function()
+		{
+			if( Battle_Std.CancelCheck_SpecialSkill()==0 ) return 0;
+			return 1;
+		},
+		CmdCheck = { CommandButton = def_PP_CBS_ButtonA|def_PP_CBS_ButtonB, SkillType = "SpecialDouji", },
+		UpdateTable = { name = "Mv_Taunt", }
+	}
+	
+	return t;
+}

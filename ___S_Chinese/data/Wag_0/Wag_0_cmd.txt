@@ -1,0 +1,266 @@
+//コマンドテーブル skillは格ゲーコマンド表記
+btl_debPrint2("\n[WAG_CommandTable]");
+
+// 214の後必殺技でキャンセルできるかどうか
+local checkGuardTackle_SpecialCancel = function()
+{
+	local mvname = BMvTbl.GetMvName();
+	if( mvname == "Mv_Skill_214A" || mvname == "Mv_Skill_214B" )
+	{
+		//タックル中
+		// _dp("\n タックル中");
+		if( Battle_Std.MoveCode.CheckFlag( def_MC_Shield ) )
+		{
+			// _dp("\n シールドされてる…");
+			return 0;
+		}		
+	}
+	return 1;
+}
+
+//通常コマンドとは別で、プレイヤーが反転コマンドを入れているときのみ、失敗にすることがある
+local validHantenCommand = function( hantenCmdPos = 1 )
+{
+	if( BMvTbl.IsCpu()==0 ) // プレイヤーの時
+	{
+		local cmdpos = BCMDTbl.GetSuccessButtonPos();
+		_dp("\n cmdpos:"+cmdpos+" >= "+hantenCmdPos );
+		
+		if( cmdpos >= hantenCmdPos )
+		{
+			//反転コマンドを入れているので、特定のときをのぞいて失敗
+			local mvname = BMvTbl.GetMvName();
+			local isAddMv = ( mvname == "Mv_Skill_236_JAdd8" || mvname == "Mv_Skill_J236_Add8" );
+			
+			local p_muki = BMvTbl.GetMuki();
+			local enemy = BMvCore.GetEnemyCharaData();
+			if( enemy.push() )
+			{
+				local e_muki = BMvTbl.GetMuki();
+
+				enemy.pop();
+				// 1P→ ←2P　　　 派生最初
+				//      ←2P 1P→　派生ですり抜けた
+				//      ←2P ←1P　さらにワーグナーが振り向いた。この時用。
+				_dpn("チェック:"+p_muki+" == "+e_muki);
+				if( p_muki == e_muki )
+				{
+					_dpn("このときはだせそう");
+					
+					return 1;
+				}
+			}
+			return 0;
+		}
+	}
+	//CPUは常に成功
+	return 1;
+}
+
+local t =
+{
+	
+	Atk_StdBandC =
+	{
+		function CmdBeforeFunc() : (checkGuardTackle_SpecialCancel)
+		{
+			if( checkGuardTackle_SpecialCancel() == 0 ) return 0;
+			return 1;
+		}	
+	},
+
+	Skill_41236SP_ABC = {},
+	Skill_41236SP = {},
+
+	Skill_236EX = {},
+	Skill_236BorC =
+	{
+		function CmdBeforeFunc() : (checkGuardTackle_SpecialCancel)
+		{
+			if( checkGuardTackle_SpecialCancel() == 0 ) return 0;
+			return 1;
+		}
+	},
+	Skill_236A =
+	{
+		function CmdBeforeFunc() : (checkGuardTackle_SpecialCancel)
+		{
+			if( checkGuardTackle_SpecialCancel() == 0 ) return 0;
+			return 1;
+		}
+	},
+	
+	Skill_236_JAdd8 = {
+		num = def_CN_Skill_AddCommand1,
+		posstatus = _PosState_Air
+		command = ["A","B","C"],
+		
+		CmdCheck = 
+		{
+			SkillType = "Special", ParamFlagCheck = { Only = { [2]=1 } },
+			MvCheck = { Only = ["Mv_Skill_236A","Mv_Skill_236B"] },
+		},
+		function CmdBeforeFunc()
+		{
+			//ヒット時LP0=1
+			if( BMvTbl.GetLP(0)==0 ) return 0;
+			
+			//落下部分はダメージのみ派生可能
+			//派生後の読み合い調整＋236A>22Cを出しやすくするため
+			if( Battle_Std.CheckParamFlags( 2, 2 ) )
+			{
+				local hs = BMvTbl.GetMvHitStatus();
+				if( !(hs.Type&_HitType_Damage) ) return 0;
+			}
+			
+			return 1;
+		}
+		UpdateTable = { name = "Mv_Skill_236_JAdd8", }	
+	},
+	
+	Skill_J236_Add8 = {
+		num = def_CN_Skill_AddCommand2,
+		command = ["A","B","C"],
+		
+		CmdCheck = 
+		{
+			SkillType = "Special", ParamFlagCheck = { Only = { [2]=2 } },
+			MvCheck = { Only = ["Mv_Skill_J236A","Mv_Skill_J236B"] },
+		},
+		UpdateTable = { name = "Mv_Skill_J236_Add8", }	
+	},	
+	
+	Skill_0202EX = {},	
+	Skill_0202BorC =
+	{
+		function CmdBeforeFunc() : (checkGuardTackle_SpecialCancel)
+		{
+			if( checkGuardTackle_SpecialCancel() == 0 ) return 0;
+			return 1;
+		}
+	},
+	Skill_0202A =
+	{
+		function CmdBeforeFunc() : (checkGuardTackle_SpecialCancel)
+		{
+			if( checkGuardTackle_SpecialCancel() == 0 ) return 0;
+			return 1;
+		}
+	},	
+	
+	Skill_214EX = {},	
+	Skill_214BorC =
+	{
+		function CmdBeforeFunc()
+		{
+			if( Battle_Std.IsMatchMvNameArray( ["Mv_Skill_214A","Mv_Skill_214B"] ) ) return 0;
+		}
+	},	
+	Skill_214A =
+	{
+		function CmdBeforeFunc()
+		{
+			if( Battle_Std.IsMatchMvNameArray( ["Mv_Skill_214A","Mv_Skill_214B"] ) ) return 0;
+		}
+	},
+	
+	Skill_623A =
+	{
+		function CmdBeforeFunc() : (checkGuardTackle_SpecialCancel)
+		{
+			if( checkGuardTackle_SpecialCancel() == 0 ) return 0;
+			return 1;
+		}
+	},	
+	Skill_623BorC =
+	{
+		function CmdBeforeFunc() : (checkGuardTackle_SpecialCancel)
+		{
+			if( checkGuardTackle_SpecialCancel() == 0 ) return 0;
+			return 1;
+		}
+	},	
+	Skill_623EX = {},	
+	
+	Skill_J236A = {
+		command=["236A","214A"],
+		function CmdAfterFunc() : (validHantenCommand)
+		{
+			if( !validHantenCommand(1) ) return 0;//cmdPos1以上は反転コマンドとして発動可能かチェック
+			return 1;
+		}
+	},
+	Skill_J236BorC = {
+		command=["236B","236C","214B","214C"],
+		function CmdAfterFunc() : (validHantenCommand)
+		{
+			if( !validHantenCommand(2) ) return 0;//cmdPos2以上は反転コマンドとして発動可能かチェック
+			return 1;
+		}
+	},
+	Skill_J236EX =
+	{
+		command=["236C","214C"],
+		function CmdAfterFunc() : (validHantenCommand)
+		{
+			if( !validHantenCommand(1) ) return 0;//cmdPos1以上は反転コマンドとして発動可能かチェック
+			return 1;
+		}
+	},
+
+	Atk_Std6B = {},
+	Atk_Std6C = {},	
+	Atk_Std3C = {},	
+	Atk_Air2C = {},
+	
+	Skill_421A = {
+		command="2+A+D",
+		flags = [ "lastdelay" ],
+		function CmdBeforeFunc() : (checkGuardTackle_SpecialCancel)
+		{
+			if( checkGuardTackle_SpecialCancel() == 0 ) return 0;
+			return 1;
+		}
+		CmdCheck =
+		{
+			SkillType = "SpecialDouji", MvCheck={ Fail="Mv_Skill_421A"},
+			CommandButton = def_PP_CBS_ButtonA|def_PP_CBS_ButtonD,
+			flags=Def_CmdCh_GenDoujiCheck|Def_CmdCh_KeepDoujiCheck,
+		},
+	},
+}
+
+local ar =
+[
+	{
+		CheckMoveName="Mv_Atk_StdA",
+		UpdateMoveName="Mv_Atk_StdB",
+	},
+	{
+		CheckMoveName="Mv_Atk_StdB",
+		UpdateMoveName="Mv_Atk_StdC",
+		ResetTmplName="Atk_StdB",
+	},
+	{
+		CheckMoveName="Mv_Atk_StdC",
+		UpdateMoveName="Mv_Skill_214B",
+		ResetTmplName="Atk_StdC",
+		CmdTmplFlags=def_CMDFlags_AnnounceSmaetSteer, //スマートステアアナウンスの追加
+	},
+	{
+		CheckMoveName="Mv_Skill_214B",
+		UpdateMoveName="Mv_Skill_236EX",
+		ResetTmplName="Skill_214BorC",
+		CmdCheck = 
+		{
+			Cost = { ComboGauge = 10000 },
+			SkillType = "ExSpecial",
+			HitStatus="Damage",
+		}		
+	},
+
+]
+Battle_Std.MakeStdCombo( t, ar );
+
+WAG_CommandTable <- Battle_Std.MakeCommandTable( t );
+

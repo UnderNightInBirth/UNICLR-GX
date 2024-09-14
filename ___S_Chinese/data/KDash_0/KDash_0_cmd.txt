@@ -1,0 +1,181 @@
+//コマンドテーブル skillは格ゲーコマンド表記
+btl_debPrint2("\n[HYD_CommandTable]");
+
+local t =
+{
+	//Skill_41236SP_ABC = {},
+	//Skill_41236SP = {},
+	
+	Skill_41236SP_ABC = 
+	{ //-------------------------------
+		num = def_CN_Skill_41236SP_ABC, name = "Cmd_Skill_41236SP_ABC", command = ["A+B+C"], usegauge = 20000,
+		CmdBeforeFunc = function()
+		{
+			// クロスキャストヴェールオフ中のみA+B+CでIWが出せるよ
+			local gauge_status = BMvEff.Liberate_Get();
+			if( gauge_status == _SpGaugeMode_Normal ) return 0; //ゲージVO状態でしか出せない
+			if( BMvEff.Liberate_GetType() != _LiberateType_Combo ) return 0;
+			
+			return 1;
+		}
+		CmdCheck = { MvCheck={ SkillFail="Mv_Skill_41236SP"}, Cost = { ComboGauge = "OverLiberate" }, SkillType = "SpSpecialDouji", CommandButton = def_PP_CBS_ButtonD },
+		UpdateTable = { name = "Mv_Skill_63214SP", }
+	}
+	
+	Skill_63214SP = {},
+	
+	Skill_41236SP = {},
+	
+	Skill_41236SP_LowCost =
+	{ //-------------------------------
+		num = def_CN_Skill_41236SP-1, name = "Cmd_Skill_41236SP", command = ["41@D,12@236D"], usegauge = 20000,
+		CmdBeforeFunc = function()
+		{
+			local gauge_status = BMvEff.Liberate_Get();
+			
+			if( !Battle_Std.CheckEnemyisDamage() ) return 0;
+			
+			if( gauge_status == _SpGaugeMode_Normal ) return 0;
+			
+			return 1;
+		}	
+		CmdCheck = { MvCheck={ SkillFail="Mv_Skill_41236SP"}, Cost = { ComboGauge = 9500 }, SkillType = "SpSpecial", CommandButton = def_PP_CBS_ButtonD },
+		UpdateTable = { name = "Mv_Skill_41236SP", }
+	}
+	
+	//Skill_41236EX = {},
+	
+	Skill_236EX = {},
+	Skill_236BorC = {},
+	Skill_236A = {},
+	
+	Skill_623EX = {},
+	Skill_623BorC = {},
+	Skill_623A = {},
+	
+	Skill_623_JAdd = 
+	{
+		num = def_CN_Skill_AddCommand5,
+		command = ["A","B","C"], posstatus = _PosState_Air,
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			FrameIDCheck = { Only = 100 },
+			MvCheck = { Only = ["Mv_Skill_623B"] },
+		},
+		UpdateTable = { name = "Mv_Skill_623_JAdd", },
+	},
+	
+	Skill_214EX = {},
+	Skill_214BorC = {},
+	Skill_214A = {},
+	
+	Skill_214_Add = 
+	{
+		num = def_CN_Skill_AddCommand5,
+		command = ["A","B","C"], posstatus = _PosState_Air,
+		function CmdBeforeFunc()
+		{
+			local mvcode = BMvTbl.GetMoveCode();
+			if( !BCMDTbl.CheckCancel( _SkillType_ExSpecial ) )
+			{
+				return 0;
+			}
+			return 1;
+		}
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_214A","Mv_Skill_214B"] },
+			PosState = "Air",
+		},
+		UpdateTable = { name = "Mv_Skill_214_Add", },
+	},
+	
+	Skill_236_AddA = 
+	{
+		num = def_CN_Skill_AddCommand5,
+		command = ["A"],
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			FrameIDCheck = { Only = 100 },
+			MvCheck = { Only = ["Mv_Skill_236A"] },
+		},
+		UpdateTable = { name = "Mv_Skill_236_AddA", },
+	},
+	
+	Skill_236_AddA_B = 
+	{
+		num = def_CN_Skill_AddCommand5,
+		command = ["A"],
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			FrameIDCheck = { Only = 100 },
+			MvCheck = { Only = ["Mv_Skill_236B"] },
+		},
+		UpdateTable = { name = "Mv_Skill_236_AddA_B", },
+	},
+	
+	Skill_236_AddB = 
+	{
+		num = def_CN_Skill_AddCommand5,
+		command = ["B"],
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			FrameIDCheck = { Only = 100 },
+			MvCheck = { Only = ["Mv_Skill_236A","Mv_Skill_236B"] },
+		},
+		UpdateTable = { name = "Mv_Skill_236_AddB", },
+	},
+	
+	//Skill_0202EX = {},	
+	//Skill_0202BorC = {},
+	//Skill_0202A = {},
+
+	//Skill_J236EX = {},
+	//Skill_J236BorC = {},
+	//Skill_J236A = {},
+	
+	Atk_Std6B = {},
+	
+	//Atk_Cro3B = {},
+	
+	Atk_Cro3C = {},
+	
+	//Atk_Air6C = {},
+	//Atk_Air2C = {},
+	Atk_Air6Atk_Clear = {}, // 低空6+攻の暴発を防ぐ
+	
+	Atk_StdBandC = {},
+
+}
+
+local ar =
+[
+	{
+		CheckMoveName="Mv_Atk_StdA",
+		UpdateMoveName="Mv_Atk_StdB",
+	},
+	{
+		ResetTmplName="Std_Atk_StdB",
+		CheckMoveName="Mv_Atk_StdB",
+		UpdateMoveName="Mv_Atk_CroC",
+	},
+	{
+		ResetTmplName="Atk_CroC",
+		CheckMoveName="Mv_Atk_CroC",
+		UpdateMoveName="Mv_Skill_623B",
+	},
+	{
+		ResetTmplName="Skill_623B",
+		CheckMoveName="Mv_Skill_623B",
+		UpdateMoveName="Mv_Skill_623_JAdd",
+	},
+]
+Battle_Std.MakeStdCombo( t, ar );
+
+KDASH_CommandTable <- Battle_Std.MakeCommandTable( t );
+

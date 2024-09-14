@@ -1,0 +1,295 @@
+//コマンドテーブル skillは格ゲーコマンド表記
+btl_debPrint2("\n[NAN_CommandTable]");
+
+local t =
+{
+	//Taunt = { command = ["0202A"] },
+	Skill_41236SP_ABC = {},
+	Skill_41236SP = {},
+	
+	//Skill_63214SP = {},
+	
+	Skill_214EX = {},
+	Skill_214BorC = {},
+	Skill_214A = {},
+	
+	Skill_214_JAddA =
+	{
+		num = def_CN_Skill_AddCommand2,
+		command = ["A",], posstatus = _PosState_Air,
+		
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_214A","Mv_Skill_214B"] },
+			FrameIDCheck = { Only = [100,150] },
+			PosState = "Air",
+			HeightLimit = def_POS_AirDashLimitHeight,
+		},
+	},
+	Skill_214_JAddB =
+	{
+		num = def_CN_Skill_AddCommand3,
+		command = ["B",], posstatus = _PosState_Air,
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_214A","Mv_Skill_214B"] },
+			FrameIDCheck = { Only = [100,150] },
+			PosState = "Air",
+			HeightLimit = def_POS_AirDashLimitHeight,
+		},
+	},
+	Skill_214_JAddC =
+	{
+		num = def_CN_Skill_AddCommand4,
+		command = ["C",], posstatus = _PosState_Air,
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_214A","Mv_Skill_214B"] },
+			FrameIDCheck = { Only = [100,150] },
+			PosState = "Air",
+			HeightLimit = def_POS_AirDashLimitHeight,
+		},
+	},	
+	
+	Skill_236EX = {},
+	Skill_236BorC = {},
+	Skill_236A = {},
+	
+	Skill_236_AddA = 
+	{
+		num = def_CN_Atk_AddCommand1,
+		command = ["A"],
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_236A","Mv_Skill_236B"] },
+			FrameIDCheck = { Only = 100 },
+		},
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.GetMvName()=="Mv_Skill_236A" && BMvTbl.GetPP( def_PP_StdComboChain ) >= 5 )
+			{
+				// スマートステア中なので失敗
+				return 0;
+			}
+			return 1;
+		}
+	},
+	Skill_236_AddB = 
+	{
+		num = def_CN_Atk_AddCommand2,
+		command = ["B"],
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_236A","Mv_Skill_236B"] },
+			FrameIDCheck = { Only = 100 },
+		},
+	},
+	
+	Skill_236_AddC = 
+	{
+		num = def_CN_Atk_AddCommand3,
+		command = ["C"],
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_236A","Mv_Skill_236B"] },
+			FrameIDCheck = { Only = 100 },
+		},
+		CmdTmplFlags=def_CMDFlags_AnnounceSmaetSteer, //スマートステアアナウンスの追加
+	},
+	
+	Skill_J236EX = { CmdCheck = { BallLimit = { [3] = 1 } } },
+	Skill_J236BorC = { CmdCheck = { BallLimit = { [2] = 1 } } },
+	Skill_J236A = { CmdCheck = { BallLimit = { [1] = 1 } } },
+	Skill_J236_AddBandC =
+	{
+		num = def_CN_Skill_AddCommand5, command = 
+		[
+		"B+C"
+		], 
+		posstatus = _PosState_Air,
+		function CmdBeforeFunc()
+		{
+			if( BMvEff.GRD_GetJudgeResult() <= 0 )
+			{
+				// 通常
+				if( BMvTbl.AddAirCount( 0, 0 ) ) return 0;
+			}
+			else
+			{
+				// ヴォーパル
+				if( BMvTbl.AddAirCount( 1, 0 ) ) return 0;
+			}
+			return 1;
+		},
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			PosState="Air",
+			// HeightLimit = def_POS_AirDashLimitHeight, // 高度制限をつける
+			MvCheck = { Only = ["Mv_Skill_J236A","Mv_Skill_J236B"] },
+			FrameIDCheck = { Only = [100,150,500] },
+		},
+		UpdateTable = { name = "Mv_Pass_AirBandC", },
+	},
+	
+	Skill_623EX = {},
+	Skill_623BorC = {},
+	Skill_623A = {},	
+	
+	/*
+	Skill_623_JAddA =
+	{
+		num = def_CN_Skill_AddCommand2,
+		command = ["A"], posstatus = _PosState_Air,
+		
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_623A"] },
+			FrameIDCheck = { Only = [20,150] },
+			PosState = "Air",
+			HitStatus="Damage",
+		},
+	},
+	*/
+	
+	Skill_J214EX = {},
+	Skill_J214BorC = {},
+	Skill_J214A = {},
+	
+	Atk_Air2C = {},
+
+	Atk_Air4C = { command="8+C",
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.AddAirCount( 2, 0 ) ) return 0;
+			return 1;			
+		}
+
+
+	}, // J8C
+	Atk_Air4Atk_Clear = { command=["7+C8","9+C8","6+C8","4+C8","0+C8","1+C8","2+C8","3+C8"] }, // J8Cの暴発を防ぐ
+	
+	Atk_JB_JB = {},
+	
+	Atk_Cro3C = {},
+	
+	
+	Skill_3C_AddJump = 
+	{
+		num = def_CN_Atk_AddCommand10,
+		command = ["^"],
+		function CmdBeforeFunc()
+		{
+			if( BCMDTbl.CheckCancelFlag(1) != _CancelFlag_Hit ) return 0;
+			return 1;			
+		}
+		CmdCheck = 
+		{
+			SkillType = "AddCommand", ParamFlagCheck = { Only = { [3]=4 } } 
+			HitStatus = "Guard",
+			MvCheck = { Only = ["Mv_Atk_Cro3C"] },
+		},
+		
+		UpdateTable = { name = "Mv_Skill_3C_AddJump", },
+	},
+
+	Atk_StdBandC = 
+	{
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.AddAirCount( 0, 0 ) ) return 0;
+			return 1;
+		}
+	},
+	Atk_AirBandC =
+	{
+		function CmdBeforeFunc()
+		{
+			if( BMvEff.GRD_GetJudgeResult() <= 0 )
+			{
+				// 通常
+				if( BMvTbl.AddAirCount( 0, 0 ) ) return 0;
+			}
+			else
+			{
+				// ヴォーパル
+				if( BMvTbl.AddAirCount( 1, 0 ) ) return 0;
+			}
+			return 1;
+		}
+		CmdCheck = {
+			HeightLimit = def_POS_AirDashLimitHeight, // 高度制限をつける
+		}
+	},
+	
+	Atk_StdB =
+	{
+		//"0+B","4+B","6+B","8+B","7+B","9+B"
+		function CmdAfterFunc()
+		{
+			BMvTbl.SetPP(def_PP_Nan_StdBStickType,0);
+			if( BMvTbl.IsCpu()==0 ) // プレイヤーの時
+			{
+				local cpos = BCMDTbl.GetSuccessButtonPos();
+				// _dp("\n cpos:"+cpos );
+				if( cpos == 2 )
+				{
+					_dp("\n 6+B");
+					BMvTbl.SetPP(def_PP_Nan_StdBStickType,6);
+				}
+			}
+		}
+	}
+	
+}
+
+
+
+local ar =
+[
+	{
+		UpdateMoveName="Mv_Atk_StdB", //B
+		CheckMoveName="Mv_Atk_StdA",
+	},
+	{
+		UpdateMoveName="Mv_Atk_StdC", //C
+		CheckMoveName="Mv_Atk_StdB",
+		ResetTmplName="Atk_StdB",
+	},
+	{
+		UpdateMoveName="Mv_Skill_236A", //236A
+		CheckMoveName="Mv_Atk_StdC",
+		ResetTmplName="Atk_StdC",
+	},
+	{
+		UpdateMoveName="Mv_Skill_236_AddC",
+		CheckMoveName="Mv_Skill_236A",
+		ResetTmplName="Skill_236A",
+		SrcCmdTmpl="Skill_236_AddC",
+		// 暫定的に↑の方で記述している
+		// なぜ動かないのかは不明
+		// CmdTmplFlags=def_CMDFlags_AnnounceSmaetSteer, //スマートステアアナウンスの追加
+	},
+	{
+		UpdateMoveName="Mv_Skill_214EX",
+		ResetTmplName="Skill_236_AddC",
+		CheckMoveName="Mv_Skill_236_AddC",
+		CmdCheck = 
+		{
+			Cost = { ComboGauge = 10000 },
+			SkillType = "ExSpecial",
+			HitStatus="Damage",
+		}
+	},
+]
+Battle_Std.MakeStdCombo( t, ar );
+
+NAN_CommandTable <- Battle_Std.MakeCommandTable( t );
+

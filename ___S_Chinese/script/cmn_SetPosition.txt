@@ -1,0 +1,615 @@
+//x ,y :ゲーム座標
+//tx,ty:判定ツール座標（128で割った値）
+//sx,sy,ex,ey:判定ツール座標（128で割った値）
+
+//SetPostionの注意事項として、親の相対座標で動いているオブジェクトには使いにくい
+//座標=親からの相対なので、SetPositonで0,0を入れたときに親にくっつく（画面の中央にこない）
+
+//これは別で定義してもいいかな
+//個別関数で使う定数
+const def_SetPos_NoX = 1;
+const def_SetPos_NoY = 2;
+const def_SetPos_FrontOnly = 4;
+
+// BtlPl.SetPositon <- {};
+//いろんなSetPositonの関数
+
+//-----------------------------------------------------------------------------
+// プレイヤー・オブジェクト用
+//-----------------------------------------------------------------------------
+
+//これ単体では使わない
+BtlPl.SetPos_Warp_Core <- function( core, param={} )
+{
+	if( core.push() )
+	{
+		local pos = BMvTbl.GetPosition();
+		core.pop();
+		
+		//目標までの距離を取得（+なら正面）
+		local posst = BMvEff.GetPointStatus( { target=core } );
+		local kyori_x = posst.pos_x*BMvTbl.GetMuki();
+		local kyori_y = posst.pos_y;
+		
+		local off_x = ("off_x" in param)? param.off_x : 0;
+		local off_y = ("off_y" in param)? param.off_y : 0;
+		local flags = ("flags" in param)? param.flags : 0;
+		
+		// _dpn("距離:"+kyori_x/128+", "+kyori_y/128 );
+		
+		//これより移動しそうだったら補正をかける
+		local max_x = ("max_x" in param)? param.max_x : null;
+		local max_y = ("max_y" in param)? param.max_y : null;
+		local min_x = ("min_x" in param)? param.min_x : null;
+		local min_y = ("min_y" in param)? param.min_y : null;
+		// local set_x = ("set_x" in param)? param.set_x : null;
+		// local set_y = ("set_y" in param)? param.set_y : null;
+		
+		// local use_pos = { x=pos.x+x*BMvTbl.GetMuki(), y= pos.y+y };
+		local use_pos = { x=kyori_x+off_x, y=kyori_y+off_y };
+		if( max_x != null && use_pos.x > max_x ) use_pos.x = max_x;
+		if( max_y != null && use_pos.y > max_y ) use_pos.y = max_y;//これより上にでる
+		if( min_x != null && use_pos.x < min_x ) use_pos.x = min_x;
+		if( min_y != null && use_pos.y < min_y ) use_pos.y = min_y;//これより下に出る
+		
+		if( !(flags&def_SetPos_NoX) )
+		{
+			if( flags&def_SetPos_FrontOnly && kyori_x<0 )
+			{
+				//前のみ＆後ろにいるので何もしない
+			}
+			else
+			{
+				BMvTbl.SetPosition( { x=use_pos.x, flags=_Position_Add|_Position_ChangeMuki } );
+			}
+		}
+		if( !(flags&def_SetPos_NoY) ) BMvTbl.SetPosition( { y=use_pos.y, flags=_Position_Add } );
+		// BMvTbl.SetPosition( { x=pos.x+x*BMvTbl.GetMuki(), y=pos.y+y } );
+	}
+}
+
+//敵の座標に出したり移動したりする
+//完全なサーチ・ワープ
+//相手の座標は相手の足位置なので、この関数で呼ぶオブジェクトは0,0座標が中心になった絵であるべき
+//相手が取得できないと動かない
+//off_x : 自分から見てのオフセット座標
+//off_y : 自分から見てのオフセット座標
+BtlPl.SetPos_Warp_Enemy <- function( param={} )
+{
+	BtlPl.SetPos_Warp_Core( BMvCore.GetEnemyCharaData(), param );
+}
+
+BtlPl.SetPos_Warp_Player <- function( param={} )
+{
+	BtlPl.SetPos_Warp_Core( BMvCore.GetPlayerCharaData(), param );
+}
+
+
+
+//local pos = BMvEff.GetAttackHitPos(); //ヒットエフェクトの座標を取得
+//Battle_Std.SetPosition_DamageHanteiRect(); // 半ロック
+
+//単体では使わない
+BtlPl.SetPos_CoreRect <- function( core, param={} )
+{
+	if( core.push() )
+	{
+		local pot = Battle_Std.GetPoint();
+		core.pop();
+		
+		if( pot.x != _Hantei_Error )
+		{
+			BMvTbl.SetPosition( { x=pot.x, y=pot.y } );
+			return 1;
+		}
+	}
+	return 0;
+}
+
+//プレイヤーの判定のSX,SYに移動する
+//rect : 矩形の配列 ... [_Hantei_Etc, 0]
+//手の位置にエフェクトを追従させたりに使う
+//UNI アカツキ 22攻
+BtlPl.SetPos_PlayerRect <- function( param={} )
+{
+	return BtlPl.SetPos_CoreRect( BMvCore.GetPlayerCharaData(), param );
+}
+
+// BtlPos
+// CmnPos
+
+//screen_centerとかあってもいいかも？いらないか
+
+//プレイヤーにくっつくマーカーのようなものに使う
+//基本的に重なり判定の上にくっつくが、重なりがないときは_dfoyを使う
+//par_y : 重なりのどのあたりに出すか 100:てっぺん 0:一番下
+//off_y
+BtlPl.SetPos_MarkingPlayer <- function( param={} )
+{
+	local _par_y = ("par_y" in param)? param.par_y : 100;
+	local _off_y = ("off_y" in param)? param.off_y : -150; // なんとなくの値なので注意
+	
+	local player = BMvCore.GetPlayerCharaData();
+	Battle_Std.SetPos_MarkingTarget( player, _par_y/10, _off_y );
+}
+
+//敵バージョン
+//par_y
+//off_y
+BtlPl.SetPos_MarkingEnemy <- function( param={} )
+{
+	local _par_y = ("par_y" in param)? param.par_y : 100;
+	local _off_y = ("off_y" in param)? param.off_y : -150; // なんとなくの値なので注意
+
+	local enemy = BMvCore.GetEnemyCharaData();
+	Battle_Std.SetPos_MarkingTarget( enemy, _par_y/10, _off_y );
+}
+
+//判定に重なっていたら引っ張る
+//吸い付くフレーム的なパワー指定もある
+//rect_p : 自分のチェックする判定
+//rect_e : 相手のチェックする判定
+//ヒットorガード中のみ発動（危ないので）
+//UNI ナナセ 623
+BtlPl.SetPos_PullX_Enemy <- function( param={} )
+{
+	local frame = ("frame" in param)? param.frame : 1;
+	if( frame<1 ) frame = 1;
+	
+	local enemy = BMvEff.CheckHantei( { src=param.rect_p, dst=param.rect_e, flags=_HC_EnemyPc } );
+	if( enemy.isdone() )
+	{
+		local posst = BMvEff.GetPointStatus( { target=enemy } );
+		local kyori = posst.pos_x; // 向きを計算しない
+		local move_pow = -kyori/frame;
+		
+		if( enemy.push() )
+		{
+			local bs = BtlMvStd.GetBoundStatus();
+			if( bs.isDone )
+			{
+				BMvTbl.SetPosition( { x=move_pow, flags=_Position_Add } );
+			}
+			enemy.pop();
+		}
+	}
+}
+
+//UNI カーマイン FFのディゾルブ移動
+//プレイヤーが向いてる方向に移動させる（オブジェクトから呼ぶ）
+//画面外に進んでいたら補正をかける
+//x
+//y
+BtlPl.SetPos_MovePlayerMuki <- function( param={} )
+{
+	local player = BMvCore.GetPlayerCharaData();
+	if( player.push() )
+	{
+		local muki = BMvTbl.GetMuki();
+		
+		player.pop();
+		
+		local x = ("x" in param)? param.x : 0;
+		local y = ("y" in param)? param.y : 0;
+		
+		BMvTbl.SetPosition( { x=x*muki, y=y, flags=_Position_Add } );
+		
+		BtlPl.SetPos_ExcessGamenHajiX();
+	}
+}
+
+//UNI ケイアス ダハーカ　※ダハーカは端の補正がない
+//向いている向きに移動させる
+//画面外に進んでいたら補正をかける
+//x
+//y
+BtlPl.SetPos_MoveMuki <- function( param={} )
+{
+	local x = ("x" in param)? param.x : 0;
+	local y = ("y" in param)? param.y : 0;
+	
+	BMvTbl.SetPosition( { x=x, y=y, flags=_Position_Add|_Position_ChangeMuki } );
+	
+	BtlPl.SetPos_ExcessGamenHajiX();
+}
+
+//画面端に出ていたら画面内に移動する
+//オフセット座標指定も可能
+//off_x : ＋なら画面中央、－ならより画面外に（壁から見てる感じ）
+//基本的には端に向かっていないと処理をしない方がいいような気もする
+//def_SetPos_FrontOnly : 端に向かってるときだけ処理をする
+BtlPl.SetPos_ExcessGamenHajiX <- function( param={} )
+{
+	local off_x = ("off_x" in param)? param.off_x : 0;
+	local flags = ("flags" in param)? param.flags : 0;
+	//画面外に出てたら補正をかけよう
+	local use_haji_x = def_POS_GamenHajiX - off_x;
+	
+	local set_pos = BMvTbl.GetPosition( 0 ); //現在座標
+	if( set_pos.x >= use_haji_x )
+	{
+		set_pos.x = use_haji_x;
+	}
+	else if( set_pos.x <= -use_haji_x )
+	{
+		set_pos.x = -use_haji_x;
+	}
+	if( flags&def_SetPos_FrontOnly )
+	{
+		local muki_is_haji = ( (BMvTbl.GetPosition().x * BMvTbl.GetMuki()) > 0 )? 1 : 0;
+		if( muki_is_haji )
+		{
+			BMvTbl.SetPosition( set_pos ); //座標更新
+			return 1;
+		}
+	}
+	else
+	{
+		BMvTbl.SetPosition( set_pos ); //座標更新
+		return 1;
+	}
+}
+
+
+
+
+
+//
+// BMvTbl.SetPosition( { x=-320*128*BMvTbl.GetMuki() } ); // こんな処理はかいてはいけない
+
+
+
+// カメラ関係
+
+//_GetPos_ViewCamera : 追従先で正しいカメラ
+//_GetPos_DispCamera : この1Fにかける！ってときに使う。カメラが拡縮中とかだとすぐズレる
+//_GetPos_TrueCamera : 毎フレーム追従してるカメラ…なんだけど、なんかいまいち？
+
+//カメラ外にあったら補正をかける
+//UNI ケイアス ダハーカ
+BtlPl.SetPos_ExcessCamera <- function()
+{
+	local cam_pos = BMvEff.GetCameraRect( { flags=_GetPos_ViewCamera } );
+	local pos = BMvTbl.GetPosition();
+	if( pos.x < cam_pos.sx ) BMvTbl.SetPosition( { x=cam_pos.sx } );
+	if( pos.x > cam_pos.ex ) BMvTbl.SetPosition( { x=cam_pos.ex } );
+}
+
+//壁のSX(背後)に張り付く
+BtlPl.SetPos_CameraBack <- function( param={} )
+{
+	local off_x = ("off_x" in param)? param.off_x : 0;
+	// local off_y = ("off_y" in param)? param.off_y : 0;
+
+	local cam_pos = BMvEff.GetCameraRect( { flags=_GetPos_ViewCamera } );
+	local use_x = ( BMvTbl.GetMuki()==1 )? cam_pos.sx : cam_pos.ex;
+	BMvTbl.SetPosition( { x=use_x+off_x*BMvTbl.GetMuki() } );
+}
+
+//壁のEX(正面)に張り付く
+BtlPl.SetPos_CameraFront <- function( param={} )
+{
+	local off_x = ("off_x" in param)? param.off_x : 0;
+	// local off_y = ("off_y" in param)? param.off_y : 0;
+	
+	local cam_pos = BMvEff.GetCameraRect( { flags=_GetPos_ViewCamera } );
+	local use_x = ( BMvTbl.GetMuki()==1 )? cam_pos.ex : cam_pos.sx;
+	BMvTbl.SetPosition( { x=use_x+off_x*BMvTbl.GetMuki() } );
+}
+
+//壁のEX(正面)に移動
+BtlPl.SetPos_WallCameraFront <- function( param={} )
+{
+	local off_x = ("off_x" in param)? param.off_x : 0;
+	// local off_y = ("off_y" in param)? param.off_y : 0;
+	
+	local cam_pos = BMvEff.GetCameraRect( { flags=_GetPos_TrueCamera|_GetPos_TypeWall } );
+	local use_x = (BMvTbl.GetMuki()==1)? cam_pos.ex : cam_pos.sx;
+	BMvTbl.SetPosition( { x=use_x+off_x*BMvTbl.GetMuki() } );
+}
+
+//_GetPos_TypeWallが無いと壁に埋まる
+//見た目の端から飛び道具を出して、背後から攻撃したいときとかに使う
+//UNI ヒルダ 623B
+BtlPl.SetPos_ScreenCameraFront <- function( param={} )
+{
+	local off_x = ("off_x" in param)? param.off_x : 0;
+	// local off_y = ("off_y" in param)? param.off_y : 0;
+	
+	local cam_pos = BMvEff.GetCameraRect( { flags=_GetPos_TrueCamera|_GetPos_TypeScreen } );
+	local use_x = (BMvTbl.GetMuki()==1)? cam_pos.ex : cam_pos.sx;
+	BMvTbl.SetPosition( { x=use_x+off_x*BMvTbl.GetMuki() } );
+}
+
+BtlPl.SetPos_CameraCenter <- function( param={} )
+{
+	local off_x = ("off_x" in param)? param.off_x : 0;
+	local off_y = ("off_y" in param)? param.off_y : 0;
+	local set_x = ("set_x" in param)? param.set_x : null;
+	local set_y = ("set_y" in param)? param.set_y : null;
+	
+	local c_pos = BMvEff.GetCameraPosition( { x=0, y=0, flags=_GetPos_ViewCamera } );
+	BMvTbl.SetPosition( { x=c_pos.x, y=c_pos.y } );
+	BMvTbl.SetPosition( { x=off_x, y=off_y, flags=_Position_Add|_Position_ChangeMuki } );
+	
+	if( set_x != null )
+	{
+		BMvTbl.SetPosition( { x=set_x } );
+	}
+	if( set_y != null )
+	{
+		BMvTbl.SetPosition( { y=set_y } );
+	}
+}
+
+//指定座標先がカメラ外にあるときに自分が後退する
+//カメラ外で掴むような距離だった場合、はみ出ている分自分が後退するとか
+//x : 自分から見てこのX先が画面外なら、その分下がる
+//UNI エルトナム エテグラ
+BtlPl.SetPos_CameraOver_BackCorrect <- function( param={} )
+{
+	local x = ("x" in param)? param.x : 0;
+	local camera_rc = BMvEff.GetCameraRect( { flags=_GetPos_TrueCamera|_GetPos_TypeWall|_GetPos_Offset|_GetPos_NoMuki } );
+	local merikomi_x = ( BMvTbl.GetMuki() == 1 )? camera_rc.ex-x : camera_rc.sx-x;
+	if( merikomi_x < 0 )
+	{
+		BMvTbl.SetPosition( { x=merikomi_x, flags=_Position_Add|_Position_ChangeMuki } );
+		return 1;
+	}
+	return 0;
+}
+
+
+//相手が端背負いのときに1ドット隙間を作る
+//これを呼んでから座標移動すると、端背負っている相手の裏に回れる
+//UNI ヒルダ 421A など
+//自分と相手の座標が同じ時だけ処理するフラグはあってもいいかも
+BtlPl.SetPos_MakeGamenHajiSpace_Enemy <- function( param={} )
+{
+	local shift_enemy = 0;
+	// local pos = BMvTbl.GetPosition(0);
+	local enemy = BMvCore.GetEnemyCharaData();
+	// local flags = ("flags" in param)? param.flags : 0;
+	if( enemy.push() )
+	{
+		local epos = BMvTbl.GetPosition(0);
+		
+		//画面端にくっついているようなら
+		if( abs(epos.x) == def_POS_GamenHajiX )
+		{
+			// if(flags&1 )
+			
+			//1ドット隙間作成
+			BMvTbl.SetPosition( { x=1, flags=( _Position_Add | _Position_CaptureShift | _Position_ChangeMuki ) } );
+			shift_enemy = 1;
+		}
+		enemy.pop();
+		return shift_enemy;
+	}
+	return shift_enemy;
+}
+
+
+//後ろにジャンプして、端背負いの相手の裏に回るかどうかを1Pと2Pで共通にする処理
+BtlPl.SetPos_NoMoveBackStageHaji_Enemy <- function( param={} )
+{
+	local corner_distance = Battle_Std.GetBackStageDistance();
+	local p_muki = BMvTbl.GetMuki();
+	
+	// 相手と同じ向きを向いている時だけやる
+	local enemy = BMvCore.GetEnemyCharaData();
+	if( enemy.push() )
+	{
+		local e_muki = BMvTbl.GetMuki();
+		enemy.pop();
+		
+		local vec = BMvTbl.GetVector( { flags=_Vector_Normal } );
+		local limit = (vec.x+vec.addx)-64;
+		if( corner_distance < -limit && p_muki==e_muki )
+		{
+			BMvTbl.SetPosition( { x=-(def_POS_GamenHajiX+limit)*BMvTbl.GetMuki(), } );
+			return 1;
+		}
+	}
+	return 0;
+}
+
+//ヒットのたびに相手を動かす
+//バティスタのレーザーとか多段の攻撃のやられ感を出す時に使う
+//毎フレーム動かすのと、ダメージのたびにズラすのがあるけど、とりあえず後者のみ作成
+//背後の端までの距離をみて移動量を調節する
+BtlPl.SetPos_ShiftDamageMove_Enemy <- function( param={} )
+{
+	if( Battle_Std.CheckDamageTiming() )
+	{
+		local shift = { x=("x" in param)? param.x : 0, y=("y" in param)? param.y : 0 };
+		local min_back_corner = ("min_back_corner" in param)? param.min_back_corner : 0;//これより端にいかない
+		
+		local enemy = BMvCore.GetEnemyCharaData(); // 敵情報を得る
+		if( enemy.push() )
+		{
+			local back_corner_kyori = Battle_Std.GetBackCornerDistance();
+			
+			if( back_corner_kyori > min_back_corner )
+			{
+				BMvTbl.SetPosition( {x=-back_corner_kyori/5, flags=_Position_Add|_Position_ChangeMuki } ); //
+				BMvTbl.SetPosition( {x=shift.x, y=shift.y, flags=_Position_Add|_Position_ChangeMuki } ); // ヒット時ちょっとずつ後ろに押す
+			}
+			//TODO:min_back_cornerでとどまるように処理書いたほうがいいかも
+			enemy.pop();
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------
+// オブジェクト専用
+//-----------------------------------------------------------------------------
+
+//相手が近くにいたら、ちょっと吸い付く
+//オブジェクト側から呼び出す
+//完全に相手位置サーチだと強すぎてしまう位置指定飛び道具で使う
+//電撃FC 司波達也 ミストディスパージョン…はちょっとバグあって、近すぎる位置で打つと、逆に離れていた
+//TODO:X範囲のみ,y範囲のみ,半径範囲、とバージョン作るとよさそう
+//len_x : X範囲距離（整数）
+BtlOb.SetPos_MagnetX_Enemy <- function( param={} )
+{
+	// 相手までの距離を見て、近いほど磁石みたいに張り付く
+	local enemy = BMvCore.GetNearEnemyCharaData(); // 相手情報取得
+	if( enemy.isdone() ) // 有効かどうか一応チェック
+	{
+		local ePosst = BMvEff.GetPointStatus( { target=enemy } ); // 位置情報取得
+		
+		local x_kyori = ePosst.distance_x;
+		// local y_kyori = ePosst.distance_y;
+		// _dpn("x_kyori:"+x_kyori/128);
+		if( ePosst.distance_x < param.len_x ) // 範囲内にいる
+		{
+			local par = 100 - ( x_kyori * 100 / param.len_x ); // 0～100
+			// _dpn("ePosst.pos_x:"+ePosst.pos_x);
+			BMvTbl.SetPosition({ x=ePosst.pos_x*par/100, flags=_Position_Add });
+		}
+		/*
+		if( y_kyori < _y ) // 範囲内にいる
+		{
+			local par = 100 - ( y_kyori * 100 / _y ); // 0～100
+			BMvTbl.SetPosition({ x=y_kyori*par/100, flags=_Position_Add });
+		}
+		*/
+	}
+}
+
+//範囲内相手の座標にピッタリくっつく
+//範囲外なら限界値でとどまる
+//基本的にはしっかりとサーチにして当てたいけど、あんまり遠くに出るとバグっぽく見えてやばいときに使う
+//判定ツールの矩形の範囲内に入っていたらそこにいく、みたいなイメージで使おう
+//sx
+//sy
+//ex
+//ey
+BtlOb.SetPos_WithInRange_Enemy <- function( param={} )
+{
+	//ツール座標に変換
+	// _dpn("pos"+_sx+","+_sy+","+_ex+","+_ey);
+	
+	param.sx = param.sx * 128;
+	param.sy = param.sy * 128;
+	param.ex = param.ex * 128;
+	param.ey = param.ey * 128;
+	
+	
+	local enemy = BMvCore.GetEnemyCharaData();
+	if( enemy.isdone() )
+	{
+		local posst = BMvEff.GetPointStatus( { target=enemy } );
+		local x_kyori = posst.pos_x*BMvTbl.GetMuki();
+		local y_kyori = posst.pos_y;//
+		// _dpn("kyori:"+x_kyori/128+", "+y_kyori/128);
+		
+		if( x_kyori <  param.sx ) x_kyori= param.sx;
+		if( x_kyori >  param.ex ) x_kyori= param.ex;
+		if( y_kyori >  param.ey ) y_kyori= param.ey;
+		if( y_kyori <  param.sy ) y_kyori= param.sy;
+		
+		BMvTbl.SetPosition({ x=x_kyori, y=y_kyori, flags=_Position_Add|_Position_ChangeMuki });
+		// _dp(" -> "+x_kyori/128+", "+y_kyori/128);
+	}
+}
+
+//↑の判定の矩形を使うバージョン
+//rect : 矩形の配列 ... [_Hantei_Etc, 0]
+BtlOb.SetPos_InRectRange_Enemy <- function( param={} )
+{
+	local rc = BMvEff.GetHanteiRect( { check=param.rect, flags=_HanteiFlag_NoMukiChange|_HanteiFlag_Tool } );
+	if( rc.sx != _Hantei_Error ) // 存在するか
+	{
+		BtlOb.SetPos_WithInRange_Enemy( rc );
+	}
+}
+
+// 敵の近くに移動（前方向のみ）
+// BtlOb.SetPos_MoveForwardFartherX_Enemy( { farther_x=100*128, addlimit_x=50*128 } ); //これより遠いと近づく, 加算限界
+// addlimit_x : 加算限界
+// farther_x  : これより遠いと近づく  
+BtlOb.SetPos_MoveForwardFartherX_Enemy <- function( param={} )
+{
+	local enemy = BMvCore.GetEnemyCharaData();
+	if( enemy.isdone() )
+	{
+		local posst = BMvEff.GetPointStatus( { target=enemy } );
+		local x_kyori = posst.pos_x*BMvTbl.GetMuki();
+		
+		local min_len_x = param.farther_x;
+		local max_len_x = param.farther_x + param.addlimit_x;
+
+		// _dpn("x_kyori:"+x_kyori/128+" min:"+min_len_x/128+" max:"+max_len_x/128 );
+		
+		if( x_kyori<=max_len_x && x_kyori>min_len_x )
+		{
+			// 前方の範囲内　最大addlimit_xドット動く
+			// _dpn("A:"+(x_kyori-min_len_x)/128 );
+			BMvTbl.SetPosition({ x=x_kyori-min_len_x, flags=_Position_Add|_Position_ChangeMuki });
+		}
+		else if( x_kyori>max_len_x )
+		{
+			// 前方の範囲外　最大addlimit_xドット動く
+			// _dpn("B:"+min_len_x/128 );
+			BMvTbl.SetPosition({ x=min_len_x, flags=_Position_Add|_Position_ChangeMuki });
+		}
+	}
+}
+
+//rad   : 半径
+//rad_x : 半径(X)
+//rad_y : 半径(Y)
+//w     : 矩形の辺の長さ
+//h     : 矩形の辺の長さ
+//今の座標を中心としてランダムに動かす
+BtlOb.SetPos_CenterRandom <- function( param={} )
+{
+	local rad = ("rad" in param)? param.rad : 0;
+	local rad_x = ("rad_x" in param)? param.rad_x : rad;//rad指定があれば同じものを使う
+	local rad_y = ("rad_y" in param)? param.rad_y : rad_x;//rad_xがあれば同じものを使う
+	if( rad_x != 0 )
+	{
+		local rad_pos = BMvEff.Random_PointRad( { radx=rad_x, rady=rad_y } );
+		BMvTbl.SetPosition( { x=rad_pos.x, y=rad_pos.y, flags=_Position_Add|_Position_ChangeMuki } );
+		return 1;
+	}
+	
+	//四角で取る
+	local w = ("w" in param)? abs(param.w) : 0;
+	local h = ("h" in param)? abs(param.h) : 0;
+	if( w>0 || h>0 )
+	{
+		local rect_pos = BMvEff.Random_PointRect( { sx=-w/2, sy=-h/2, ex=w/2, ey=h/2 } );
+		BMvTbl.SetPosition( { x=rect_pos.x, y=rect_pos.y, flags=_Position_Add|_Position_ChangeMuki } );
+		return 1;
+	}
+	return 0;
+}
+
+//ゲージアイコン系の表示位置指定
+//UNI ケイアス アイコン　※これは左右で向きが変わっていた。多分_Direction_Rightはあった方がいいので追加
+//UNI ユズリハ アイコン
+//x : 画面中央からどれくらい端にズラすか
+//y : 
+BtlOb.SetPos_GaugeIcon <- function( param={} )
+{
+	BMvEff.SetObjectFlags( { flags=_ObjFlags_MoveTimeStopAll|_ObjFlags_NoGround|_ObjFlags_NoCamera|_ObjFlags_NoRenderOrder|_ObjFlags_NoRenderBlackOut } );
+	
+	local pl = BMvTbl.GetPlayerSide();
+	local x = ("x" in param)? param.x : 150*128;
+	local y = ("y" in param)? param.y : -504*128; // 決め打ち（ユズリハ・ケイアスが-504）
+	local pos = { x=0, y=(-640<<7)+136*128 }; // 120*128
+	if( pl==0 )
+	{
+		pos.x = -x;
+	}
+	else
+	{
+		pos.x = x;
+	}
+	BMvTbl.SetPosition( { x=pos.x, y=pos.y } ); // 座標指定
+	BMvTbl.SetPrio( _CharaPrio_Parent_BG ); // プライオリティを設定
+	BMvTbl.SetMuki( _Direction_Right ); // 右向き固定
+}

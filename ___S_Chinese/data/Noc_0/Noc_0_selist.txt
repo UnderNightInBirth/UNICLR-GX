@@ -1,0 +1,674 @@
+//-----------------------------------------------------------------------------
+// ＳＥ定義
+//-----------------------------------------------------------------------------
+
+//print("\nロード");
+
+Battle_Std.SeTable[Def_ChrNo_Noc] = {};
+local se = Battle_Std.SeTable[Def_ChrNo_Noc];
+
+se["登場１"] <- 
+[
+	{
+		selist =
+		{
+			common = [80,81],
+			// 女キャラには「あの子」、それ以外は「あの人」
+			[Def_ChrNo_Lin] = [80,82],
+			[Def_ChrNo_Ori] = [80,82],
+			[Def_ChrNo_Vat] = [80,82],
+			[Def_ChrNo_Yuz] = [80,82],
+			// [Def_ChrNo_Hil] = [80,82], // ヒルダは「あの人」
+			[Def_ChrNo_Elt] = [80,82],
+			[Def_ChrNo_Nan] = [80,82],
+			[Def_ChrNo_Wag] = [80,82],
+			[Def_ChrNo_Mik] = [80,82],
+			[Def_ChrNo_Pho] = [80,82],
+		},
+	},
+	{
+		selist =
+		{
+			common = [110,111,113,109,112],
+		},
+		[110] = { delayframe = 90 }, // 指定フレーム遅らせる
+		[111] = { delayframe = 90 }, // 指定フレーム遅らせる
+		[113] = { delayframe = 90 }, // 指定フレーム遅らせる
+		[109] = { delayframe = 90 }, // 指定フレーム遅らせる
+		[112] = { delayframe = 90 }, // 指定フレーム遅らせる
+	},
+]
+
+se["登場２"] <- {
+	average = 0,
+	selist =
+	{
+		common = [100],
+	},
+};
+
+//起き上がりと同様、おおざっぱに定義するか、細かく定義するかの二択です。
+//「ラウンド勝利」を定義すると、ラウンド勝利時に必ず再生されます。
+//そのため、圧勝とか辛勝で分けたいときはラウンド勝利は定義しないようにして下さい。
+
+se["ラウンド勝利"] <- {
+	selist =
+	{
+		common = [115,116,118,119],
+	},
+};
+
+
+// se["決着勝利"] <- 
+
+se["決着勝利_見下し_Init"] <- 
+[
+	{
+		selist =
+		{
+			common = [124,128,129,130],
+		}
+	},
+]
+
+se["決着勝利_笑い_Init"] <- 
+[
+	{
+		selist =
+		{
+			common = [121],
+		}
+	},
+	{
+		selist =
+		{
+			common = [122],
+		},
+		[122] = { delayframe = 30 }, // 指定フレーム遅らせる
+	},
+	{
+		selist =
+		{
+			common = [123],
+		},
+		[123] = { delayframe = 200 }, // 指定フレーム遅らせる
+	},
+]
+
+se["タイムアップ決着勝利"] <- {
+	selist =
+	{
+		common = [115,116,118,119],
+	}
+};
+se["タイムアップ敗北１"] <- {
+	selist = { common = [138,139], }
+};
+se["タイムアップ敗北２"] <- {
+	selist = { common = [138,139], }
+};
+
+
+se["立ち弱攻撃"] <- {
+	Param0 = 10,
+	average = 75,
+	selist = { common = [140,145], }
+};
+
+se["立ち中攻撃"] <- {
+	Param0=10,
+	average = 80,
+	selist = { common = [143,153,155,156], }
+};
+
+se["Mv_Atk_B_B_FU"] <- {
+	Param0=10,
+	// average = 75,
+	selist = { common = [157,166], }
+};
+
+se["立ち強攻撃"] <- 
+[
+	{
+		Param0=10,
+		average = 90,
+		selist = { common = [159,161,162], }
+	},
+];
+
+se["しゃがみ弱攻撃"] <- {
+	Param0=10,
+	average = 75,
+	selist = { common = [140,144,145], }
+};
+se["しゃがみ中攻撃"] <- {
+	Param0=10,
+	average = 75,
+	selist = { common = [142,154], }
+};
+se["しゃがみ強攻撃"] <- {
+	Param0=10,
+	selist = { common = [160,164,165], }
+};
+se["ジャンプ弱攻撃"] <- {
+	Param0=10,
+	average = 75,
+	selist = { common = [140,145,146], }
+};
+se["ジャンプ中攻撃"] <- {
+	Param0=10,
+	average = 80,
+	selist = { common = [141,151,157], }
+};
+se["ジャンプ強攻撃"] <-
+[
+	{
+		Param0=10,
+		average = 90,
+		selist = { common = [150,162,166], }
+	},
+];
+
+se["ダッシュ中攻撃"] <- {
+	Param0=10,
+	average = 75,
+	selist = { common = [163,157], }
+};
+se["ダッシュ強攻撃"] <- {
+	Param0=10,
+	selist = { common = [167,172], }
+};
+
+
+se["投げ成功"] <- {
+	Param0=10,
+	selist = { common = [190,195], }
+};
+
+
+se["投げスカり"] <- {
+	selist = { common = [211,214], }
+};
+
+se["投げ抜け"] <- {
+	selist = { common = [220,221], }
+};
+
+se["ガーキャン"] <- {
+	selist = { common = [222,223], }
+}
+
+
+se["振り向き"] <- {
+	average = 30,
+	selist = { common = [231,233], },
+};
+
+se["挑発"] <- {
+	selist = { common = [242,245], }
+};
+
+se["アサルト"] <- {
+	selist = { common = [250,252], }
+};
+
+se["前ダッシュ"] <- {
+	average = 80,
+	selist = { common = [260,261,264], }
+};
+se["後ろダッシュ"] <- {
+	selist = { common = [272,273,275], }
+};
+
+se["ガード弱"] <- {
+	average = 50,
+	selist = { common = [280,281,282,283,284], }
+}
+
+se["ガード中"] <- {
+	average = 75,
+	selist = { common = [290,291,292,294], }
+}
+
+se["ガード強"] <- {
+	selist = { common = [301,303,304,305,306,307,308,309], }
+}
+
+se["中段ガード成功"] <- {
+	selist = { common = [311,312,313,314,315], }
+};
+se["ガード失敗"] <- {
+	selist = { common = [320,321,322,323], }
+};
+se["ＧＲＤブレイク"] <- {
+	selist = { common = [320,321,322,323], }
+};
+
+se["受け身"] <- {
+	selist = { common = [330,331,332,333,], }
+};
+
+
+se["シールド発動"] <- {
+	average = 50,
+	selist = { common = [340,341,342,343], }
+}
+
+se["シールド成功"] <- {
+	selist = { common = [350,351,352,353,354,355,356], }
+}
+
+se["やられ弱"] <- {
+	average = 50,
+	selist = { common = [360,361,362,363,364,365], }
+}
+
+se["やられ中"] <- {
+	average = 75,
+	selist = { common = [370,371,372,373,374,375,376], }
+}
+
+se["やられ強"] <- {
+	selist = { common = [380,381,382,383,384,385,386,387,388], }
+}
+
+se["ラウンドＫＯ_膝崩れ"] <- {
+	dying = 1,
+	selist = { common = [391], }
+};
+
+se["ラウンドＫＯ_通常"] <- {
+	dying = 1,
+	selist = { common = [390], }
+};
+
+// 
+
+se["ラウンド敗北"] <- {
+	dying = 1,
+	selist = { common = [400,401,402,403], }
+};
+
+se["決着ＫＯ_膝崩れ"] <- {
+	dying = 1,
+	selist = { common = [391], }
+};
+
+se["決着ＫＯ_通常"] <- {
+	dying = 1,
+	selist = { common = [410,411,412,413], }
+};
+
+
+se["起き上がり"] <- {
+	selist = { common = [415,416,417,418,419], }
+};
+se["重傷起き上がり"] <- {
+	selist = { common = [426,427,428,429,430], }
+};
+
+
+
+se["ヴェールオフ"] <- {
+	selist = { common = [440,441,442], }
+};
+
+se["チェインシフト"] <- {
+	selist = { common = [450,451,456], }
+};
+se["コンセントレーション"] <- {
+	selist = { common = [460,462,464], }
+};
+
+//特殊技
+se["Mv_Atk_Air2C_FU"] <- 
+[
+	{
+		Param0=10,
+		selist = { common = [185,173], }
+	},
+	{
+		Param0=20, // ため
+		selist = { common = [158], }
+	},
+]
+
+se["Mv_Atk_Cro3C_FU"] <- 
+[
+	{
+		Param0=10,
+		selist = { common = [174,178], }
+	},
+	{
+		Param0=20, // ため
+		selist = { common = [175], }
+	}
+]
+
+//２３６攻
+se["Mv_Skill_236A_FU"] <- {
+	Param0=10,
+	selist = { common = [480,481], }
+};
+
+se["Mv_Skill_236Add_AddA_FU"] <- 
+[
+	{
+		Param0=10,
+		selist = { common = [485,487], }
+	},
+]
+
+se["Mv_Skill_236B_FU"] <- {
+	Param0=10,
+	selist = { common = [480], }
+};
+
+se["Mv_Skill_236Add_AddB_FU"] <- 
+[
+	{
+		Param0=10,
+		selist = { common = [485,487], }
+	},
+]
+
+se["Mv_Skill_236EX_Init"] <- {
+	selist = { common = [488], }
+};
+
+se["Mv_Skill_236EX_FU"] <- {
+	Param0=30,
+	selist = { common = [489], }
+};
+
+//２１４攻
+se["Mv_Skill_214A_FU"] <-
+[
+	{
+		Param0=10,
+		selist = { common = [500,501,502,503], }
+	},
+	{
+		Param0=20,
+		selist = { common = [250,252], }
+	},
+]
+
+se["Mv_Skill_214B_FU"] <-
+[
+	{
+		Param0=10,
+		selist = { common = [500,501,502,503], }
+	},
+	{
+		Param0=20,
+		selist = { common = [250,252], }
+	},
+]
+se["Mv_Skill_214C_FU"] <-
+[
+	{
+		Param0=10,
+		selist = { common = [500,501,502,503], }
+	},
+	{
+		Param0=20,
+		selist = { common = [250,252], }
+	},
+]
+
+se["Mv_Skill_J214A_FU"] <-
+[
+	{
+		Param0=10,
+		selist = { common = [500,501,502,503], }
+	},
+	{
+		Param0=20,
+		selist = { common = [250,252], }
+	},
+]
+
+se["Mv_Skill_J214B_FU"] <-
+[
+	{
+		Param0=10,
+		selist = { common = [500,501,502,503], }
+	},
+	{
+		Param0=20,
+		selist = { common = [250,252], }
+	},
+]
+se["Mv_Skill_J214C_FU"] <-
+[
+	{
+		Param0=10,
+		selist = { common = [500,501,502,503], }
+	},
+	{
+		Param0=20,
+		selist = { common = [250,252], }
+	},
+]
+
+se["Mv_Skill_236_AddTrapA_FU"] <-
+[
+	{
+		Param0=10,
+		selist = { common = [500,501,502,503], }
+	},
+	{
+		Param0=20,
+		selist = { common = [250,252], }
+	},
+]
+
+se["Mv_Skill_236_AddTrapB_FU"] <-
+[
+	{
+		Param0=10,
+		selist = { common = [500,501,502,503], }
+	},
+	{
+		Param0=20,
+		selist = { common = [250,252], }
+	},
+]
+
+se["Mv_Skill_236_AddTrapC_FU"] <-
+[
+	{
+		Param0=10,
+		selist = { common = [500,501,502,503], }
+	},
+	{
+		Param0=20,
+		selist = { common = [250,252], }
+	},
+]
+
+se["Mv_Skill_236Add_JAddTrapA_FU"] <-
+[
+	{
+		Param0=10,
+		selist = { common = [500,501,502,503], }
+	},
+	{
+		Param0=20,
+		selist = { common = [250,252], }
+	},
+]
+
+se["Mv_Skill_236Add_JAddTrapB_FU"] <-
+[
+	{
+		Param0=10,
+		selist = { common = [500,501,502,503], }
+	},
+	{
+		Param0=20,
+		selist = { common = [250,252], }
+	},
+]
+
+se["Mv_Skill_236Add_JAddTrapC_FU"] <-
+[
+	{
+		Param0=10,
+		selist = { common = [500,501,502,503], }
+	},
+	{
+		Param0=20,
+		selist = { common = [250,252], }
+	},
+]
+
+// ジャンプ
+/*
+se["Mv_Skill_214_JAddJumpA_FU"] <- {
+	Param0=10,
+	selist = { common = [510,513], }
+}
+
+se["Mv_Skill_214_JAddJumpB_FU"] <- {
+	Param0=10,
+	selist = { common = [510,513], }
+}
+
+se["Mv_Skill_214_JAddJumpC_FU"] <- {
+	Param0=10,
+	selist = { common = [510,513], }
+}
+*/
+
+// ジャンプ派生攻撃
+se["Mv_Skill_214_JAddA_FU"] <- {
+	Param0=10,
+	selist = { common = [152,157], }
+}
+// ジャンプ派生攻撃
+se["Mv_Skill_214_JAddB_FU"] <- {
+	average = 70,
+	Param0=10,
+	selist = { common = [183,185], }
+}
+// ジャンプ派生攻撃
+se["Mv_Skill_214_JAddC_FU"] <- {
+	Param0=10,
+	selist = { common = [510,513], }
+}
+
+// ジャンプ派生攻撃
+se["Mv_Skill_214_JAddD_FU"] <- {
+	Param0=10,
+	selist = { common = [184], }
+}
+
+// ジャンプ派生攻撃
+se["Mv_Skill_i214_JAddA_FU"] <- {
+	Param0=10,
+	selist = { common = [151,156], }
+}
+// ジャンプ派生攻撃
+se["Mv_Skill_i214_JAddB_FU"] <- {
+	Param0=10,
+	selist = { common = [173], }
+}
+// ジャンプ派生攻撃
+se["Mv_Skill_i214_JAddC_FU"] <- {
+	Param0=10,
+	selist = { common = [500,501,502,503], }
+}
+
+// ジャンプ派生攻撃
+se["Mv_Skill_i214_JAddD_FU"] <- {
+	Param0=10,
+	selist = { common = [184], }
+}
+
+
+// 623
+se["Mv_Skill_623A_FU"] <- 
+[
+	{
+		Param0 = 10,
+		selist = { common = [520,521], }
+	},
+	{
+		Param0 = 20,
+		selist = { common = [245], }
+	},
+]
+
+
+se["Mv_Skill_623B_FU"] <- 
+[
+	{
+		Param0 = 10,
+		selist = { common = [520,521], }
+	},
+	{
+		Param0 = 20,
+		selist = { common = [245], }
+	},
+]
+
+se["Mv_Skill_623EX_FU"] <- {
+	Param0 = 10,
+	selist = { common = [522], }
+};
+
+//ＩＷ
+se["Mv_Skill_41236SP_Init"] <- {
+	selist = { common = [550,551], }
+};
+
+se["Mv_Skill_41236SP_Hit_FU"] <-
+[
+	{
+		Param0=50,
+			selist = { common = [555], }
+	}
+]
+
+se["Mv_Atk_StdBandC_FU"] <- 
+[
+	{
+		Param0=10, // 設置
+		selist = { common = [500,502], }
+	},
+	{
+		Param0=20, // 攻撃
+		selist = { common = [504], }
+	},
+	{
+		Param0=30, // ため攻撃
+		selist = { common = [188], }
+	}
+]
+
+// コンボ中以外で触れてヒットした場合
+se["罠捕獲成功"] <- {
+	average = 50,
+	selist = { common = [504,505], }
+};
+
+// コンボ中触れてヒットした場合
+se["罠コンボ捕獲成功"] <- {
+	average = 0,
+	selist = { common = [513], }
+};
+
+se["ＥＸロック罠ヒット"] <- {
+	selist = { common = [533,545,186], }
+};
+
+se["IWE攻撃"] <- {
+	selist = { common = [560], }
+};
+
+
+
+
+

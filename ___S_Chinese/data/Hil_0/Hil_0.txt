@@ -1,0 +1,14 @@
+[System]
+ProjectName=Hil
+[DataFile]
+FileNum= 4
+File00=_temp.HA6
+File01=Hil.HA6
+File02=Hil_GX.HA6
+File03=../BaseData.HA6
+[BmpcutFile]
+FileNum= 1
+File00=Hil.cg
+[PAniFile]
+FileNum= 1
+File00=Hil_ef00.pat

@@ -1,0 +1,505 @@
+print("\n>>_se_list");
+
+__dofile__("./script/btl_SEDefine.txt"); //ＳＥ定数
+
+local path = "./se/normal_se/"; // ファイルパス、登録しやすいように
+local btlpath = "./se/battle_se/";
+local chrpath = btlpath + "Bya/";
+
+SeList_Table <-
+{
+ TableNum = 1, // SEセレクトとかでのプログラム側参照用、テーブル最大値を入れておく
+ UseTable = 0, // 何番目のテーブルを使うか
+ Path = [], // パス設定簡略化用
+ Status = [], // 実際に再生時に使われる配列
+};
+
+SeList_Table.Path.append( path ); //Path[0]
+SeList_Table.Path.append( chrpath ); //Path[1]
+SeList_Table.Path.append( btlpath ); //Path[2]
+
+SeList_Table.Status.resize(650); // 確保
+local st = SeList_Table.Status; // 登録しやすいように省略
+
+st[50] = { volumetype=0, path=2, file="SE_ShotWeb", type=1, category=-1, }; // 罠設置
+st[55] = { volumetype=0, path=2, file="SE_SpecialShotWeb", type=1, category=-1, }; // IWE最初の糸発射
+st[60] = { volumetype=0, path=2, file="SE_BloodStab", type=1, category=-1, }; // グチャッ
+st[62] = { volumetype=0, path=2, file="SE_BigBomb_Short", type=1, category=-1, }; //IWとどめ
+st[64] = { volumetype=0, path=2, file="SE_BigBomb", type=1, category=-1, }; //IW とどめヒット
+
+st[70] = { volumetype=0, path=2, file="SE_BloodFallDown", type=1, category=-1, }; //IW 発動ぐるぐる
+st[71] = { volumetype=0, path=2, file="SE_CoilRound", type=1, category=-1, }; //IW ヒットすいこみ
+
+st[80] = { volumetype=1, path=1, file="Tuk02_7205", type=0, category=2, }; // 後はお願いね、ビャクヤ
+st[81] = { volumetype=1, path=1, file="Tuk02_7206", type=0, category=2, }; // しつこいわね、あの人……
+st[82] = { volumetype=1, path=1, file="Tuk02_7207", type=0, category=2, }; // しつこいわね、あの子……
+
+// st[100] = { volumetype=1, path=1, file="Bya02_2000", type=0, category=1, }; // さぁ、はじめよっか
+// st[101] = { volumetype=1, path=1, file="Bya02_2001", type=0, category=1, }; // 今夜はいい夜だね
+// st[102] = { volumetype=1, path=1, file="Bya02_2002", type=0, category=1, }; // 強そうでイヤだな
+// st[103] = { volumetype=1, path=1, file="Bya02_2003", type=0, category=1, }; // ちょうどお腹が空いたんだよ
+// st[104] = { volumetype=1, path=1, file="Bya02_2004", type=0, category=1, }; // やれやれ。性懲りもない
+// st[105] = { volumetype=1, path=1, file="Bya02_2005", type=0, category=1, }; // 姉さんの邪魔はさせない
+// st[106] = { volumetype=1, path=1, file="Bya02_2006", type=0, category=1, }; // あーあ。こんなところで　　　（出会っちゃうなんて）
+// st[107] = { volumetype=1, path=1, file="Bya02_2007", type=0, category=1, }; // 骨も残さずに、ね
+// st[108] = { volumetype=1, path=1, file="Bya02_2008", type=0, category=1, }; // お互い持たざる身分、さ。
+st[109] = { volumetype=1, path=1, file="Bya02_2009", type=0, category=1, }; // 任せてよ姉さん　 (姉へ向けて)　 
+st[110] = { volumetype=1, path=1, file="Bya02_2010", type=0, category=1, }; // や、こんばんは　 (相手に対して)  ※３つワンセット流れ
+st[111] = { volumetype=1, path=1, file="Bya02_2011", type=0, category=1, }; // 早速でわるいんだけど。消えてもらうよ
+
+st[112] = { volumetype=1, path=1, file="Bya02_2012", type=0, category=1, };// 懲りないね～ホント (姉へ向けて)
+st[113] = { volumetype=1, path=1, file="Bya02_2013", type=0, category=1, };// や、また会ったね  (相手に対して)　  ※３つワンセット流れ
+// st[114] = { volumetype=1, path=1, file="Bya02_2014", type=0, category=1, };// 何度やっても同じってこと。思い知らせてあげるよ
+
+
+// 勝利
+st[115] = { volumetype=1, path=1, file="Bya02_2020", type=0, category=1, }; // おーい、生きてる？
+st[116] = { volumetype=1, path=1, file="Bya02_2021", type=0, category=1, }; // この程度じゃ終わらないよね？
+// st[117] = { volumetype=1, path=1, file="Bya02_2022", type=0, category=1, }; // ありゃ？　死んだのかな？
+st[118] = { volumetype=1, path=1, file="Bya02_2023", type=0, category=1, }; // 弱いね
+st[119] = { volumetype=1, path=1, file="Bya02_2024", type=0, category=1, }; // 解ったろ。無駄な抵抗だって
+// st[120] = { volumetype=1, path=1, file="Bya02_2025", type=0, category=1, }; // 楽しめたよ。なかなか。
+
+st[121] = { volumetype=1, path=1, file="Bya02_2026", type=0, category=1, }; // プッ　  (嘲笑、吹き出し) 
+st[122] = { volumetype=1, path=1, file="Bya02_2027", type=0, category=1, }; // あーっはっはっはっ　 (大笑い)　※３つワンセット流れ
+st[123] = { volumetype=1, path=1, file="Bya02_2028_a", type=0, category=1, }; // この人すごいザコだよ
+
+st[124] = { volumetype=1, path=1, file="Bya02_2029", type=0, category=1, }; // 君、ホント口だけだね～
+// st[125] = { volumetype=1, path=1, file="Bya02_2030", type=0, category=1, }; // 地面を這う、虫みたいだね
+// st[126] = { volumetype=1, path=1, file="Bya02_2031", type=0, category=1, }; // 簡単だったね
+
+// st[127] = { volumetype=1, path=1, file="Bya02_2032", type=0, category=1, }; // はぁ……　もぉすこし楽しませてほしいなあ
+st[128] = { volumetype=1, path=1, file="Bya02_2033", type=0, category=1, }; // え～　もう終わりなの？
+
+st[129] = { volumetype=1, path=1, file="Bya02_2034", type=0, category=1, }; // あれ？ 君、弱いなあ
+st[130] = { volumetype=1, path=1, file="Bya02_2035", type=0, category=1, }; // なぁんだ、その程度？
+// st[131] = { volumetype=1, path=1, file="Bya02_2036", type=0, category=1, }; // もう少し耐えてくれないと、楽しめないじゃない
+
+
+// 判定負け
+// st[135] = { volumetype=1, path=1, file="Bya02_2040", type=0, category=1, }; // 惜しいね
+// st[136] = { volumetype=1, path=1, file="Bya02_2041", type=0, category=1, }; // 遊びすぎたよ
+// st[137] = { volumetype=1, path=1, file="Bya02_2042", type=0, category=1, }; // いや、倒されなければ十分さ
+st[138] = { volumetype=1, path=1, file="Bya02_2043", type=0, category=1, }; // 命拾いしたね　　（相手が）
+st[139] = { volumetype=1, path=1, file="Bya02_2044", type=0, category=1, }; // ありゃあ、残念
+
+// 攻撃（弱）
+st[140] = { volumetype=1, path=1, file="Bya02_2050", type=0, category=1, }; // よ
+st[144] = { volumetype=1, path=1, file="Bya02_2054", type=0, category=1, }; // びっ
+st[145] = { volumetype=1, path=1, file="Bya02_2055", type=0, category=1, }; // しっ
+st[146] = { volumetype=1, path=1, file="Bya02_2056", type=0, category=1, }; // てぁ
+
+st[141] = { volumetype=1, path=1, file="Bya02_2051", type=0, category=1, }; // は
+st[142] = { volumetype=1, path=1, file="Bya02_2052", type=0, category=1, }; // そりゃ
+st[143] = { volumetype=1, path=1, file="Bya02_2053", type=0, category=1, }; // そーれ
+
+// 攻撃（中）
+st[150] = { volumetype=1, path=1, file="Bya02_2060", type=0, category=1, }; // はぁ！
+st[151] = { volumetype=1, path=1, file="Bya02_2061", type=0, category=1, }; // たぁ！
+st[153] = { volumetype=1, path=1, file="Bya02_2063", type=0, category=1, }; // どお？
+st[154] = { volumetype=1, path=1, file="Bya02_2064", type=0, category=1, }; // よっと
+st[155] = { volumetype=1, path=1, file="Bya02_2065", type=0, category=1, }; // そこ
+st[156] = { volumetype=1, path=1, file="Bya02_2066", type=0, category=1, }; // それっ
+st[157] = { volumetype=1, path=1, file="Bya02_2067", type=0, category=1, }; // ほらほら
+
+st[152] = { volumetype=1, path=1, file="Bya02_2062", type=0, category=1, }; // せいっ！
+
+st[158] = { volumetype=1, path=1, file="Bya02_2073", type=0, category=1, }; // あはははは！
+
+// 攻撃（強）
+st[159] = { volumetype=1, path=1, file="Bya02_2070", type=0, category=1, }; // せーい
+st[160] = { volumetype=1, path=1, file="Bya02_2071", type=0, category=1, }; // そーら！
+st[161] = { volumetype=1, path=1, file="Bya02_2072", type=0, category=1, }; // どうだい？
+st[162] = { volumetype=1, path=1, file="Bya02_2073_a", type=0, category=1, }; // あはははは！
+st[163] = { volumetype=1, path=1, file="Bya02_2074", type=0, category=1, }; // ふっふっふ
+st[164] = { volumetype=1, path=1, file="Bya02_2075", type=0, category=1, }; // くっくっ！
+st[165] = { volumetype=1, path=1, file="Bya02_2076", type=0, category=1, }; // あーあ
+st[166] = { volumetype=1, path=1, file="Bya02_2077", type=0, category=1, }; // これで！
+st[167] = { volumetype=1, path=1, file="Bya02_2078", type=0, category=1, }; // 味わいなよ
+// st[168] = { volumetype=1, path=1, file="Bya02_2079", type=0, category=1, }; // 突き刺せ！
+// st[169] = { volumetype=1, path=1, file="Bya02_2080", type=0, category=1, }; // 突き破れ！
+// st[170] = { volumetype=1, path=1, file="Bya02_2081", type=0, category=1, }; // 穿て！
+// st[171] = { volumetype=1, path=1, file="Bya02_2082", type=0, category=1, }; // 貫き通せ！
+st[172] = { volumetype=1, path=1, file="Bya02_2083", type=0, category=1, }; // 風穴(かざあな)あけてあげるよ！
+
+// 攻撃（中～強で特殊なもの） 
+st[173] = { volumetype=1, path=1, file="Bya02_2090", type=0, category=1, }; // 切り刻め
+st[174] = { volumetype=1, path=1, file="Bya02_2091", type=0, category=1, }; // 痛いよ？
+st[175] = { volumetype=1, path=1, file="Bya02_2092", type=0, category=1, }; // 貫けぇ
+// st[176] = { volumetype=1, path=1, file="Bya02_2093", type=0, category=1, }; // 残念だ
+// st[177] = { volumetype=1, path=1, file="Bya02_2094", type=0, category=1, }; // 苦しそうだね
+st[178] = { volumetype=1, path=1, file="Bya02_2095", type=0, category=1, }; // 防げるかい？
+// st[179] = { volumetype=1, path=1, file="Bya02_2096", type=0, category=1, }; // あのさぁ
+// st[180] = { volumetype=1, path=1, file="Bya02_2097", type=0, category=1, }; // 違くない？
+// st[181] = { volumetype=1, path=1, file="Bya02_2098", type=0, category=1, }; // 上だね  (上から来ることを察知)
+// st[182] = { volumetype=1, path=1, file="Bya02_2099", type=0, category=1, }; // みえみえだよ
+st[183] = { volumetype=1, path=1, file="Bya02_2100", type=0, category=1, }; // 落とす
+st[184] = { volumetype=1, path=1, file="Bya02_2101", type=0, category=1, }; // 足元  （足下に注意しなよ）
+st[185] = { volumetype=1, path=1, file="Bya02_2102", type=0, category=1, }; // かわせるかい？
+st[186] = { volumetype=1, path=1, file="Bya02_2103", type=0, category=1, }; // イイね～、その表情
+// st[187] = { volumetype=1, path=1, file="Bya02_2104", type=0, category=1, }; // ははっ、結構頑丈だね
+st[188] = { volumetype=1, path=1, file="Bya02_2105", type=0, category=1, }; // いつまで耐えれるかな？  らぬき
+// st[189] = { volumetype=1, path=1, file="Bya02_2106", type=0, category=1, }; // もう諦めたら？
+
+// 投げ（相手を掴んで攻撃）
+st[190] = { volumetype=1, path=1, file="Bya02_2110", type=0, category=1, }; // 目障りだよ
+// st[191] = { volumetype=1, path=1, file="Bya02_2111", type=0, category=1, }; // キャッチ
+// st[192] = { volumetype=1, path=1, file="Bya02_2112", type=0, category=1, }; // 網にかかったね
+// st[193] = { volumetype=1, path=1, file="Bya02_2113", type=0, category=1, }; // つかまえ……　たっ！　  （つかんで、たっ　で殴るイメージ）
+// st[194] = { volumetype=1, path=1, file="Bya02_2114", type=0, category=1, }; // おとなしくしてないと……　痛い目みるよ？　（同様）
+st[195] = { volumetype=1, path=1, file="Bya02_2115", type=0, category=1, }; // あんまり手間かけさせないでよ
+
+
+// 投げ失敗（相手を掴み損ねる）
+// st[210] = { volumetype=1, path=1, file="Bya02_2120", type=0, category=1, }; // おりょ？
+st[211] = { volumetype=1, path=1, file="Bya02_2121", type=0, category=1, }; // おっとっと
+// st[212] = { volumetype=1, path=1, file="Bya02_2122", type=0, category=1, }; // 逃がしちゃったか
+// st[213] = { volumetype=1, path=1, file="Bya02_2123", type=0, category=1, }; // 勘が良いね
+st[214] = { volumetype=1, path=1, file="Bya02_2124", type=0, category=1, }; // ちょっと
+// st[215] = { volumetype=1, path=1, file="Bya02_2125", type=0, category=1, }; // 避(よ)けないでよ
+
+
+// 投げ抜け
+st[220] = { volumetype=1, path=1, file="Bya02_2130", type=0, category=1, prio=Def_SEP_ThrowTech, check=1 }; // いやいや　　※no thank you
+st[221] = { volumetype=1, path=1, file="Bya02_2131", type=0, category=1, prio=Def_SEP_ThrowTech, check=1 }; // 服が伸びるよ
+st[222] = { volumetype=1, path=1, file="Bya02_2132", type=0, category=1, prio=Def_SEP_ThrowTech, check=1 }; // やめてくれ
+st[223] = { volumetype=1, path=1, file="Bya02_2133", type=0, category=1, prio=Def_SEP_ThrowTech, check=1 }; // 全力で拒否
+
+// 振り向き 
+// st[230] = { volumetype=1, path=1, file="Bya02_2140", type=0, category=1, }; // あれ
+st[231] = { volumetype=1, path=1, file="Bya02_2141", type=0, category=1, }; // よく動くね
+// st[232] = { volumetype=1, path=1, file="Bya02_2142", type=0, category=1, }; // そっちか
+st[233] = { volumetype=1, path=1, file="Bya02_2143", type=0, category=1, }; // どこかな　 (本当はわかってる)
+
+
+// 挑発（立ち待機）
+// st[240] = { volumetype=1, path=1, file="Bya02_2150", type=0, category=1, }; // 悪くないね
+// st[241] = { volumetype=1, path=1, file="Bya02_2151", type=0, category=1, }; // 続ける？　どうする？
+st[242] = { volumetype=1, path=1, file="Bya02_2152", type=0, category=1, }; // ねえどうしたの？　早く続きやろうよ
+// st[243] = { volumetype=1, path=1, file="Bya02_2153", type=0, category=1, }; // あらら。まいったねこりゃ
+// st[244] = { volumetype=1, path=1, file="Bya02_2154", type=0, category=1, }; // もしかして……、警戒してる？
+st[245] = { volumetype=1, path=1, file="Bya02_2155", type=0, category=1, }; // 罠なんて張ってないよ？
+
+
+// ジャンプ 
+st[250] = { volumetype=1, path=1, file="Bya02_2160", type=0, category=1, }; // よっ
+// st[251] = { volumetype=1, path=1, file="Bya02_2161", type=0, category=1, }; // そりゃ
+st[252] = { volumetype=1, path=1, file="Bya02_2162", type=0, category=1, }; // とぉ
+// st[253] = { volumetype=1, path=1, file="Bya02_2163", type=0, category=1, }; // ふっ
+
+// ダッシュ
+st[260] = { volumetype=1, path=1, file="Bya02_2170", type=0, category=1, }; // ～♪　 　※ふんふーんみたいな鼻歌　口笛でも可
+st[261] = { volumetype=1, path=1, file="Bya02_2171", type=0, category=1, }; // いくよ～？
+// st[262] = { volumetype=1, path=1, file="Bya02_2172", type=0, category=1, }; // いこうか
+// st[263] = { volumetype=1, path=1, file="Bya02_2173", type=0, category=1, }; // 攻めどきだね
+st[264] = { volumetype=1, path=1, file="Bya02_2174", type=0, category=1, }; // チャーンス
+// st[265] = { volumetype=1, path=1, file="Bya02_2175", type=0, category=1, }; // お近づきに
+
+// バックステップ
+// st[270] = { volumetype=1, path=1, file="Bya02_2180", type=0, category=1, }; // ほっ
+// st[271] = { volumetype=1, path=1, file="Bya02_2181", type=0, category=1, }; // よっ
+st[272] = { volumetype=1, path=1, file="Bya02_2182", type=0, category=1, }; // さっ
+st[273] = { volumetype=1, path=1, file="Bya02_2183", type=0, category=1, }; // ははは　　（乾いた笑い）
+// st[274] = { volumetype=1, path=1, file="Bya02_2184", type=0, category=1, }; // あぶな
+st[275] = { volumetype=1, path=1, file="Bya02_2185", type=0, category=1, }; // やーだよ
+
+// ガード（小）
+st[280] = { volumetype=1, path=1, file="Bya02_2190", type=0, category=1, prio=Def_SEP_GuardLv1, check=1, }; // ふん
+st[281] = { volumetype=1, path=1, file="Bya02_2191", type=0, category=1, prio=Def_SEP_GuardLv1, check=1, }; // よ
+st[282] = { volumetype=1, path=1, file="Bya02_2192", type=0, category=1, prio=Def_SEP_GuardLv1, check=1, }; // あーあ
+st[283] = { volumetype=1, path=1, file="Bya02_2193", type=0, category=1, prio=Def_SEP_GuardLv1, check=1, }; // ここ
+st[284] = { volumetype=1, path=1, file="Bya02_2194", type=0, category=1, prio=Def_SEP_GuardLv1, check=1, }; // っと
+
+// ガード（中）
+st[290] = { volumetype=1, path=1, file="Bya02_2200", type=0, category=1, prio=Def_SEP_GuardLv2, check=1, }; // ダメだ
+st[291] = { volumetype=1, path=1, file="Bya02_2201", type=0, category=1, prio=Def_SEP_GuardLv2, check=1, }; // あらら
+st[292] = { volumetype=1, path=1, file="Bya02_2202", type=0, category=1, prio=Def_SEP_GuardLv2, check=1, }; // 少しは
+st[293] = { volumetype=1, path=1, file="Bya02_2203", type=0, category=1, prio=Def_SEP_GuardLv2, check=1, }; // 通らず
+st[294] = { volumetype=1, path=1, file="Bya02_2204", type=0, category=1, prio=Def_SEP_GuardLv2, check=1, }; // 無駄なこと
+
+// ガード（大）
+// st[300] = { volumetype=1, path=1, file="Bya02_2210", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; // くっ
+st[301] = { volumetype=1, path=1, file="Bya02_2211", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; // こわいね
+// st[302] = { volumetype=1, path=1, file="Bya02_2212", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; // 防御
+st[303] = { volumetype=1, path=1, file="Bya02_2213", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; // あぶな
+st[304] = { volumetype=1, path=1, file="Bya02_2214", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; // 痛そうだ
+st[305] = { volumetype=1, path=1, file="Bya02_2215", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; // そいつはどうかな
+st[306] = { volumetype=1, path=1, file="Bya02_2216", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; // 護れ  （自分の触手に命令）
+st[307] = { volumetype=1, path=1, file="Bya02_2217", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; // 無駄無駄
+st[308] = { volumetype=1, path=1, file="Bya02_2218", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; // 懲りないね
+st[309] = { volumetype=1, path=1, file="Bya02_2219", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; // 悪足掻きだね
+// st[310] = { volumetype=1, path=1, file="Bya02_2220", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; // もっと足掻いてみせてよ
+
+// ジャストガード
+st[311] = { volumetype=1, path=1, file="Bya02_2230", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; // 焦らないの
+st[312] = { volumetype=1, path=1, file="Bya02_2231", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; // 大振りだな
+st[313] = { volumetype=1, path=1, file="Bya02_2232", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; // まるでダメだね
+st[314] = { volumetype=1, path=1, file="Bya02_2233", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; // そんなの
+st[315] = { volumetype=1, path=1, file="Bya02_2234", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; // ナイスタイミング
+st[316] = { volumetype=1, path=1, file="Bya02_2235", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; // 当たるとでも？
+
+// ガード失敗
+st[320] = { volumetype=1, path=1, file="Bya02_2240", type=0, category=1, prio=Def_SEP_GuardMiss, check=1, }; // なっ！？
+st[321] = { volumetype=1, path=1, file="Bya02_2241", type=0, category=1, prio=Def_SEP_GuardMiss, check=1, }; // どこから
+st[322] = { volumetype=1, path=1, file="Bya02_2242", type=0, category=1, prio=Def_SEP_GuardMiss, check=1, }; // 抜けてきた！？
+st[323] = { volumetype=1, path=1, file="Bya02_2243", type=0, category=1, prio=Def_SEP_GuardMiss, check=1, }; // 見誤ったか
+st[324] = { volumetype=1, path=1, file="Bya02_2244", type=0, category=1, prio=Def_SEP_GuardMiss, check=1, }; // こりゃまた
+
+// 受け身
+st[330] = { volumetype=1, path=1, file="Bya02_2250", type=0, category=1, prio=Def_SEP_Recover }; // よっと
+st[331] = { volumetype=1, path=1, file="Bya02_2251", type=0, category=1, prio=Def_SEP_Recover }; // ふっ
+st[332] = { volumetype=1, path=1, file="Bya02_2252", type=0, category=1, prio=Def_SEP_Recover }; // あぶない
+st[333] = { volumetype=1, path=1, file="Bya02_2253", type=0, category=1, prio=Def_SEP_Recover }; // あーらよ
+// st[334] = { volumetype=1, path=1, file="Bya02_2254", type=0, category=1, prio=Def_SEP_Recover }; // くるっと
+// st[335] = { volumetype=1, path=1, file="Bya02_2255", type=0, category=1, prio=Def_SEP_Recover }; // 生きてるね
+// st[336] = { volumetype=1, path=1, file="Bya02_2256", type=0, category=1, prio=Def_SEP_Recover }; // 起こしてよ　　※自分の触手に対し、倒れた体を起こしてくれ、と言っています
+// st[337] = { volumetype=1, path=1, file="Bya02_2257", type=0, category=1, prio=Def_SEP_Recover }; // なるほど
+// st[338] = { volumetype=1, path=1, file="Bya02_2258", type=0, category=1, prio=Def_SEP_Recover }; // そうくるんだ
+// st[339] = { volumetype=1, path=1, file="Bya02_2259", type=0, category=1, prio=Def_SEP_Recover }; // ただでは転ばない・・・か　 (相手に対して、状況観察)
+
+// シールド発動
+st[340] = { volumetype=1, path=1, file="Bya02_2270", type=0, category=1, }; // おいでよ
+st[341] = { volumetype=1, path=1, file="Bya02_2271", type=0, category=1, }; // ここ、ここ　（ここを狙えよの意）
+st[342] = { volumetype=1, path=1, file="Bya02_2272", type=0, category=1, }; // やめてくれよ
+st[343] = { volumetype=1, path=1, file="Bya02_2273", type=0, category=1, }; // ８本あるよ？　　はっぽん
+// st[344] = { volumetype=1, path=1, file="Bya02_2274", type=0, category=1, }; // 痛いのは嫌いでね
+// st[345] = { volumetype=1, path=1, file="Bya02_2275", type=0, category=1, }; // 黒くて堅い
+// st[346] = { volumetype=1, path=1, file="Bya02_2276", type=0, category=1, }; // ここから始まる大逆転
+// st[347] = { volumetype=1, path=1, file="Bya02_2277", type=0, category=1, }; // お見通し
+// st[348] = { volumetype=1, path=1, file="Bya02_2278", type=0, category=1, }; // 単調だね～
+
+// シールド受け止め
+st[350] = { volumetype=1, path=1, file="Bya02_2290", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; // かかった
+st[351] = { volumetype=1, path=1, file="Bya02_2291", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; // いただきまーす
+st[352] = { volumetype=1, path=1, file="Bya02_2292", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; // 考えが甘い
+st[353] = { volumetype=1, path=1, file="Bya02_2293", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; // うまくいくとでも？
+st[354] = { volumetype=1, path=1, file="Bya02_2294", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; // 解ってたよ
+st[355] = { volumetype=1, path=1, file="Bya02_2295", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; // ダメダメ　　チッチッチと指振るダメだし
+st[356] = { volumetype=1, path=1, file="Bya02_2296", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; // 料理の時間
+
+// ダメージ（小） 
+st[360] = { volumetype=1, path=1, file="Bya02_2300", type=0, category=1, prio=Def_SEP_DamageLv1 }; // いたっ
+st[361] = { volumetype=1, path=1, file="Bya02_2301", type=0, category=1, prio=Def_SEP_DamageLv1 }; // くっ
+st[362] = { volumetype=1, path=1, file="Bya02_2302", type=0, category=1, prio=Def_SEP_DamageLv1 }; // あっ
+st[363] = { volumetype=1, path=1, file="Bya02_2303", type=0, category=1, prio=Def_SEP_DamageLv1 }; // っつー　　　痛
+st[364] = { volumetype=1, path=1, file="Bya02_2304", type=0, category=1, prio=Def_SEP_DamageLv1 }; // やめっ
+st[365] = { volumetype=1, path=1, file="Bya02_2305", type=0, category=1, prio=Def_SEP_DamageLv1 }; // あう
+
+// ダメージ（中） 
+st[370] = { volumetype=1, path=1, file="Bya02_2310", type=0, category=1, prio=Def_SEP_DamageLv2, check=1 }; // ぐっ
+st[371] = { volumetype=1, path=1, file="Bya02_2311", type=0, category=1, prio=Def_SEP_DamageLv2, check=1 }; // づ
+st[372] = { volumetype=1, path=1, file="Bya02_2312", type=0, category=1, prio=Def_SEP_DamageLv2, check=1 }; // このっ
+st[373] = { volumetype=1, path=1, file="Bya02_2313", type=0, category=1, prio=Def_SEP_DamageLv2, check=1 }; // やるね
+st[374] = { volumetype=1, path=1, file="Bya02_2314", type=0, category=1, prio=Def_SEP_DamageLv2, check=1 }; // やめてよ
+st[375] = { volumetype=1, path=1, file="Bya02_2315", type=0, category=1, prio=Def_SEP_DamageLv2, check=1 }; // おうふ
+st[376] = { volumetype=1, path=1, file="Bya02_2316", type=0, category=1, prio=Def_SEP_DamageLv2, check=1 }; // いててて
+
+// ダメージ（大） 
+st[380] = { volumetype=1, path=1, file="Bya02_2320", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; // ぐぁ
+st[381] = { volumetype=1, path=1, file="Bya02_2321", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; // あぁぁ
+st[382] = { volumetype=1, path=1, file="Bya02_2322", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; // がはっ
+st[383] = { volumetype=1, path=1, file="Bya02_2323", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; // うあぅ
+st[384] = { volumetype=1, path=1, file="Bya02_2324", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; // こいつは
+st[385] = { volumetype=1, path=1, file="Bya02_2325", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; // だからさ
+st[386] = { volumetype=1, path=1, file="Bya02_2326", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; // いじめだね
+st[387] = { volumetype=1, path=1, file="Bya02_2327", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; // 折れるって
+st[388] = { volumetype=1, path=1, file="Bya02_2328", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; // 手加減なしか
+
+// ダウンを奪われる
+st[390] = { volumetype=1, path=1, file="Bya02_2340", type=0, category=1, prio=Def_SEP_KO }; // うわーー
+st[391] = { volumetype=1, path=1, file="Bya02_2341", type=0, category=1, prio=Def_SEP_KO }; // くうっ……そんな……
+
+// 敗北
+st[400] = { volumetype=1, path=1, file="Bya02_2342", type=0, category=1, prio=Def_SEP_KO }; // 遊びすぎたよ
+st[401] = { volumetype=1, path=1, file="Bya02_2343", type=0, category=1, prio=Def_SEP_KO }; // これじゃ終われないね
+st[402] = { volumetype=1, path=1, file="Bya02_2345", type=0, category=1, prio=Def_SEP_KO }; // まだ囓ってもいないんでね
+st[403] = { volumetype=1, path=1, file="Bya02_2346", type=0, category=1, prio=Def_SEP_KO }; // ふふ…、なかなか……、　……やってくれるじゃないか (珍しくちょい怒)
+
+// ノックアウト
+st[410] = { volumetype=1, path=1, file="Bya02_2350", type=0, category=1, prio=Def_SEP_KO }; // ぐわぁぁーーーーーー
+st[411] = { volumetype=1, path=1, file="Bya02_2351", type=0, category=1, prio=Def_SEP_KO }; // ああぁぁぁぁーーーー
+st[412] = { volumetype=1, path=1, file="Bya02_2352", type=0, category=1, prio=Def_SEP_KO }; // 姉さーんーーーーーー
+st[413] = { volumetype=1, path=1, file="Bya02_2353", type=0, category=1, prio=Def_SEP_KO }; // 姉さんごめーーーーーーーん
+
+// 起きあがり
+st[415] = { volumetype=1, path=1, file="Bya02_2360", type=0, category=1, }; // いったいなあ　 (痛いなあ)
+st[416] = { volumetype=1, path=1, file="Bya02_2361", type=0, category=1, }; // 痛いねぇ　まったく
+st[417] = { volumetype=1, path=1, file="Bya02_2362", type=0, category=1, }; // みょーん　っと
+st[418] = { volumetype=1, path=1, file="Bya02_2363", type=0, category=1, }; // それじゃ再開しよう
+st[419] = { volumetype=1, path=1, file="Bya02_2364", type=0, category=1, }; // 寝てられない
+// st[420] = { volumetype=1, path=1, file="Bya02_2365", type=0, category=1, }; // 加減ってものを知らないのかな
+// st[421] = { volumetype=1, path=1, file="Bya02_2366", type=0, category=1, }; // そこで待っててよね
+// st[422] = { volumetype=1, path=1, file="Bya02_2367", type=0, category=1, }; // いたたたたたた……
+// st[423] = { volumetype=1, path=1, file="Bya02_2368", type=0, category=1, }; // 反抗的だなあ
+// st[424] = { volumetype=1, path=1, file="Bya02_2369", type=0, category=1, }; // 殺気立ってるね
+// st[425] = { volumetype=1, path=1, file="Bya02_2370", type=0, category=1, }; // 僕に恨みでも？
+
+// 起きあがり
+st[426] = { volumetype=1, path=1, file="Bya02_2380", type=0, category=1, }; // まだまだだよ
+st[427] = { volumetype=1, path=1, file="Bya02_2381", type=0, category=1, }; // 囓らせてよ
+st[428] = { volumetype=1, path=1, file="Bya02_2382", type=0, category=1, }; // 全身が痛い……
+st[429] = { volumetype=1, path=1, file="Bya02_2383", type=0, category=1, }; // そろそろ本気かな
+st[430] = { volumetype=1, path=1, file="Bya02_2384", type=0, category=1, }; // いい加減にして欲しいね
+// st[431] = { volumetype=1, path=1, file="Bya02_2385", type=0, category=1, }; // おいおい……
+// st[432] = { volumetype=1, path=1, file="Bya02_2386", type=0, category=1, }; // 折れて破裂してるなこりゃ
+// st[433] = { volumetype=1, path=1, file="Bya02_2387", type=0, category=1, }; // 乱暴なんだね
+// st[434] = { volumetype=1, path=1, file="Bya02_2388", type=0, category=1, }; // 結構容赦ないね
+// st[435] = { volumetype=1, path=1, file="Bya02_2389", type=0, category=1, }; // そんなに嫌かい？
+// st[436] = { volumetype=1, path=1, file="Bya02_2390", type=0, category=1, }; // お仕置きが必要そうだ
+
+// ヴェールオフ
+st[440] = { volumetype=1, path=1, file="Bya02_2400", type=0, category=1, }; // 飽きてきちゃったんでね
+st[441] = { volumetype=1, path=1, file="Bya02_2401", type=0, category=1, }; // チェックメイトだ
+st[442] = { volumetype=1, path=1, file="Bya02_2402", type=0, category=1, }; // ちょっと本気でいくよ
+// st[443] = { volumetype=1, path=1, file="Bya02_2403", type=0, category=1, }; // 食べちゃって良いんだね？
+// st[444] = { volumetype=1, path=1, file="Bya02_2404", type=0, category=1, }; // あーははははははは！
+// st[445] = { volumetype=1, path=1, file="Bya02_2405", type=0, category=1, }; // 姉さーーーんっ！！
+
+// チェインシフト
+st[450] = { volumetype=1, path=1, file="Bya02_2410", type=0, category=1, }; // この流れに
+st[451] = { volumetype=1, path=1, file="Bya02_2411", type=0, category=1, }; // まだまだだ
+// st[452] = { volumetype=1, path=1, file="Bya02_2412", type=0, category=1, }; // 決めてやる
+// st[453] = { volumetype=1, path=1, file="Bya02_2413", type=0, category=1, }; // 放しはしない
+// st[454] = { volumetype=1, path=1, file="Bya02_2414", type=0, category=1, }; // ご覧にいれよう
+// st[455] = { volumetype=1, path=1, file="Bya02_2415", type=0, category=1, }; // キミ、たのしいねぇ
+st[456] = { volumetype=1, path=1, file="Bya02_2416", type=0, category=1, }; // 終わるわけないよね
+// st[457] = { volumetype=1, path=1, file="Bya02_2417", type=0, category=1, }; // 終わると思った？
+
+// コンセントレーション
+st[460] = { volumetype=1, path=1, file="Bya02_2420", type=0, category=1, }; // はぁぁぁぁ……　　　※小声、力まず、息はいてるくらい
+// st[461] = { volumetype=1, path=1, file="Bya02_2421", type=0, category=1, }; // ご覧よ、僕のイグジス……
+st[462] = { volumetype=1, path=1, file="Bya02_2422", type=0, category=1, }; // ふっふっふっふ……
+// st[463] = { volumetype=1, path=1, file="Bya02_2423", type=0, category=1, }; // どう料理しようか
+st[464] = { volumetype=1, path=1, file="Bya02_2424", type=0, category=1, }; // 高まるね、いろいろ
+// st[465] = { volumetype=1, path=1, file="Bya02_2425", type=0, category=1, }; // 夜の鼓動を……
+
+// バースト
+// st[470] = { volumetype=1, path=1, file="Bya02_2430", type=0, category=1, }; // そこまでにしてくれる？
+// st[471] = { volumetype=1, path=1, file="Bya02_2431", type=0, category=1, }; // 弱いものいじめはここまでだ
+// st[472] = { volumetype=1, path=1, file="Bya02_2432", type=0, category=1, }; // いくら僕でも怒るよ
+// st[473] = { volumetype=1, path=1, file="Bya02_2433", type=0, category=1, }; // 一方的にやってくれる
+// st[474] = { volumetype=1, path=1, file="Bya02_2434", type=0, category=1, }; // 限度ってものがあるだろ？
+// st[475] = { volumetype=1, path=1, file="Bya02_2435", type=0, category=1, }; // そろそろ本気でいくよ
+
+// ■必殺技１　３回連続攻撃
+// st[480] = { volumetype=1, path=1, file="Bya02a_2441", type=0, category=1, }; // 微塵切り？
+// st[481] = { volumetype=1, path=1, file="Bya02a_2442", type=0, category=1, }; // 串刺し？
+// st[482] = { volumetype=1, path=1, file="Bya02a_2446", type=0, category=1, }; // メチャクチャに
+// st[483] = { volumetype=1, path=1, file="Bya02a_2447", type=0, category=1, }; // してあげるよ！
+st[480] = { volumetype=1, path=1, file="Bya02_2440", type=0, category=1, }; // どう料理しよう？
+st[481] = { volumetype=1, path=1, file="Bya02_2441", type=0, category=1, }; // 微塵切りがいいかな？
+// st[482] = { volumetype=1, path=1, file="Bya02_2442", type=0, category=1, }; // それとも串刺し？
+// st[483] = { volumetype=1, path=1, file="Bya02_2443", type=0, category=1, }; // 微塵切りだあ！　  (以下、楽しそうに)
+// st[484] = { volumetype=1, path=1, file="Bya02_2444", type=0, category=1, }; // その綺麗な体を　  ※次とセット
+st[485] = { volumetype=1, path=1, file="Bya02_2445", type=0, category=1, }; // 切り刻んであげるね！
+// st[486] = { volumetype=1, path=1, file="Bya02_2446", type=0, category=1, }; // メチャクチャにしてあげるよ！
+st[487] = { volumetype=1, path=1, file="Bya02_2447", type=0, category=1, }; // メッタ斬りだ～！
+st[488] = { volumetype=1, path=1, file="Bya02_2448", type=0, category=1, }; // あーっはっはっはっはっ
+st[489] = { volumetype=1, path=1, file="Bya02_2449", type=0, category=1, }; // それそれそれそれ～！
+// st[490] = { volumetype=1, path=1, file="Bya02_2450", type=0, category=1, }; // 痛い？ 痛いよねえ～！　 (そりゃあ当然痛いよね、の意)
+
+// ■必殺技２　罠
+st[500] = { volumetype=1, path=1, file="Bya02a_2460", type=0, category=1, }; // この辺に仕掛けておこうかな？
+st[501] = { volumetype=1, path=1, file="Bya02a_2461", type=0, category=1, }; // この辺に仕掛けておこうかな？
+st[502] = { volumetype=1, path=1, file="Bya02a_2462", type=0, category=1, }; // ここにも仕込んでおこうかな？
+st[503] = { volumetype=1, path=1, file="Bya02a_2463", type=0, category=1, }; // ここにも仕込んでおこうかな？
+
+st[504] = { volumetype=1, path=1, file="Bya02_2462", type=0, category=1, }; // なーんてね(罠[ウェブトラップ]を仕掛けたフリをする)
+// st[503] = { volumetype=1, path=1, file="Bya02_2463", type=0, category=1, }; // かかるかな？
+
+st[504] = { volumetype=1, path=1, file="Bya02_2464", type=0, category=1, }; // かかったね(さも当たり前のようなニュアンス)
+st[505] = { volumetype=1, path=1, file="Bya02_2465", type=0, category=1, }; // あ～あ、かかっちゃった
+// st[506] = { volumetype=1, path=1, file="Bya02_2466", type=0, category=1, }; // そうくると思ってたんだ
+// st[507] = { volumetype=1, path=1, file="Bya02_2467", type=0, category=1, }; // 捕らえた
+// st[508] = { volumetype=1, path=1, file="Bya02_2468", type=0, category=1, }; // ま、判ってたけどね
+
+// ■必殺技３　空中から襲い掛かる
+st[510] = { volumetype=1, path=1, file="Bya02_2480", type=0, category=1, }; // 逃げてもムダさ　※次に続く
+// st[511] = { volumetype=1, path=1, file="Bya02_2481", type=0, category=1, }; // ほーら捕まえた
+// st[512] = { volumetype=1, path=1, file="Bya02_2482", type=0, category=1, }; // 狙った獲物は・・・　※次に続く
+st[513] = { volumetype=1, path=1, file="Bya02_2483", type=0, category=1, }; // 逃(のが)さないよ
+// st[514] = { volumetype=1, path=1, file="Bya02_2484", type=0, category=1, }; // ね？　言ったでしょ？
+
+// ■必殺技４　姿を消す 
+st[520] = { volumetype=1, path=1, file="Bya02_2490", type=0, category=1, }; // そろそろ食べごろかな？
+st[521] = { volumetype=1, path=1, file="Bya02_2491", type=0, category=1, }; // そーっとね
+st[522] = { volumetype=1, path=1, file="Bya02_2492", type=0, category=1, }; // 仕留める
+
+// ■必殺技５　毒素を放出
+// st[530] = { volumetype=1, path=1, file="Bya02_2500", type=0, category=1, }; // 少し盛っておこうか 　(毒を盛る)
+// st[531] = { volumetype=1, path=1, file="Bya02_2501", type=0, category=1, }; // じわじわとね
+// st[532] = { volumetype=1, path=1, file="Bya02_2502", type=0, category=1, }; // 焦らずじっくりといこう
+st[533] = { volumetype=1, path=1, file="Bya02_2503", type=0, category=1, }; // どう味付けしようかな？
+
+// ■必殺技６　鉤脚[エッジ]を地面に刺し相手の足元から飛び出す
+st[540] = { volumetype=1, path=1, file="Bya02_2510", type=0, category=1, }; // 味見といこうか
+// st[541] = { volumetype=1, path=1, file="Bya02_2511", type=0, category=1, }; // こういう使い方もできる
+st[542] = { volumetype=1, path=1, file="Bya02_2512", type=0, category=1, }; // 突き出せ
+// st[543] = { volumetype=1, path=1, file="Bya02_2513", type=0, category=1, }; // 距離を取っても　※次に続く
+// st[544] = { volumetype=1, path=1, file="Bya02_2514", type=0, category=1, }; // 無駄さ
+st[545] = { volumetype=1, path=1, file="Bya02_2515", type=0, category=1, }; // 逃げ場なんてないよ？
+
+// ■IW
+// （相手を捕らえる）
+st[550] = { volumetype=1, path=1, file="Bya02_2520", type=0, category=1, }; // 僕の一部になりなよ
+st[551] = { volumetype=1, path=1, file="Bya02_2521", type=0, category=1, }; // さあおいで、僕の世界(なか)へ
+// st[552] = { volumetype=1, path=1, file="Bya02_2522", type=0, category=1, }; // もう離さないよ？
+// st[553] = { volumetype=1, path=1, file="Bya02_2523", type=0, category=1, }; // もう逃げられないよ？
+
+// （打撃を加える）
+st[555] = { volumetype=1, path=1, file="Bya02_2530_a", type=0, category=1, }; // あっはっはっはっ、楽しいね～　 (ご満悦)
+
+// （終了） 
+// st[557] = { volumetype=1, path=1, file="Bya02_2540", type=0, category=1, }; // やあ、おかえり
+// st[558] = { volumetype=1, path=1, file="Bya02_2541", type=0, category=1, }; // どう？気に入ってくれたかい？
+// st[559] = { volumetype=1, path=1, file="Bya02_2542", type=0, category=1, }; // う～ん、お気に召さなかったかな？
+
+// 覚醒必殺技
+// （発動） 
+st[560] = { volumetype=1, path=1, file="Bya02_6700", type=0, category=1, }; // 始めよう。いや。終わらせよう。
+// st[561] = { volumetype=1, path=1, file="Bya02_6701", type=0, category=1, }; // 僕でも怒ることはあるってことだよ。
+// st[562] = { volumetype=1, path=1, file="Bya02_6702", type=0, category=1, }; // さて。どんな味がするのかな。
+
+// （成立） 
+// st[565] = { volumetype=1, path=1, file="Bya02_6710", type=0, category=1, }; // 淀(よど)み軋(きし)み撓(たわ)み、粘(ねば)り捻(ひね)り溜(たま)り、律(りっ)し失(しっ)し察(さっ)し、そして朽ち 果てるんだ
+// st[566] = { volumetype=1, path=1, file="Bya02_6711", type=0, category=1, }; // あはははっ。いくら足掻こうと、その『檻』からは抜け出せない
+st[567] = { volumetype=1, path=1, file="Bya02_6712", type=0, category=1, }; // 鋏(きょう)角(かく)たる顕現(けんげん)の獣(けもの)、僕に宿るケリケラータ。巣より這(は)い出(い)で討(う)ち喰(く)らうんだ
+// st[568] = { volumetype=1, path=1, file="Bya02_6713", type=0, category=1, }; // 捕われ喰われ、この腹の中で永久を生き、永劫の快楽を味わい続けるんだね
+st[569] = { volumetype=1, path=1, file="Bya02_6714", type=0, category=1, }; // 終わらない悪夢 （必殺技名）
+
+// （相手を倒した場合　→別れの言葉）
+// st[570] = { volumetype=1, path=1, file="Bya02_6720", type=0, category=1, }; // 生きていようはずもない
+// st[571] = { volumetype=1, path=1, file="Bya02_6721", type=0, category=1, }; // ごちそうさま
+// st[572] = { volumetype=1, path=1, file="Bya02_6722", type=0, category=1, }; // ははっ。やっぱり弱いね。
+
+// （相手が生きてる場合
+// st[575] = { volumetype=1, path=1, file="Bya02_6730", type=0, category=1, }; // しぶといね。まったく。
+// st[576] = { volumetype=1, path=1, file="Bya02_6731", type=0, category=1, }; // お代わりは要らないんだけど
+// st[577] = { volumetype=1, path=1, file="Bya02_6732", type=0, category=1, }; // ヤキが回ったってやつかな
+
+// 対キャラ別
+// st[610] = { volumetype=1, path=1, file="Bya02_7100", type=0, category=1, }; // ハイドくん（対ハイド）
+// st[611] = { volumetype=1, path=1, file="Bya02_7101", type=0, category=1, }; // リンネちゃん（対リンネ）
+// st[612] = { volumetype=1, path=1, file="Bya02_7102", type=0, category=1, }; // お嬢ちゃん（対リンネ）
+// st[613] = { volumetype=1, path=1, file="Bya02_7103", type=0, category=1, }; // ワレンシュタインさん（対ワレン）
+// st[614] = { volumetype=1, path=1, file="Bya02_7104", type=0, category=1, }; // おじいさん（対ワレン）
+// st[615] = { volumetype=1, path=1, file="Bya02_7105", type=0, category=1, }; // カーマインさん（対カーマイン）
+// st[616] = { volumetype=1, path=1, file="Bya02_7106", type=0, category=1, }; // おにーさん（対カーマイン）
+// st[617] = { volumetype=1, path=1, file="Bya02_7107", type=0, category=1, }; // 原田さん（対オリエ）
+// st[618] = { volumetype=1, path=1, file="Bya02_7108", type=0, category=1, }; // オリエさん（対オリエ）
+// st[619] = { volumetype=1, path=1, file="Bya02_7109", type=0, category=1, }; // ゴルドーさん（対ゴルドー）　
+// st[620] = { volumetype=1, path=1, file="Bya02_7110", type=0, category=1, }; // メルカヴァさん（対メルカヴァ）
+// st[621] = { volumetype=1, path=1, file="Bya02_7111", type=0, category=1, }; // 虚無おじさん（対メルカヴァ）　
+// st[622] = { volumetype=1, path=1, file="Bya02_7112", type=0, category=1, }; // バティスタさん（対バティスタ）
+// st[623] = { volumetype=1, path=1, file="Bya02_7113", type=0, category=1, }; // お嬢さん（対バティスタ）
+// st[624] = { volumetype=1, path=1, file="Bya02_7114", type=0, category=1, }; // セトくん（対セト）　
+// st[625] = { volumetype=1, path=1, file="Bya02_7115", type=0, category=1, }; // ユズリハさん（対ユズリハ）
+// st[626] = { volumetype=1, path=1, file="Bya02_7116", type=0, category=1, }; // おねーさん（対ユズリハ）
+// st[627] = { volumetype=1, path=1, file="Bya02_7117", type=0, category=1, }; // ヒルダさん（対ヒルダ）
+// st[628] = { volumetype=1, path=1, file="Bya02_7118", type=0, category=1, }; // パラドクスさん（対ヒルダ）
+// st[629] = { volumetype=1, path=1, file="Bya02_7119", type=0, category=1, }; // エルトナムさん（対エルトナム）　
+// st[630] = { volumetype=1, path=1, file="Bya02_7120", type=0, category=1, }; // ナナセさん（対ナナセ）
+// st[631] = { volumetype=1, path=1, file="Bya02_7121", type=0, category=1, }; // ケイアスさん（対ケイアス）
+// st[632] = { volumetype=1, path=1, file="Bya02_7122", type=0, category=1, }; // アカツキさん（対アカツキ）
+// st[633] = { volumetype=1, path=1, file="Bya02_7123", type=0, category=1, }; // 姉さん（対ツクヨミ）
+

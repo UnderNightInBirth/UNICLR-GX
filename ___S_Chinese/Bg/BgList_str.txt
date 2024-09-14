@@ -1,0 +1,21 @@
+[data]
+001 = Metro Center Intersection
+002 = Highrise
+003 = Park
+004 = Riverside Esplanade
+005 = Underpass
+006 = Amber Streetlamps
+007 = Shopping Gallery
+008 = Guardian Shrine
+009 = Sanctum of Reflection
+010 = Crimson Lot
+011 = Abandoned Building
+012 = Power Station
+013 = Somnus Fountain
+014 = Old School Building
+015 = Cafeteria
+016 = Momiji Street
+017 = East Kanzakai Playground
+018 = Cathedral of the East
+090 = Training Room
+099 = Debug Stage

@@ -1,0 +1,238 @@
+//コマンドテーブル skillは格ゲーコマンド表記
+btl_debPrint2("\n[ORI_CommandTable]");
+
+local t =
+{
+	Skill_41236SP_ABC = { CmdCheck = { BallLimit = { [5] = 1 } } },
+	Skill_41236SP = { CmdCheck = { BallLimit = { [5] = 1 } } },
+	
+	Skill_41236EX = {},
+
+	Skill_236EX = {},
+	Skill_236BorC = {},
+	Skill_236A = {}
+
+	Skill_623EX = {},
+	Skill_623BorC = {},
+	Skill_623A = {},
+
+	Skill_214EX = { CmdCheck = { BallLimit = { [5] = 1 } } },
+	Skill_214BorC = { CmdCheck = { BallLimit = { [5] = 1 } } },
+	Skill_214A = { CmdCheck = { BallLimit = { [5] = 1 } } },
+
+	Skill_214_214A =
+	{
+		num = def_CN_Skill_AddCommand2,
+		command = ["4+A","214A","24A@D,12@"],
+		
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_214A","Mv_Skill_214B"] },
+			FrameIDCheck = { Only = 200 },
+			BallOver = { [5] = 1, [6] = 1 },
+			HitStatus="Hit",
+		},
+		UpdateTable = { name = "Mv_Skill_214_214A", },
+	}
+	Skill_214_214B =
+	{
+		num = def_CN_Skill_AddCommand3,
+		command = ["4+B","214B","24B@D,12@"],
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_214A","Mv_Skill_214B"] },
+			FrameIDCheck = { Only = 200 },
+			BallOver = { [5] = 1, [6] = 1 },
+			HitStatus="Hit",
+		},
+		UpdateTable = { name = "Mv_Skill_214_214B", },
+	}
+	Skill_214_214C =
+	{
+		num = def_CN_Skill_AddCommand4,
+		command = ["4+C","214C","24C@D,12@"],
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_214A","Mv_Skill_214B"] },
+			FrameIDCheck = { Only = 200 },
+			BallOver = { [5] = 1, [6] = 1 },
+			HitStatus="Hit",
+		},
+		UpdateTable = { name = "Mv_Skill_214_214C", },
+	}
+	
+	Skill_214_FF =
+	{
+		num = def_CN_Skill_AddCommand1,
+		command = ["v+B+C","4+B+C","6+B+C","B+C"], // サイズ変える時def_PP_Ori_FFStickTypeに注意
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.AddAirCount( 0, 0 ) ) return 0;
+			return 1;
+		}
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			HitStatus = "Hit",
+			// MvCheck = { Only = ["Mv_Skill_214A","Mv_Skill_214B"] },
+			// MvCheck = { Only = ["Mv_Skill_214_214B"] },
+			// J214系の着地をキャンセルするのは見た目も性能もよくないので無しに
+			MvCheck = { Only = ["Mv_Skill_214A","Mv_Skill_214B","Mv_Skill_214_214A","Mv_Skill_214_214B","Mv_Skill_214_214C","Mv_Skill_214EX"] },
+			// FrameIDCheck = { Only = 200 },
+			BallLimit = { [7] = 1 },//214派生のときだけ7=1になっていて、フィニッシュ部分で0になる
+		},
+		function CmdAfterFunc()
+		{
+			if( BMvTbl.IsCpu()==0 ) // プレイヤーの時
+			{
+				// 発動時のレバー方向を記憶
+				local cmdpos = BCMDTbl.GetSuccessButtonPos();
+				BMvTbl.SetPP(def_PP_Ori_FFStickType,cmdpos);
+			}
+			else
+			{
+				BMvTbl.SetPP(def_PP_Ori_FFStickType,3);
+			}
+		}
+		UpdateTable = { name = "Mv_Via_214_FF", },
+	}
+	Skill_J214_FF =
+	{
+		num = def_CN_Skill_AddCommand5,
+		command = ["B+C"],
+		posstatus = _PosState_Air,
+		function CmdBeforeFunc()
+		{
+			if( BMvEff.GRD_GetJudgeResult() <= 0 )
+			{
+				// 通常
+				if( BMvTbl.AddAirCount( 0, 0 ) ) return 0;
+			}
+			else
+			{
+				// ヴォーパル
+				if( BMvTbl.AddAirCount( 1, 0 ) ) return 0;
+			}
+			return 1;
+		}
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			HitStatus = "Hit",
+			MvCheck = { Only = ["Mv_Skill_J214A","Mv_Skill_J214B","Mv_Skill_J214EX"] },
+			PosState = "Air",
+		},
+		UpdateTable = { name = "Mv_Via_J214_FF", },
+	}
+	
+	Skill_J214EX = { CmdCheck = { BallLimit = { [5] = 1 } } },
+	Skill_J214BorC = { CmdCheck = { BallLimit = { [5] = 1 } } },
+	Skill_J214A = { CmdCheck = { BallLimit = { [5] = 1 } } },
+
+	Skill_0202EX = { CmdCheck = { BallLimit = { [5] = 1 } } },
+	Skill_0202BorC = { CmdCheck = { BallLimit = { [5] = 1 } } },
+	Skill_0202A = { CmdCheck = { BallLimit = { [5] = 1 } } },
+	
+	Atk_Std4C = {},
+	Atk_Cro3C = {},
+
+	Atk_Std6B = {},
+	Atk_Cro3B = {},	
+	
+	Atk_Air2C = {},
+	Atk_StdBandC =
+	{
+		command = ["v+B+C","4+B+C","6+B+C","B+C"], // サイズ変える時def_PP_Ori_FFStickTypeに注意
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.AddAirCount( 0, 0 ) ) return 0;
+			return 1;
+		}
+		function CmdAfterFunc()
+		{
+			if( BMvTbl.IsCpu()==0 ) // プレイヤーの時
+			{
+				// 発動時のレバー方向を記憶
+				local cmdpos = BCMDTbl.GetSuccessButtonPos();
+				BMvTbl.SetPP(def_PP_Ori_FFStickType,cmdpos);
+			}
+			else
+			{
+				BMvTbl.SetPP(def_PP_Ori_FFStickType,3);
+			}
+		}
+	},
+	Atk_AirBandC = {
+		function CmdBeforeFunc()
+		{
+			if( BMvEff.GRD_GetJudgeResult() <= 0 )
+			{
+				// 通常
+				if( BMvTbl.AddAirCount( 0, 0 ) ) return 0;
+			}
+			else
+			{
+				// ヴォーパル
+				if( BMvTbl.AddAirCount( 1, 0 ) ) return 0;
+			}
+			return 1;
+		}
+		CmdCheck = {
+			HeightLimit = def_POS_AirDashLimitHeight, // 高度制限をつける
+		}
+	},
+}
+
+
+local ar =
+[
+	{
+		CheckMoveName="Mv_Atk_StdA",
+		UpdateMoveName="Mv_Atk_StdB",
+	},
+	{
+		CheckMoveName="Mv_Atk_StdB",
+		UpdateMoveName="Mv_Atk_CroC",
+		ResetTmplName="Atk_StdB",
+	},
+	{
+		CheckMoveName="Mv_Atk_CroC",
+		UpdateMoveName="Mv_Atk_Std4C",
+		ResetTmplName="Atk_CroC",
+	},
+	{
+		CheckMoveName="Mv_Atk_Std4C",
+		UpdateMoveName="Mv_Skill_214B",
+		ResetTmplName="Atk_Std4C",
+		SrcCmdTmpl="Skill_214BorC",
+	},
+	{
+		ResetTmplName="Skill_214BorC",
+		CheckMoveName="Mv_Skill_214B",
+		UpdateMoveName="Mv_Skill_214_214A",
+		SrcCmdTmpl="Skill_214_214A",
+		CmdCheck = 
+		{
+			HitStatus = 0,
+		}
+		CmdTmplFlags=def_CMDFlags_AnnounceSmaetSteer, //スマートステアアナウンスの追加
+	},
+	{
+		CheckMoveName="Mv_Skill_214_214A",
+		UpdateMoveName="Mv_Skill_41236EX",
+		CmdCheck = 
+		{
+			HitStatus = 0,	
+			BallOver = { [5] = 1, [6] = 1 },
+			Cost = { ComboGauge = 10000 },
+			SkillType = "ExSpecial",
+			HitStatus="Damage",
+		},	
+	},	
+]
+Battle_Std.MakeStdCombo( t, ar );
+
+ORI_CommandTable <- Battle_Std.MakeCommandTable( t );

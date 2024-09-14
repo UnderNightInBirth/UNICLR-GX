@@ -1,0 +1,239 @@
+//コマンドテーブル skillは格ゲーコマンド表記
+btl_debPrint2("\n[CAR_CommandTable]");
+
+local t =
+{
+	Skill_41236SP_ABC = {},
+	Skill_41236SP = {},
+
+	Skill_63214EX = {},
+	Skill_63214B = 
+	{
+		CmdCheck = 
+		{
+			MvCheck = { Fail = ["Mv_Skill_63214A_Hit","Mv_Skill_63214B_Hit"] },
+		},
+	},
+	Skill_63214A = 
+	{
+		CmdCheck = 
+			{
+				MvCheck = { Fail = ["Mv_Skill_63214A_Hit","Mv_Skill_63214B_Hit"] },
+			},
+	},
+	
+	/*
+	Skill_CancelJump63214F =
+	{ //-------------------------------
+		num = def_CN_Skill_AddCommand2, name = "Cmd_Atk_Air6B_Air6B", command = "9"
+		flags = [ "lastdelay","airskill" ], //1F増加
+		CmdBeforeStdFunc = function()
+		{
+			if( Battle_Std.EnemyDamageFlag_Check( def_DF_JumpCanseled ) ) return 0; // コンボ中はジャンプキャンセル１回のみ
+			if( Battle_Std.MoveCode.CheckFlag(def_MC_NoJumpCansel) ) return 0; //通常ＣでもＪＣ不可
+			
+			return 1;
+		},
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = { Only = ["Mv_Skill_63214A_Hit"] },
+			CommandButton = def_PP_CBS_ButtonB,
+			ParamFlagCheck = { Only = { [2]=4 } },
+		},
+		UpdateTable = { name = "Mv_JumpCanselWait_F", }
+	}
+	
+	Skill_CancelJump63214N =
+	{ //-------------------------------
+		num = def_CN_Skill_AddCommand2, name = "Cmd_Atk_Air6B_Air6B", command = "8"
+		flags = [ "lastdelay","airskill" ], //1F増加
+		CmdBeforeStdFunc = function()
+		{
+			if( Battle_Std.EnemyDamageFlag_Check( def_DF_JumpCanseled ) ) return 0; // コンボ中はジャンプキャンセル１回のみ
+			if( Battle_Std.MoveCode.CheckFlag(def_MC_NoJumpCansel) ) return 0; //通常ＣでもＪＣ不可
+			
+			return 1;
+		},
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = { Only = ["Mv_Skill_63214A_Hit"] },
+			CommandButton = def_PP_CBS_ButtonB,
+			ParamFlagCheck = { Only = { [2]=4 } },
+		},
+		UpdateTable = { name = "Mv_JumpCanselWait_N", }
+	}
+	
+	
+	Skill_CancelJump63214B =
+	{ //-------------------------------
+		num = def_CN_Skill_AddCommand2, name = "Cmd_Atk_Air6B_Air6B", command = "7"
+		flags = [ "lastdelay","airskill" ], //1F増加
+		CmdBeforeStdFunc = function()
+		{
+			if( Battle_Std.EnemyDamageFlag_Check( def_DF_JumpCanseled ) ) return 0; // コンボ中はジャンプキャンセル１回のみ
+			if( Battle_Std.MoveCode.CheckFlag(def_MC_NoJumpCansel) ) return 0; //通常ＣでもＪＣ不可
+			
+			return 1;
+		},
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = { Only = ["Mv_Skill_63214A_Hit"] },
+			CommandButton = def_PP_CBS_ButtonB,
+			ParamFlagCheck = { Only = { [2]=4 } },
+		},
+		UpdateTable = { name = "Mv_JumpCanselWait_B", }
+	}
+	*/
+	
+	Skill_236EX =		{ CmdCheck = { Cost = { ComboGauge = 10000 }, BallLimit = { [1] = 1 } } },
+	Skill_236BorC =		{ CmdCheck = { BallLimit = { [1] = 1 } } },
+	Skill_236A = 		{ CmdCheck = { BallLimit = { [1] = 1 } } },
+
+	Skill_623EX = {},
+	Skill_623BorC = {},
+	Skill_623A = {},
+	
+	Skill_214EX = { CmdCheck = { Cost = { ComboGauge = 10000 } } },
+	Skill_214BorC = { CmdCheck = { BallLimit = { [2] = 1 } } },
+	Skill_214A = { CmdCheck = { BallLimit = { [2] = 1 } } },
+
+	Skill_0202EX = {},
+	Skill_0202BorC = {},
+	Skill_0202A = {},	
+	
+	Skill_J236EX =		{ CmdCheck = { Cost = { ComboGauge = 10000 }, BallLimit = { [1] = 1 } } },
+	Skill_J236BorC =	{ CmdCheck = { BallLimit = { [1] = 1 } } },
+	Skill_J236A =		{ CmdCheck = { BallLimit = { [1] = 1 } } },
+
+	Atk_Cro3C = {},
+	Atk_Std6C = {},
+
+	Atk_Std6B = {},
+	// Atk_Std4B = {},//暴発が多いので廃止
+	Atk_Std3B = {},
+
+	Atk_Air6B = {},
+	
+	Atk_Air6Atk_Clear = {}, // 低空6+攻の暴発を防ぐ
+
+	Atk_6B_6B =
+	{
+		num = def_CN_Atk_6B_6B_Old,
+		function CmdBeforeFunc()
+		{
+			//これがないと着地後6+A+Bのダッシュをやろうとして派生が暴発しやすい
+			if ( BMvTbl.CheckCommandString( { command = ["6+A+B","0606+B"], lastdelay = 1 } ) ) return 0;
+			
+			return 1;
+		}
+		CmdCheck =
+		{
+			SkillType = "AddCommand",
+			MvCheck = { Only = ["Mv_Atk_Std6B","Mv_Atk_Air6B_Land"] },
+			HitStatus = "Hit",
+			ParamFlagCheck = { Only = { [2]=4 } },
+		}
+	},
+	
+	Atk_Air6B_Air6B =
+	{ //-------------------------------
+		num = def_CN_Skill_AddCommand2, name = "Cmd_Atk_Air6B_Air6B", command = "6+B", posstatus = _PosState_Air,
+		flags = [ "lastdelay","airskill" ], //1F増加
+		CmdBeforeStdFunc = function()
+		{
+			if( Battle_Std.CancelCheck_NormalAtk()==0 ) return 0;
+			
+			return 1;
+		},
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = { Only = ["Mv_Atk_Air6B"] },
+			PosState = "Air",
+			HitStatus = "Hit",
+			CommandButton = def_PP_CBS_ButtonB,
+			ParamFlagCheck = { Only = { [2]=4 } },
+		},
+		CmdAfterStdFunc = function()
+		{
+			local pos = BMvTbl.GetPosition();
+			local vec = BMvTbl.GetVector(0);
+			if( pos.y + vec.y >= 0 ) return 0;
+			return 1;
+		},
+		UpdateTable = { name = "Mv_Atk_J6B_J6B", }
+	}
+
+	Atk_B_B =
+	{
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Atk_StdB"] },
+			FrameIDCheck = { Only = 10 },
+		}	
+	},
+	Atk_JB_JB = {},
+	
+	Atk_StdBandC = {
+		function CmdAfterFunc()
+		{
+			// 181017 PPに入れる値を0or1からレバー方向の値を入れるように変更
+			local stick = Battle_Std.GetStickHold_FurimukiReverse();//地上技で振り向く予定があるのでこの関数
+			BMvTbl.SetPP( def_PP_Car_BandC_Type, stick );
+			return 1;
+		},
+	},	
+	
+	Atk_AirBandC = {
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.AddAirCount( 0, 0 ) ) return 0;
+			return 1;
+		}
+		function CmdAfterFunc()
+		{
+			// 181017 PPに入れる値を0or1からレバー方向の値を入れるように変更
+			local stick = BMvTbl.GetStickHold();//こっちは空中なのでこのままでOK
+			BMvTbl.SetPP( def_PP_Car_BandC_Type, stick );
+			return 1;
+		},	
+	},	
+
+}
+
+local ar =
+[
+	{
+		CheckMoveName="Mv_Atk_StdA",
+		UpdateMoveName="Mv_Atk_StdB",
+	},
+	{
+		CheckMoveName="Mv_Atk_StdB",
+		UpdateMoveName="Mv_Atk_Std6C",
+		ResetTmplName="Atk_StdB",		
+	},
+	{
+		CheckMoveName="Mv_Atk_Std6C",
+		UpdateMoveName="Mv_Skill_623B",
+		ResetTmplName="Atk_Std6C",
+		CmdTmplFlags=def_CMDFlags_AnnounceSmaetSteer, //スマートステアアナウンスの追加
+	},
+	{
+		CheckMoveName="Mv_Skill_623B",
+		UpdateMoveName="Mv_Skill_214EX",
+		ResetTmplName="Skill_623BorC",
+		CmdCheck = 
+		{
+			HitStatus = "Damage",
+			Cost = { ComboGauge = 10000 },
+			SkillType = "ExSpecial",
+		}
+	},
+]
+Battle_Std.MakeStdCombo( t, ar );
+
+CAR_CommandTable <- Battle_Std.MakeCommandTable( t );

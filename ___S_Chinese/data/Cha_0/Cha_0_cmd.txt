@@ -1,0 +1,456 @@
+//ÉRÉ}ÉìÉhÉeÅ[ÉuÉã skillÇÕäiÉQÅ[ÉRÉ}ÉìÉhï\ãL
+btl_debPrint2("\n[CHA_CommandTable]");
+
+// É_ÉnÅ[ÉJÇÃà íuèÓïÒÇÉ`ÉFÉbÉN
+local dah_CheckPosState = function( _flag )
+{
+	local findobj = BMvCore.CFindObject(); // ÉNÉâÉXê∂ê¨
+	local dah = findobj.Get(1); // ID1Çåüçı
+	if( dah.isdone() )
+	{
+		if( dah.push() )
+		{
+			local ret = BCMDTbl.CheckPosState( _flag )
+			dah.pop();
+			
+			return ret;
+		}
+	}
+	return 0;
+}
+
+local t =
+{
+	//Skill_IWEXIST = {},
+	
+	Skill_236EX = 
+	{
+		function CmdBeforeFunc()
+		{
+			//if( BMvTbl.GetPP( def_PP_Cha_DahMode ) == 0 ) return 0; //èoåªÇµÇƒÇ»Ç©Ç¡ÇΩÇÁé∏îs
+			local ap = BMvTbl.GetPP( def_PP_Cha_DahActionPoint );
+			if( ap > def_PP_Cha_DahActionPointLimit || ap < 0 ) return 0;
+			if( (BMvTbl.GetPP( def_PP_Cha_DahActList )&def_CHR_Dah_ActFlag_236EX) != 0 ) return 0; //ä˘Ç…égÇ¡ÇƒÇΩÇÁé∏îs
+			if( BMvTbl.GetPP( def_PP_Cha_DahNormalCancel ) == 0 ) return 0; // í èÌÇbïsâ¬Ç»ÇÁé∏îs
+			return 1;
+		},
+	},
+	
+	Skill_236BorC = 
+	{
+		function CmdBeforeFunc()
+		{
+			//if( BMvTbl.GetPP( def_PP_Cha_DahMode ) == 0 ) return 0; //èoåªÇµÇƒÇ»Ç©Ç¡ÇΩÇÁé∏îs
+			local ap = BMvTbl.GetPP( def_PP_Cha_DahActionPoint );
+			if( ap > def_PP_Cha_DahActionPointLimit || ap < 0 ) return 0;
+			if( (BMvTbl.GetPP( def_PP_Cha_DahActList )&def_CHR_Dah_ActFlag_236B) != 0 ) return 0; //ä˘Ç…égÇ¡ÇƒÇΩÇÁé∏îs
+			if( BMvTbl.GetPP( def_PP_Cha_DahNormalCancel ) == 0 ) return 0; // í èÌÇbïsâ¬Ç»ÇÁé∏îs
+			return 1;
+		},
+	},	
+
+	Skill_236A =
+	{
+		function CmdBeforeFunc()
+		{
+			//if( BMvTbl.GetPP( def_PP_Cha_DahMode ) == 0 ) return 0; //èoåªÇµÇƒÇ»Ç©Ç¡ÇΩÇÁé∏îs
+			local ap = BMvTbl.GetPP( def_PP_Cha_DahActionPoint );
+			if( ap > def_PP_Cha_DahActionPointLimit || ap < 0 ) return 0;
+			if( (BMvTbl.GetPP( def_PP_Cha_DahActList )&def_CHR_Dah_ActFlag_236A) != 0 ) return 0; //ä˘Ç…égÇ¡ÇƒÇΩÇÁé∏îs
+			if( BMvTbl.GetPP( def_PP_Cha_DahNormalCancel ) == 0 ) return 0; // í èÌÇbïsâ¬Ç»ÇÁé∏îs
+			return 1;
+		},
+	},
+	
+	Skill_J236EX =
+	{
+		function CmdBeforeFunc()
+		{
+			//if( BMvTbl.GetPP( def_PP_Cha_DahMode ) == 0 ) return 0; //èoåªÇµÇƒÇ»Ç©Ç¡ÇΩÇÁé∏îs
+			local ap = BMvTbl.GetPP( def_PP_Cha_DahActionPoint );
+			if( ap > def_PP_Cha_DahActionPointLimit || ap < 0 ) return 0;
+			if( (BMvTbl.GetPP( def_PP_Cha_DahActList )&def_CHR_Dah_ActFlag_236EX) != 0 ) return 0; //ä˘Ç…égÇ¡ÇƒÇΩÇÁé∏îs
+			if( BMvTbl.GetPP( def_PP_Cha_DahNormalCancel ) == 0 ) return 0; // í èÌÇbïsâ¬Ç»ÇÁé∏îs
+			return 1;
+		},
+	},	
+	
+	Skill_J236BorC =
+	{
+		function CmdBeforeFunc()
+		{
+			//if( BMvTbl.GetPP( def_PP_Cha_DahMode ) == 0 ) return 0; //èoåªÇµÇƒÇ»Ç©Ç¡ÇΩÇÁé∏îs
+			local ap = BMvTbl.GetPP( def_PP_Cha_DahActionPoint );
+			if( ap > def_PP_Cha_DahActionPointLimit || ap < 0 ) return 0;
+			if( (BMvTbl.GetPP( def_PP_Cha_DahActList )&def_CHR_Dah_ActFlag_236B) != 0 ) return 0; //ä˘Ç…égÇ¡ÇƒÇΩÇÁé∏îs
+			if( BMvTbl.GetPP( def_PP_Cha_DahNormalCancel ) == 0 ) return 0; // í èÌÇbïsâ¬Ç»ÇÁé∏îs
+			return 1;
+		},
+	},	
+	
+	Skill_J236A =
+	{
+		function CmdBeforeFunc() : (dah_CheckPosState)
+		{
+			//if( BMvTbl.GetPP( def_PP_Cha_DahMode ) == 0 ) return 0; //èoåªÇµÇƒÇ»Ç©Ç¡ÇΩÇÁé∏îs
+			local ap = BMvTbl.GetPP( def_PP_Cha_DahActionPoint );
+			if( ap > def_PP_Cha_DahActionPointLimit || ap < 0 ) return 0;
+			if( (BMvTbl.GetPP( def_PP_Cha_DahActList )&def_CHR_Dah_ActFlag_236A) != 0 ) return 0; //ä˘Ç…égÇ¡ÇƒÇΩÇÁé∏îs
+			if( BMvTbl.GetPP( def_PP_Cha_DahNormalCancel ) == 0 ) return 0; // í èÌÇbïsâ¬Ç»ÇÁé∏îs
+			return 1;
+		},
+	},	
+
+	Skill_0202A = 
+	{
+		function CmdBeforeFunc() : (dah_CheckPosState)
+		{
+			local ap = BMvTbl.GetPP( def_PP_Cha_DahActionPoint );
+			if( ap > def_PP_Cha_DahActionPointLimit || ap < 0 ) return 0;
+			if( (BMvTbl.GetPP( def_PP_Cha_DahActList )&(def_CHR_Dah_ActFlag_0202A|def_CHR_Dah_ActFlag_0202B)) != 0 ) return 0; //ä˘Ç…égÇ¡ÇƒÇΩÇÁé∏îs
+			if( BMvTbl.GetPP( def_PP_Cha_DahNormalCancel ) == 0 ) return 0; // í èÌÇbïsâ¬Ç»ÇÁé∏îs
+			if( dah_CheckPosState( _PosState_Air ) ) return 0; // É_ÉnÅ[ÉJÇ™ãÛíÜÇæÇ¡ÇΩÇÁé∏îs
+			return 1;
+		},
+	},
+	
+	Skill_0202BorC = 
+	{
+		function CmdBeforeFunc() : (dah_CheckPosState)
+		{
+			local ap = BMvTbl.GetPP( def_PP_Cha_DahActionPoint );
+			if( ap > def_PP_Cha_DahActionPointLimit || ap < 0 ) return 0;
+			if( (BMvTbl.GetPP( def_PP_Cha_DahActList )&(def_CHR_Dah_ActFlag_0202A|def_CHR_Dah_ActFlag_0202B)) != 0 ) return 0; //ä˘Ç…égÇ¡ÇƒÇΩÇÁé∏îs
+			if( BMvTbl.GetPP( def_PP_Cha_DahNormalCancel ) == 0 ) return 0; // í èÌÇbïsâ¬Ç»ÇÁé∏îs
+			if( dah_CheckPosState( _PosState_Air ) ) return 0; // É_ÉnÅ[ÉJÇ™ãÛíÜÇæÇ¡ÇΩÇÁé∏îs
+			return 1;
+		},
+	},
+	
+	Skill_0202EX = 
+	{
+		function CmdBeforeFunc() : (dah_CheckPosState)
+		{
+			local ap = BMvTbl.GetPP( def_PP_Cha_DahActionPoint );
+			if( ap > def_PP_Cha_DahActionPointLimit || ap < 0 ) return 0;
+			if( (BMvTbl.GetPP( def_PP_Cha_DahActList )&(def_CHR_Dah_ActFlag_0202EX)) != 0 ) return 0; //ä˘Ç…égÇ¡ÇƒÇΩÇÁé∏îs
+			if( BMvTbl.GetPP( def_PP_Cha_DahNormalCancel ) == 0 ) return 0; // í èÌÇbïsâ¬Ç»ÇÁé∏îs
+			if( dah_CheckPosState( _PosState_Air ) ) return 0; // É_ÉnÅ[ÉJÇ™ãÛíÜÇæÇ¡ÇΩÇÁé∏îs
+			return 1;
+		},
+	},
+	
+	// 181018 É_ÉnÅ[ÉJçƒè¢ä´í«â¡
+	Skill_0202D = 
+	{
+		num = def_CN_Skill_0202D,
+		name = "Cmd_Skill_0202D", command = "0202D@N,255@",
+		flags = [ "lastdelay" ],
+		function CmdBeforeFunc() : (dah_CheckPosState)
+		{
+			// É_ÉnÅ[ÉJÇ™è¡ñ≈íÜÇÃÇ›égópâ¬î\
+			local dahst = BMvTbl.GetPP(def_PP_Cha_DahStatus);
+			if( !(dahst&def_PPFlag_Cha_DS_Vanishing) ) return 0;
+			
+			local ap = BMvTbl.GetPP( def_PP_Cha_DahActionPoint );
+			if( ap > def_PP_Cha_DahActionPointLimit || ap < 0 ) return 0;
+			if( dah_CheckPosState( _PosState_Air ) ) return 0; // É_ÉnÅ[ÉJÇ™ãÛíÜÇæÇ¡ÇΩÇÁé∏îs
+			return 1;
+		},
+		CmdCheck =
+		{
+			SkillType = "None", // çsìÆâ¬î\éûÇµÇ©èoÇπÇ»Ç¢
+		},
+		UpdateTable = { name = "Mv_Skill_0202D", }
+	},
+	
+	Skill_J0202A = 
+	{
+		function CmdBeforeFunc() : (dah_CheckPosState)
+		{
+			local ap = BMvTbl.GetPP( def_PP_Cha_DahActionPoint );
+			if( ap > def_PP_Cha_DahActionPointLimit || ap < 0 ) return 0;
+			if( (BMvTbl.GetPP( def_PP_Cha_DahActList )&(def_CHR_Dah_ActFlag_0202A|def_CHR_Dah_ActFlag_0202B)) != 0 ) return 0; //ä˘Ç…égÇ¡ÇƒÇΩÇÁé∏îs
+			if( BMvTbl.GetPP( def_PP_Cha_DahNormalCancel ) == 0 ) return 0; // í èÌÇbïsâ¬Ç»ÇÁé∏îs
+			if( dah_CheckPosState( _PosState_Air ) ) return 0; // É_ÉnÅ[ÉJÇ™ãÛíÜÇæÇ¡ÇΩÇÁé∏îs
+			return 1;
+		},
+	},
+	
+	Skill_J0202BorC = 
+	{
+		function CmdBeforeFunc() : (dah_CheckPosState)
+		{
+			local ap = BMvTbl.GetPP( def_PP_Cha_DahActionPoint );
+			if( ap > def_PP_Cha_DahActionPointLimit || ap < 0 ) return 0;
+			if( (BMvTbl.GetPP( def_PP_Cha_DahActList )&(def_CHR_Dah_ActFlag_0202A|def_CHR_Dah_ActFlag_0202B)) != 0 ) return 0; //ä˘Ç…égÇ¡ÇƒÇΩÇÁé∏îs
+			if( BMvTbl.GetPP( def_PP_Cha_DahNormalCancel ) == 0 ) return 0; // í èÌÇbïsâ¬Ç»ÇÁé∏îs
+			if( dah_CheckPosState( _PosState_Air ) ) return 0; // É_ÉnÅ[ÉJÇ™ãÛíÜÇæÇ¡ÇΩÇÁé∏îs
+			return 1;
+		},
+	},
+	
+	Skill_J0202EX = 
+	{
+		function CmdBeforeFunc() : (dah_CheckPosState)
+		{
+			local ap = BMvTbl.GetPP( def_PP_Cha_DahActionPoint );
+			if( ap > def_PP_Cha_DahActionPointLimit || ap < 0 ) return 0;
+			if( (BMvTbl.GetPP( def_PP_Cha_DahActList )&(def_CHR_Dah_ActFlag_0202EX)) != 0 ) return 0; //ä˘Ç…égÇ¡ÇƒÇΩÇÁé∏îs
+			if( BMvTbl.GetPP( def_PP_Cha_DahNormalCancel ) == 0 ) return 0; // í èÌÇbïsâ¬Ç»ÇÁé∏îs
+			if( dah_CheckPosState( _PosState_Air ) ) return 0; // É_ÉnÅ[ÉJÇ™ãÛíÜÇæÇ¡ÇΩÇÁé∏îs
+			return 1;
+		},
+	},		
+	
+	Skill_214EX =
+	{
+		function CmdBeforeFunc()
+		{
+			local ap = BMvTbl.GetPP( def_PP_Cha_DahActionPoint );
+			if( ap > def_PP_Cha_DahActionPointLimit || ap < 0 ) return 0;
+			if( (BMvTbl.GetPP( def_PP_Cha_DahActList )&def_CHR_Dah_ActFlag_214EX) != 0 ) return 0; //ä˘Ç…égÇ¡ÇƒÇΩÇÁé∏îs
+			if( BMvTbl.GetPP( def_PP_Cha_DahNormalCancel ) == 0 ) return 0; // í èÌÇbïsâ¬Ç»ÇÁé∏îs
+			return 1;
+		},
+	},	
+
+	Skill_214BorC =
+	{
+		function CmdBeforeFunc()
+		{
+			local ap = BMvTbl.GetPP( def_PP_Cha_DahActionPoint );
+			if( ap > def_PP_Cha_DahActionPointLimit || ap < 0 ) return 0;
+			if( (BMvTbl.GetPP( def_PP_Cha_DahActList )&def_CHR_Dah_ActFlag_214B) != 0 ) return 0; //ä˘Ç…égÇ¡ÇƒÇΩÇÁé∏îs
+			if( BMvTbl.GetPP( def_PP_Cha_DahNormalCancel ) == 0 ) return 0; // í èÌÇbïsâ¬Ç»ÇÁé∏îs
+			return 1;
+		},
+	},
+	
+	Skill_214A =
+	{
+		function CmdBeforeFunc()
+		{
+			local ap = BMvTbl.GetPP( def_PP_Cha_DahActionPoint );
+			if( ap > def_PP_Cha_DahActionPointLimit || ap < 0 ) return 0;
+			if( (BMvTbl.GetPP( def_PP_Cha_DahActList )&def_CHR_Dah_ActFlag_214A) != 0 ) return 0; //ä˘Ç…égÇ¡ÇƒÇΩÇÁé∏îs
+			if( BMvTbl.GetPP( def_PP_Cha_DahNormalCancel ) == 0 ) return 0; // í èÌÇbïsâ¬Ç»ÇÁé∏îs
+			return 1;
+		},
+	},
+	
+	Skill_J214EX =
+	{
+		function CmdBeforeFunc()
+		{
+			local ap = BMvTbl.GetPP( def_PP_Cha_DahActionPoint );
+			if( ap > def_PP_Cha_DahActionPointLimit || ap < 0 ) return 0;
+			if( (BMvTbl.GetPP( def_PP_Cha_DahActList )&def_CHR_Dah_ActFlag_214EX) != 0 ) return 0; //ä˘Ç…égÇ¡ÇƒÇΩÇÁé∏îs
+			if( BMvTbl.GetPP( def_PP_Cha_DahNormalCancel ) == 0 ) return 0; // í èÌÇbïsâ¬Ç»ÇÁé∏îs
+			return 1;
+		},
+	},
+	
+	Skill_J214BorC =
+	{
+		function CmdBeforeFunc()
+		{
+			local ap = BMvTbl.GetPP( def_PP_Cha_DahActionPoint );
+			if( ap > def_PP_Cha_DahActionPointLimit || ap < 0 ) return 0;
+			if( (BMvTbl.GetPP( def_PP_Cha_DahActList )&def_CHR_Dah_ActFlag_214B) != 0 ) return 0; //ä˘Ç…égÇ¡ÇƒÇΩÇÁé∏îs
+			if( BMvTbl.GetPP( def_PP_Cha_DahNormalCancel ) == 0 ) return 0; // í èÌÇbïsâ¬Ç»ÇÁé∏îs
+			return 1;
+		},
+	},
+
+	Skill_J214A =
+	{
+		function CmdBeforeFunc()
+		{
+			local ap = BMvTbl.GetPP( def_PP_Cha_DahActionPoint );
+			if( ap > def_PP_Cha_DahActionPointLimit || ap < 0 ) return 0;
+			if( (BMvTbl.GetPP( def_PP_Cha_DahActList )&def_CHR_Dah_ActFlag_214A) != 0 ) return 0; //ä˘Ç…égÇ¡ÇƒÇΩÇÁé∏îs
+			if( BMvTbl.GetPP( def_PP_Cha_DahNormalCancel ) == 0 ) return 0; // í èÌÇbïsâ¬Ç»ÇÁé∏îs
+			return 1;
+		},
+	},	
+	
+	Skill_623EX = 
+	{
+		function CmdBeforeFunc() : (dah_CheckPosState)
+		{
+			//if( BMvTbl.GetPP( def_PP_Cha_DahMode ) == 0 ) return 0; //èoåªÇµÇƒÇ»Ç©Ç¡ÇΩÇÁé∏îs
+			local ap = BMvTbl.GetPP( def_PP_Cha_DahActionPoint );
+			if( ap > def_PP_Cha_DahActionPointLimit || ap < 0 ) return 0;
+			if( (BMvTbl.GetPP( def_PP_Cha_DahActList )&def_CHR_Dah_ActFlag_623EX) != 0 ) return 0; //ä˘Ç…égÇ¡ÇƒÇΩÇÁé∏îs
+			if( BMvTbl.GetPP( def_PP_Cha_DahNormalCancel ) == 0 ) return 0; // í èÌÇbïsâ¬Ç»ÇÁé∏îs
+			//if( dah_CheckPosState( _PosState_Air ) ) return 0; // É_ÉnÅ[ÉJÇ™ãÛíÜÇæÇ¡ÇΩÇÁé∏îs
+			return 1;
+		},
+	},
+	
+	Skill_623BorC = 
+	{
+		function CmdBeforeFunc() : (dah_CheckPosState)
+		{
+			//if( BMvTbl.GetPP( def_PP_Cha_DahMode ) == 0 ) return 0; //èoåªÇµÇƒÇ»Ç©Ç¡ÇΩÇÁé∏îs
+			local ap = BMvTbl.GetPP( def_PP_Cha_DahActionPoint );
+			if( ap > def_PP_Cha_DahActionPointLimit || ap < 0 ) return 0;
+			if( (BMvTbl.GetPP( def_PP_Cha_DahActList )&def_CHR_Dah_ActFlag_623B) != 0 ) return 0; //ä˘Ç…égÇ¡ÇƒÇΩÇÁé∏îs
+			if( BMvTbl.GetPP( def_PP_Cha_DahNormalCancel ) == 0 ) return 0; // í èÌÇbïsâ¬Ç»ÇÁé∏îs
+			//if( dah_CheckPosState( _PosState_Air ) ) return 0; // É_ÉnÅ[ÉJÇ™ãÛíÜÇæÇ¡ÇΩÇÁé∏îs
+			return 1;
+		},
+	},	
+
+	Skill_623A =
+	{
+		function CmdBeforeFunc() : (dah_CheckPosState)
+		{
+			//if( BMvTbl.GetPP( def_PP_Cha_DahMode ) == 0 ) return 0; //èoåªÇµÇƒÇ»Ç©Ç¡ÇΩÇÁé∏îs
+			local ap = BMvTbl.GetPP( def_PP_Cha_DahActionPoint );
+			if( ap > def_PP_Cha_DahActionPointLimit || ap < 0 ) return 0;
+			if( (BMvTbl.GetPP( def_PP_Cha_DahActList )&def_CHR_Dah_ActFlag_623A) != 0 ) return 0; //ä˘Ç…égÇ¡ÇƒÇΩÇÁé∏îs
+			if( BMvTbl.GetPP( def_PP_Cha_DahNormalCancel ) == 0 ) return 0; // í èÌÇbïsâ¬Ç»ÇÁé∏îs
+			//if( dah_CheckPosState( _PosState_Air ) ) return 0; // É_ÉnÅ[ÉJÇ™ãÛíÜÇæÇ¡ÇΩÇÁé∏îs
+			return 1;
+		},
+	},
+	
+	Skill_J623EX =
+	{
+		function CmdBeforeFunc()
+		{
+			local ap = BMvTbl.GetPP( def_PP_Cha_DahActionPoint );
+			if( ap > def_PP_Cha_DahActionPointLimit || ap < 0 ) return 0;
+			if( (BMvTbl.GetPP( def_PP_Cha_DahActList )&def_CHR_Dah_ActFlag_623EX) != 0 ) return 0; //ä˘Ç…égÇ¡ÇƒÇΩÇÁé∏îs
+			if( BMvTbl.GetPP( def_PP_Cha_DahNormalCancel ) == 0 ) return 0; // í èÌÇbïsâ¬Ç»ÇÁé∏îs
+			return 1;
+		},
+	},
+	
+	Skill_J623BorC =
+	{
+		function CmdBeforeFunc()
+		{
+			local ap = BMvTbl.GetPP( def_PP_Cha_DahActionPoint );
+			if( ap > def_PP_Cha_DahActionPointLimit || ap < 0 ) return 0;
+			if( (BMvTbl.GetPP( def_PP_Cha_DahActList )&def_CHR_Dah_ActFlag_623B) != 0 ) return 0; //ä˘Ç…égÇ¡ÇƒÇΩÇÁé∏îs
+			if( BMvTbl.GetPP( def_PP_Cha_DahNormalCancel ) == 0 ) return 0; // í èÌÇbïsâ¬Ç»ÇÁé∏îs
+			return 1;
+		},
+	},	
+
+	Skill_J623A =
+	{
+		function CmdBeforeFunc()
+		{
+			local ap = BMvTbl.GetPP( def_PP_Cha_DahActionPoint );
+			if( ap > def_PP_Cha_DahActionPointLimit || ap < 0 ) return 0;
+			if( (BMvTbl.GetPP( def_PP_Cha_DahActList )&def_CHR_Dah_ActFlag_623A) != 0 ) return 0; //ä˘Ç…égÇ¡ÇƒÇΩÇÁé∏îs
+			if( BMvTbl.GetPP( def_PP_Cha_DahNormalCancel ) == 0 ) return 0; // í èÌÇbïsâ¬Ç»ÇÁé∏îs
+			return 1;
+		},
+	},
+	
+	Skill_41236SP_ABC = {},
+	Skill_41236SP =
+	{
+		function CmdBeforeFunc() : (dah_CheckPosState)
+		{
+			// local ap = BMvTbl.GetPP( def_PP_Cha_DahActionPoint );
+			// if( ap > def_PP_Cha_DahActionPointLimit || ap < 0 ) return 0;
+			// if( BMvTbl.GetPP( def_PP_Cha_DahNormalCancel ) == 0 ) return 0; // í èÌÇbïsâ¬Ç»ÇÁé∏îs
+			// if( dah_CheckPosState( _PosState_Air ) ) return 0; // É_ÉnÅ[ÉJÇ™ãÛíÜÇæÇ¡ÇΩÇÁé∏îs
+			return 1;
+		},
+	},
+	
+
+	Atk_B_B = 
+	{
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Atk_StdB"] },
+			FrameIDCheck = { Only = 100 },
+		},
+	},
+	Atk_Air2C = {},
+
+	Atk_C_C = 
+	{
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Atk_StdC"] },
+			FrameIDCheck = { Only = 100 },
+		},	
+		command = "C",
+	},
+	Atk_StdBandC =
+	{
+		function CmdBeforeFunc()
+		{
+			// Ç¢Ç≠ÇÁVORPALèÛë‘Ç≈Ç‡
+			// ïKéEãZãÛêUÇËÉLÉÉÉìÉZÉãÇ≈ÇÕèoÇπÇ»Ç¢ÇÊÇ§Ç…ÇµÇΩÇ¢
+			// MVÇ™ïKéEãZÇ≈ÉqÉbÉgèÓïÒÇ™ñ≥Ç©Ç¡ÇΩÇÁé∏îs
+			if( Battle_Std.MoveCode.CheckFlag(def_MC_Skill) )
+			{
+				// _dp("\n ïKéEãZ");
+				local hs = BMvTbl.GetMvHitStatus();
+				if( !(  hs.Type & _HitType_Hit ) )
+				{
+					// _dp(" -> nohit");
+					return 0;
+				}
+			}
+		}
+	},
+	
+	Atk_Std6C = {},
+	
+}
+
+
+local ar =
+[
+	{
+		CheckMoveName="Mv_Atk_StdA", // A
+		UpdateMoveName="Mv_Atk_StdB", // B
+	},
+	{
+		CheckMoveName="Mv_Atk_StdB", // B
+		UpdateMoveName="Mv_Atk_StdC", // C
+		ResetTmplName="Atk_StdB",
+	},
+	{
+		CheckMoveName="Mv_Atk_StdC", // C
+		UpdateMoveName="Mv_Atk_CroC", // 2C
+		ResetTmplName="Atk_StdC",
+	},
+	{
+		CheckMoveName="Mv_Atk_CroC", // 2C
+		UpdateMoveName="Mv_Atk_Std6C", // 6C
+		ResetTmplName="Atk_CroC",
+		SrcCmdTmpl="Atk_Std6C",
+		CmdTmplFlags=def_CMDFlags_AnnounceSmaetSteer, //ÉXÉ}Å[ÉgÉXÉeÉAÉAÉiÉEÉìÉXÇÃí«â¡
+	},
+	{
+		CheckMoveName="Mv_Atk_Std6C", // 6C
+		UpdateMoveName="Mv_Skill_0202EX", // 22C
+		ResetTmplName="Atk_Std6C",
+		SrcCmdTmpl="Skill_0202EX",
+		CmdCheck = 
+		{
+			Cost = { ComboGauge = 10000 },
+			SkillType = "ExSpecial",
+			HitStatus="Damage",
+		},
+	},
+]
+
+Battle_Std.MakeStdCombo( t, ar );
+
+CHA_CommandTable <- Battle_Std.MakeCommandTable( t );
+

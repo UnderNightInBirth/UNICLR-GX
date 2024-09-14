@@ -1,0 +1,141 @@
+
+
+struct VS_OUTPUT
+{
+    float4 color : COLOR0;
+    float4 speculer : COLOR1;
+    float2 texuv : TEXCOORD0;
+};
+
+
+sampler2D TexSample_Empty =
+	sampler_state
+	{
+		MagFilter = Linear;  MinFilter = Linear;
+		//MagFilter = Point;  MinFilter = Point;
+	}; // テクスチャサンプラ（空
+
+
+float g_fPower[4] = { (1.0f/512.0f), (1.0f/512.0f), (1.0f/512.0f), (1.0f/512.0f) };
+float g_fTable[5] = { 1.0f, 0.4f, 0.3f, 0.2f, 0.1f };
+
+float4 PS_CharaPointBlur_W( VS_OUTPUT In ) : COLOR0
+{
+	float4 output = 0.0f;
+	float fShift = g_fPower[0];
+
+	In.texuv.x += In.texuv.x * g_fPower[2]; // フィルタでずれる部分修正
+	In.texuv.y += In.texuv.y * g_fPower[3]; // フィルタでずれる部分修正
+
+	output = tex2D( TexSample_Empty, float2( In.texuv.x, In.texuv.y ) ).a * g_fTable[0];
+
+	output += tex2D( TexSample_Empty, float2( In.texuv.x+fShift*1, In.texuv.y ) ).a * g_fTable[1];
+	output += tex2D( TexSample_Empty, float2( In.texuv.x-fShift*1, In.texuv.y ) ).a * g_fTable[1];
+	output += tex2D( TexSample_Empty, float2( In.texuv.x+fShift*2, In.texuv.y ) ).a * g_fTable[2];
+	output += tex2D( TexSample_Empty, float2( In.texuv.x-fShift*2, In.texuv.y ) ).a * g_fTable[2];
+	output += tex2D( TexSample_Empty, float2( In.texuv.x+fShift*3, In.texuv.y ) ).a * g_fTable[3];
+	output += tex2D( TexSample_Empty, float2( In.texuv.x-fShift*3, In.texuv.y ) ).a * g_fTable[3];
+	output += tex2D( TexSample_Empty, float2( In.texuv.x+fShift*4, In.texuv.y ) ).a * g_fTable[4];
+	output += tex2D( TexSample_Empty, float2( In.texuv.x-fShift*4, In.texuv.y ) ).a * g_fTable[4];
+
+	return float4( 1.0f, 1.0f, 1.0f, output.a);
+}
+
+float4 PS_CharaPointBlur_H( VS_OUTPUT In ) : COLOR0
+{
+	float4 output = 0.0f;
+	float fShift = g_fPower[1];
+
+	output = tex2D( TexSample_Empty, float2( In.texuv.x, In.texuv.y ) ) * g_fTable[0];
+
+	output += tex2D( TexSample_Empty, float2( In.texuv.x, In.texuv.y+fShift*1 ) ).a * g_fTable[1];
+	output += tex2D( TexSample_Empty, float2( In.texuv.x, In.texuv.y-fShift*1 ) ).a * g_fTable[1];
+	output += tex2D( TexSample_Empty, float2( In.texuv.x, In.texuv.y+fShift*2 ) ).a * g_fTable[2];
+	output += tex2D( TexSample_Empty, float2( In.texuv.x, In.texuv.y-fShift*2 ) ).a * g_fTable[2];
+	output += tex2D( TexSample_Empty, float2( In.texuv.x, In.texuv.y+fShift*3 ) ).a * g_fTable[3];
+	output += tex2D( TexSample_Empty, float2( In.texuv.x, In.texuv.y-fShift*3 ) ).a * g_fTable[3];
+	output += tex2D( TexSample_Empty, float2( In.texuv.x, In.texuv.y+fShift*4 ) ).a * g_fTable[4];
+	output += tex2D( TexSample_Empty, float2( In.texuv.x, In.texuv.y-fShift*4 ) ).a * g_fTable[4];
+
+	return float4( 1.0f, 1.0f, 1.0f, output.a);
+}
+
+float4 PS_CharaPointBlur_MagFilter( VS_OUTPUT In ) : COLOR0
+{
+	float4 output = 0.0f;
+	float fShift = g_fPower[1];
+
+	output = tex2D( TexSample_Empty, float2( In.texuv.x, In.texuv.y ) ) * 0.5f;
+
+	output += tex2D( TexSample_Empty, float2( In.texuv.x+g_fPower[0], In.texuv.y ) ) * (0.3f/4);
+	output += tex2D( TexSample_Empty, float2( In.texuv.x-g_fPower[0], In.texuv.y ) ) * (0.3f/4);
+	output += tex2D( TexSample_Empty, float2( In.texuv.x, In.texuv.y+g_fPower[1] ) ) * (0.3f/4);
+	output += tex2D( TexSample_Empty, float2( In.texuv.x, In.texuv.y-g_fPower[1] ) ) * (0.3f/4);
+	output += tex2D( TexSample_Empty, float2( In.texuv.x+g_fPower[0], In.texuv.y+g_fPower[1] ) ) * (0.2f/4);
+	output += tex2D( TexSample_Empty, float2( In.texuv.x-g_fPower[0], In.texuv.y-g_fPower[1] ) ) * (0.2f/4);
+	output += tex2D( TexSample_Empty, float2( In.texuv.x-g_fPower[0], In.texuv.y+g_fPower[1] ) ) * (0.2f/4);
+	output += tex2D( TexSample_Empty, float2( In.texuv.x+g_fPower[0], In.texuv.y-g_fPower[1] ) ) * (0.2f/4);
+
+	//output = tex2D( TexSample_Empty, float2( In.texuv.x, In.texuv.y ) ) * In.color;
+	output = float4( In.color.rgb, output.a );// * In.color;
+/*
+	output = tex2D( TexSample_Empty, float2( In.texuv.x, In.texuv.y ) );
+
+	output += tex2D( TexSample_Empty, float2( In.texuv.x+fShift*1, In.texuv.y ) ) * g_fTable[0];
+	output += tex2D( TexSample_Empty, float2( In.texuv.x-fShift*1, In.texuv.y ) ) * g_fTable[0];
+	output += tex2D( TexSample_Empty, float2( In.texuv.x+fShift*2, In.texuv.y ) ) * g_fTable[1];
+	output += tex2D( TexSample_Empty, float2( In.texuv.x-fShift*2, In.texuv.y ) ) * g_fTable[1];
+	output += tex2D( TexSample_Empty, float2( In.texuv.x+fShift*3, In.texuv.y ) ) * g_fTable[2];
+	output += tex2D( TexSample_Empty, float2( In.texuv.x-fShift*3, In.texuv.y ) ) * g_fTable[2];
+	output += tex2D( TexSample_Empty, float2( In.texuv.x+fShift*4, In.texuv.y ) ) * g_fTable[3];
+	output += tex2D( TexSample_Empty, float2( In.texuv.x-fShift*4, In.texuv.y ) ) * g_fTable[3];
+*/
+	return output;//float4( 1.0f, 1.0f, 1.0f, output.a);
+}
+
+// キャラクタオーラ、縦方向引き伸ばし
+technique CharaPointBlur_H
+{
+	pass P0
+	{
+		PixelShader = compile ps_3_0 PS_CharaPointBlur_H();
+
+		AlphaBlendEnable = True;
+		AlphaTestEnable = False;
+
+		ZEnable = False;
+		ZWriteEnable = False;
+    }
+}
+
+// キャラクタオーラ、横方向引き伸ばし
+technique CharaPointBlur_W
+{
+	pass P0
+	{
+		PixelShader = compile ps_3_0 PS_CharaPointBlur_W();
+		//PixelShader = compile ps_3_0 PS_CharaPointBlur_MagFilter();
+
+		AlphaBlendEnable = True;
+		AlphaTestEnable = False;
+
+		ZEnable = False;
+		ZWriteEnable = False;
+    }
+}
+
+// キャラクタオーラ、横方向引き伸ばし
+technique CharaPointBlur_MagFilter
+{
+	pass P0
+	{
+		PixelShader = compile ps_3_0 PS_CharaPointBlur_MagFilter();
+
+		AlphaBlendEnable = True;
+		AlphaTestEnable = False;
+
+		ZEnable = False;
+		ZWriteEnable = False;
+    }
+}
+

@@ -1,0 +1,388 @@
+
+#define CHARARECTCHECK (0)
+
+struct VS_IN
+{
+	float4 Position : POSITION0;
+
+	float4 Texcoord : TEXCOORD0;
+
+	float4 Diffuse: COLOR0;
+	float4 Speculer: COLOR1;
+};
+
+struct VS_OUT
+{
+	float4 Position : POSITION0;
+
+	float4 UV : TEXCOORD0;   // UV座標
+
+	float4 Color: COLOR0;
+	float4 Speculer: COLOR1;
+};
+
+struct VS_OUTPUT
+{
+    float4 color : COLOR0;
+    float4 speculer : COLOR1;
+    float2 texuv : TEXCOORD0;
+};
+
+struct VS_OUTPUT_POS
+{
+    float4 pos : POSITION;
+    float4 color : COLOR0;
+    float4 speculer : COLOR1;
+    float2 texuv : TEXCOORD0;
+};
+
+sampler2D TexSample_Empty = sampler_state
+{
+	MagFilter = Point;  MinFilter = Point;
+}; // テクスチャサンプラ（空
+
+sampler2D TexSample_EmptyF = sampler_state
+{
+	MagFilter = Linear;  MinFilter = Linear;
+}; // テクスチャサンプラ（空
+
+sampler2D TexSample_EmptyNF = sampler_state
+{
+}; // テクスチャサンプラ、設定なし
+
+// パレットテクスチャ
+texture tex_Palette = NULL; // 
+sampler2D TexSample_Palette = sampler_state
+{
+	texture = tex_Palette;
+
+	AddressU = CLAMP;  AddressV = CLAMP;
+	MagFilter = Point;  MinFilter = Point;
+	//MagFilter = Linear;  MinFilter = Linear;
+}; // テクスチャサンプラ（空
+
+float4x4 g_mWorld;    // ワールド変換行列
+float4x4 g_mView;     // ビュー行列
+float4x4 g_mProj;     // 射影変換行列
+
+float fPalPlusV; // 
+float2 fRollTexel[2];
+
+float3 g_fPtLastColor = float3( 1.0f, 1.0f, 1.0f );
+
+
+
+
+float4 Chara_Transform( float4 pos )
+{
+    pos = mul( pos, g_mWorld );
+    pos = mul( pos, g_mView);
+    pos = mul( pos, g_mProj );
+
+    return pos;
+}
+
+float4 Chara_Transform2( float4 pos )
+{
+    pos = mul( pos, g_mWorld );
+    pos = mul( pos, g_mView);
+    pos = mul( pos, g_mProj );
+
+    return pos;
+}
+
+//----------------------------------------------------------------
+// 
+VS_OUT VS_CharaDrawV( VS_IN In )
+{
+	VS_OUT Out = (VS_OUT)0;
+
+    Out.Position = Chara_Transform2( In.Position );
+
+	Out.UV = In.Texcoord;
+	Out.Color = In.Diffuse;
+	Out.Speculer = In.Speculer;
+
+    return Out;
+}
+
+
+//#define _defPalDotCorrect (-0.000001f)
+#define _defPalDotCorrect (0.99999f)
+
+float g_fPalCount;
+float2 g_fZeroPosV; // 0の位置,
+float4 g_fFillColor; // ベタカラー,
+
+//-------------------
+// 
+float4 PS_CharaDrawV( VS_OUTPUT In ) : COLOR0
+{
+	float4 index_pal = tex2D( TexSample_Empty, In.texuv );
+#if CHARARECTCHECK==0
+	if( index_pal.a == 0.0f )  return 0.0f;
+#endif
+
+	// 丸め込みをしないとずれる場合がある
+	int iPal = round( index_pal.a * 255.0f );
+	float fPalU = iPal * (1.0f/256.0f);
+
+	// パレットテクスチャ参照
+	float4 outcolor = tex2D( TexSample_Palette, float2( fPalU, fPalPlusV ) );
+
+	outcolor = outcolor * In.color;
+
+#if CHARARECTCHECK
+	outcolor.a = 0.5f;
+#endif //CHARARECTCHECK
+
+    return outcolor + In.speculer;
+}
+
+// グラデつき
+float4 PS_CharaDrawV_Grad( VS_OUTPUT In ) : COLOR0
+{
+	float4 index_pal = tex2D( TexSample_Empty, In.texuv );
+#if CHARARECTCHECK==0
+	if( index_pal.a == 0.0f )  return 0.0f;
+#endif
+
+	// 丸め込みをしないとずれる場合がある
+	int iPal = round( index_pal.a * 255.0f );
+	float fPalU = iPal * (1.0f/256.0f);
+
+	// パレットテクスチャ参照
+	float4 outcolor = tex2D( TexSample_Palette, float2( fPalU, fPalPlusV ) );
+
+	if( iPal == 255 )
+	{
+		// 254を使用
+		float4 outcolor2 = tex2D( TexSample_Palette, float2( 254 * (1.0f/256.0f), fPalPlusV ) );
+		//float fPalCnt = g_fPalCount; // 下から上
+		float fPalCnt = -g_fPalCount; // 上から下
+		float leng = (1.0f - (In.texuv.y * g_fZeroPosV.x)) * g_fZeroPosV.y;
+		leng = abs( fPalCnt - leng) * 8.0f; // x8は可変にするべき？
+		leng = abs( frac( leng ) * 2.0f - 1.0f );
+
+		// outcolor.rgb = lerp( outcolor.rgb, float3( 0.0f, 0.0f, 0.0f ), leng );
+		outcolor.rgb = lerp( outcolor.rgb, outcolor2.rgb, leng );
+	}
+
+	outcolor = outcolor * In.color;
+
+#if CHARARECTCHECK
+	outcolor.a = 0.5f;
+#endif //CHARARECTCHECK
+
+    return outcolor + In.speculer;
+}
+
+//-------------------
+// ベタ
+VS_OUT VS_CharaDrawFillV( VS_IN In )
+{
+	VS_OUT Out = (VS_OUT)0;
+
+    Out.Position = Chara_Transform( In.Position );
+
+	Out.UV = In.Texcoord;
+	Out.Color = In.Diffuse;
+	Out.Speculer = In.Speculer;
+
+    return Out;
+}
+
+// ベタ
+float4 PS_CharaDrawFillV( VS_OUTPUT In ) : COLOR0
+{
+	float4 index_pal = tex2D( TexSample_EmptyF, In.texuv );
+	if( index_pal.a == 0.0f )  return 0.0f;
+
+    return In.color + In.speculer;
+}
+
+
+//-------------------
+// 影
+VS_OUT VS_CharaDrawShadowV( VS_IN In )
+{
+	VS_OUT Out = (VS_OUT)0;
+
+    Out.Position = Chara_Transform( In.Position );
+
+	Out.UV = In.Texcoord;
+	Out.Color = float4( 0.0f, 0.0f, 0.0f, 1.0f );
+
+    return Out;
+}
+
+// 影
+float4 PS_CharaDrawShadowV( VS_OUTPUT In ) : COLOR0
+{
+	float4 index_pal = tex2D( TexSample_EmptyF, In.texuv );
+	if( index_pal.a == 0.0f )  return 0.0f;
+
+    return In.color;
+}
+
+// PAni
+//----------------------------------------------------------------
+// 
+VS_OUT VS_CharaPtDrawV( VS_IN In )
+{
+	VS_OUT Out = (VS_OUT)0;
+
+    Out.Position = Chara_Transform( In.Position );
+
+	Out.UV = In.Texcoord;
+	Out.Color = In.Diffuse;
+	Out.Speculer = In.Speculer;
+
+	//Out.Position.z = 0.0f;
+
+    return Out;
+}
+
+float4 PS_CharaPtDrawV( VS_OUTPUT In ) : COLOR0
+{
+	float4 outcolor = tex2D( TexSample_EmptyNF, In.texuv );
+	if( outcolor.a == 0.0f )  return 0.0f;
+	//if( outcolor.a == 0.0f )  outcolor.a = 0.5f;// return 0.0f;
+	//return 1.0f;
+
+	// 旧描画
+	//outcolor = outcolor * In.color + In.speculer;
+	//outcolor.rgb *= g_fPtLastColor;
+	outcolor = (outcolor * In.color);
+	outcolor.rgb *= g_fPtLastColor; // g_fPtLastColorをfloat4にしたほうがよさそう
+	outcolor += In.speculer;
+
+    return outcolor;
+}
+
+//-------------------
+// ベタ
+VS_OUT VS_CharaPtDrawFillV( VS_IN In )
+{
+	VS_OUT Out = (VS_OUT)0;
+
+    Out.Position = Chara_Transform( In.Position );
+
+	Out.UV = In.Texcoord;
+	Out.Color = In.Diffuse;
+	Out.Speculer = In.Speculer;
+
+    return Out;
+}
+
+// ベタ
+float4 PS_CharaPtDrawFillV( VS_OUTPUT In ) : COLOR0
+{
+	float4 outcolor = tex2D( TexSample_EmptyNF, In.texuv );
+	if( outcolor.a == 0.0f )  return 0.0f;
+
+	//outcolor = (outcolor * In.color);
+	outcolor.a *= In.color.a;
+	outcolor.rgb = In.color.rgb; // 
+	//outcolor.rgb *= g_fPtLastColor; // 
+	outcolor += In.speculer;
+
+    return outcolor;
+}
+
+//-------------------
+// 影
+VS_OUT VS_CharaPtDrawShadowV( VS_IN In )
+{
+	VS_OUT Out = (VS_OUT)0;
+
+    Out.Position = Chara_Transform( In.Position );
+
+	Out.UV = In.Texcoord;
+	Out.Color = float4( 0.0f, 0.0f, 0.0f, 1.0f );
+
+    return Out;
+}
+
+float4 PS_CharaPtDrawShadowV( VS_OUTPUT In ) : COLOR0
+{
+	float4 outcolor = tex2D( TexSample_EmptyF, In.texuv );
+	if( outcolor.a == 0.0f )  return 0.0f;
+
+    return outcolor * In.color;
+}
+
+
+
+
+technique TecCharaDrawEx
+{
+	pass P0
+	{
+		PixelShader = compile ps_3_0 PS_CharaDrawV();
+    }
+}
+
+technique TecCharaDraw_V
+{
+	pass P0
+	{
+		VertexShader = compile vs_3_0 VS_CharaDrawV();
+		PixelShader = compile ps_3_0 PS_CharaDrawV();
+    }
+}
+
+technique TecCharaDraw_V_Grad
+{
+	pass P0
+	{
+		VertexShader = compile vs_3_0 VS_CharaDrawV();
+		PixelShader = compile ps_3_0 PS_CharaDrawV_Grad();
+    }
+}
+
+technique TecCharaDraw_ShadowV
+{
+	pass P0
+	{
+		VertexShader = compile vs_3_0 VS_CharaDrawShadowV();
+		PixelShader = compile ps_3_0 PS_CharaDrawShadowV();
+    }
+}
+
+technique TecCharaDraw_FillV
+{
+	pass P0
+	{
+		VertexShader = compile vs_3_0 VS_CharaDrawFillV();
+		PixelShader = compile ps_3_0 PS_CharaDrawFillV();
+    }
+}
+
+technique TecCharaPtDraw_V
+{
+	pass P0
+	{
+		VertexShader = compile vs_3_0 VS_CharaPtDrawV();
+		PixelShader = compile ps_3_0 PS_CharaPtDrawV();
+    }
+}
+
+technique TecCharaPtDraw_FillV
+{
+	pass P0
+	{
+		VertexShader = compile vs_3_0 VS_CharaPtDrawFillV();
+		PixelShader = compile ps_3_0 PS_CharaPtDrawFillV();
+    }
+}
+
+technique TecCharaPtDraw_ShadowV
+{
+	pass P0
+	{
+		VertexShader = compile vs_3_0 VS_CharaPtDrawShadowV();
+		PixelShader = compile ps_3_0 PS_CharaPtDrawShadowV();
+    }
+}
+

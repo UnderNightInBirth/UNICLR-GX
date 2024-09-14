@@ -1,0 +1,182 @@
+// 2D法線マップテスト
+
+texture temp_texture = NULL; // 
+sampler2D Tex_Temp = sampler_state
+{
+	texture = <temp_texture>;
+	//MinFilter = Linear;
+	//MagFilter = Linear;
+}; // 
+
+
+texture normal_texture = NULL; // 
+sampler2D TexSample_Normal = sampler_state
+{
+	texture = <normal_texture>;
+	MinFilter = Linear;
+	MagFilter = Linear;
+
+}; // テクスチャサンプラ
+
+float2 normal_texel;
+
+
+texture diffuse_texture = NULL; // 
+sampler2D TexSample_Diffuse = sampler_state
+{
+	texture = <diffuse_texture>;
+	MinFilter = Linear;
+	MagFilter = Linear;
+	//MagFilter = Linear;
+	//MinFilter = Linear;
+}; // テクスチャサンプラ
+
+float2 diff_texel;
+float2 diff_uv;
+float2 diff_wh;
+
+float2 diff_size;
+
+// Diffuseのテクセル * ずらす量
+float fPower;
+
+struct VS_OUTPUT {
+	float4 pos   : POSITION;
+    float4 color : COLOR0;
+    float4 speculer : COLOR1;
+    float2 texuv : TEXCOORD0;
+};
+
+struct OUTPUT_PS0
+{
+	float4 c0 : COLOR0;
+	float4 c1 : COLOR1;
+};
+
+struct OUTPUT_PS1
+{
+	float4 c0 : COLOR0;
+};
+
+
+
+OUTPUT_PS0 PS_2DNormal_Pass0( float2 texuv : TEXCOORD0 )
+{
+	OUTPUT_PS0 Out = (OUTPUT_PS0)0;
+	float2 d_uv;
+
+
+	// 法線の色を取得
+	float4 normalColor = tex2D( TexSample_Normal, texuv );
+	float3 normalVec = (2 * normalColor) - 1.0f;  // ベクトルへ変換 xyだけ -1.0f - 1.0
+
+	normalVec = normalize( normalVec );         // 標準化
+	normalVec.x = -normalVec.x;
+
+	d_uv = diff_uv + (normalVec * diff_texel * fPower) + (diff_wh * texuv);
+	d_uv = clamp( d_uv, 0.0f, diff_size );
+
+	Out.c1 = tex2D( TexSample_Diffuse, d_uv );
+
+    return Out;
+}
+
+OUTPUT_PS1 PS_2DNormal_Pass1( VS_OUTPUT In )
+{
+	OUTPUT_PS1 Out = (OUTPUT_PS1)0;
+	float4 OutColor;
+	float2 d_uv;
+
+
+	// 法線マップのアルファ値が欲しいので取得
+	float4 normalColor = tex2D( TexSample_Normal, In.texuv );
+
+	d_uv = diff_uv + (diff_wh * In.texuv);
+
+	// テクスチャ設定
+	OutColor = tex2D( Tex_Temp, d_uv ) * In.color + In.speculer;
+
+	OutColor.a *= normalColor.a;
+
+	Out.c0 = OutColor;
+
+    return Out;
+}
+
+
+
+// 回転つき
+
+// 
+float2x2 diff_texel_matrix;
+
+float2 GetAngPosUV( float2 uv )
+{
+	return mul( uv, diff_texel_matrix );
+}
+
+OUTPUT_PS0 PS_2DNormalAng_Pass0( VS_OUTPUT In )
+{
+	OUTPUT_PS0 Out = (OUTPUT_PS0)0;
+	float2 d_uv;
+
+
+	// 法線の色を取得
+	float4 normalColor = tex2D( TexSample_Normal, In.texuv );
+	float3 nVec = (2 * normalColor) - 1.0f;  // ベクトルへ変換 xyだけ -1.0f - 1.0
+
+	float3 normalVec = normalize( nVec ); // 標準化
+	normalVec.x = -normalVec.x;
+
+	d_uv = diff_uv + GetAngPosUV( In.texuv + (normalVec * diff_texel * fPower) );
+	d_uv = clamp( d_uv, 0.0f, diff_size );
+
+	Out.c1 = tex2D( TexSample_Diffuse, d_uv );
+
+	//float2 nv = normalize( GetAngPosUV( normalVec));
+	//Out.c1.xyz *= min( nv.x + 1.75f, 1.0f);
+
+    return Out;
+}
+
+OUTPUT_PS1 PS_2DNormalAng_Pass1( VS_OUTPUT In )
+{
+	OUTPUT_PS1 Out = (OUTPUT_PS1)0;
+	float4 OutColor;
+	float2 d_uv;
+
+
+	// 法線マップのアルファ値が欲しいので取得
+	float4 normalColor = tex2D( TexSample_Normal, In.texuv );
+
+	// テクスチャ設定
+	OutColor = tex2D( Tex_Temp, diff_uv + GetAngPosUV( In.texuv ) ) * In.color + In.speculer;
+
+	OutColor.a *= normalColor.a;
+	// OutColor.r *= 0.0f;
+
+	Out.c0 = OutColor;
+
+    return Out;
+}
+
+// 
+technique TecNormal {
+    pass p0 {
+        pixelShader  = compile ps_2_0 PS_2DNormal_Pass0();
+    }
+    pass p1 {
+        pixelShader  = compile ps_2_0 PS_2DNormal_Pass1();
+   }
+}
+
+// 
+technique TecNormalAngle {
+    pass p0 {
+        pixelShader  = compile ps_2_0 PS_2DNormalAng_Pass0();
+    }
+    pass p1 {
+        pixelShader  = compile ps_2_0 PS_2DNormalAng_Pass1();
+   }
+}
+

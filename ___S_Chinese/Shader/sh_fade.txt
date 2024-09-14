@@ -1,0 +1,95 @@
+
+sampler2D TexSample_Empty = sampler_state
+{
+//   MagFilter = Linear;  MinFilter = Linear;
+}; // テクスチャサンプラ（空
+
+
+texture tex_Fade = NULL; // フェードパターンの入ったテクスチャ
+sampler2D TexSample_Fade = sampler_state
+{
+	texture = tex_Fade;
+}; // テクスチャサンプラ
+
+
+struct VS_INPUT
+{
+    float4 pos   : POSITION;
+    float4 color : COLOR0;
+    float4 speculer : COLOR1;
+    float2 texuv : TEXCOORD0;
+};
+
+struct VS_OUTPUT
+{
+    float4 pos   : POSITION;
+    float4 color : COLOR0;
+    float4 speculer : COLOR1;
+    float2 texuv : TEXCOORD0;
+};
+
+// 1.0 で完全に透明
+float fPower;
+
+float4 PS_TecFade_ExFade0( VS_OUTPUT In ) : COLOR
+{
+	float4 OutColor;
+	float4 FadeColor;
+
+	// テクスチャ設定
+	OutColor = tex2D( TexSample_Empty, In.texuv) * In.color;
+	OutColor += In.speculer;
+
+	FadeColor = tex2D( TexSample_Fade, In.texuv); // フェードパターンカラー
+
+	float fPow = max( 0.0f, (1.0f-fPower) * 2.0f ); // 0.0 - 2.0
+	float fAPow, fBPow;
+
+	fAPow = clamp( fPow-1.0f, 0.0f, 1.0f);
+	fBPow = 1.0f - clamp( fPow, 0.0f, 1.0f);
+
+	OutColor.w = clamp( fAPow + max( 0.0f, FadeColor.x - fBPow) , 0.0f, 1.0f);
+
+    return OutColor;
+}
+
+float4 PS_TecFade_ExFade1( VS_OUTPUT In ) : COLOR
+{
+	float4 OutColor;
+	float4 FadeColor;
+
+	// テクスチャ設定
+	OutColor = tex2D( TexSample_Empty, In.texuv) * In.color;
+	OutColor += In.speculer;
+
+	FadeColor = tex2D( TexSample_Fade, In.texuv); // フェードパターンカラー
+
+	float fPow = max( 0.0f, (1.0f-fPower) * 2.0f ); // 0.0 - 2.0
+	float fAPow, fBPow;
+
+	fAPow = clamp( fPow-1.0f, 0.0f, 1.0f);
+	fBPow = 1.0f - clamp( fPow, 0.0f, 1.0f);
+
+	OutColor.w = clamp( fAPow + max( 0.0f, FadeColor.x - fBPow) , 0.0f, 1.0f);
+
+    return OutColor;
+}
+
+
+// 
+technique TecFade_ExFade0
+{
+    pass P0
+    {
+        pixelShader  = compile ps_2_0 PS_TecFade_ExFade0();
+    }
+}
+
+// 
+technique TecFade_ExFade1 {
+    pass P0 {
+        pixelShader  = compile ps_2_0 PS_TecFade_ExFade1();
+    }
+}
+
+

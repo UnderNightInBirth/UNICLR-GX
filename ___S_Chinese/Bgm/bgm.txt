@@ -1,0 +1,458 @@
+
+File = // ファイル名３２文字まで、拡張子なし
+IsLoop = // ループする曲かどうか
+LoopPos = // ループポイント、終端になったら戻る位置
+Volume = // ボリューム、10000で標準。小さくしかできない。一時的に使用したいときだけ変更、できるだけ元素材の音量を調整するように。
+
+
+//戦闘中キャラクター固有ＢＧＭ
+[BGM_001]
+File = chr_00Hyd // ハイド
+IsLoop = 1
+LoopPos = 40.139
+
+[BGM_002]
+File = chr_01Lin // リンネ
+IsLoop = 1
+LoopPos = 12.389
+
+[BGM_003]
+File = chr_02Wal // ワレン
+IsLoop = 1
+LoopPos = 14.986
+
+[BGM_004]
+File = chr_03Car // カーマイン
+IsLoop = 1
+LoopPos = 00.985
+
+[BGM_005]
+File = chr_04Ori // オリエ
+IsLoop = 1
+LoopPos = 06.584
+
+[BGM_006]
+File = chr_05Gor // ゴルドー
+IsLoop = 1
+LoopPos = 27.296
+
+[BGM_007]
+File = chr_06Mer // メルカヴァ
+IsLoop = 1
+LoopPos = 10.880
+
+[BGM_008]
+File = chr_07Vat // バティスタ
+IsLoop = 1
+LoopPos = 13.514
+
+[BGM_009]
+File = chr_08Set // セト
+IsLoop = 1
+LoopPos = 20.002
+
+[BGM_010]
+File = chr_09Yuz // ユズリハ
+IsLoop = 1
+LoopPos = 07.528
+
+[BGM_011]
+File = chr_10Hil // ヒルダ
+IsLoop = 1
+LoopPos = 36.363
+
+[BGM_012]
+File = chr_11Elt // エルトナム
+IsLoop = 1
+LoopPos = 20.151
+
+[BGM_013]
+File = chr_12Nan // ナナセ
+IsLoop = 1
+LoopPos = 26.694
+
+[BGM_014]
+File = chr_13Bya //ビャクヤ
+IsLoop = 1
+LoopPos = 28.304
+
+[BGM_015]
+File = chr_14Aka // アカツキ
+IsLoop = 1
+LoopPos = 16.705
+
+[BGM_016]
+File = chr_15Cha // ケイアス
+IsLoop = 1
+LoopPos = 00.000
+
+[BGM_017]
+File = chr_16Wag // ワーグナー
+IsLoop = 1
+LoopPos = 12.751
+
+[BGM_018]
+File = chr_17Enk // エンキドゥ
+IsLoop = 1
+LoopPos = 24.361
+
+[BGM_019]
+File = chr_18Lnd // ロンドレキア
+IsLoop = 1
+LoopPos = 10.837
+
+[BGM_021]
+File = chr_21Mik // ミカ
+IsLoop = 1
+LoopPos = 10.290
+
+[BGM_024]
+File = chr_24Pho // フォノン
+IsLoop = 1
+LoopPos = 02.479
+
+//シーンＢＧＭ
+[BGM_040]
+File = sys_main //メインメニュー
+IsLoop = 1
+LoopPos = 08.774 // 11/17更新
+
+[BGM_041]
+File = sys_network //ネットワーク
+IsLoop = 1
+LoopPos = 21.665 // 11/11更新
+
+[BGM_042]
+File = sys_chronicle //クロニクル
+IsLoop = 1
+LoopPos = 00.687 // 11/11更新
+
+[BGM_045]
+File = sys_network_exe //ネットワーク（Exe:Late）
+IsLoop = 1
+LoopPos = 1.370
+
+//ストーリー関係
+[BGM_050]
+File = st_saidan // ストーリー予約（祭壇前）
+IsLoop = 1
+LoopPos = 48.226
+
+[BGM_051]
+File = st_encount // ストーリー予約（エンカウント）
+IsLoop = 1
+LoopPos = 13.32
+
+[BGM_052]
+File = st_hazimari1 // ストーリー予約（はじまり１）
+IsLoop = 1
+LoopPos = 37.054
+
+[BGM_053]
+File = st_hazimari2 // ストーリー予約（はじまり２）
+IsLoop = 1
+LoopPos = 08.617
+
+[BGM_054]
+File = st_owari1 // ストーリー予約（おわり１）
+IsLoop = 1
+LoopPos = 24.855
+
+[BGM_055]
+File = st_owari2 // ストーリー予約（おわり２）
+IsLoop = 1
+LoopPos = 21.558
+
+[BGM_056]
+File = st_hazimari3 // ストーリー予約（はじまり３）
+IsLoop = 1
+LoopPos = 10.385
+
+[BGM_057]
+File = st_kousen // ストーリー(好戦的な曲）
+IsLoop = 1
+LoopPos = 00.716
+
+//ＯＰ曲
+[BGM_060]
+File = op_unistcs // Unknown Actor
+IsLoop = 1
+LoopPos = 00.000
+
+[BGM_061]
+File = op_uniclrcs // 偽りの無限並列（パラリアル）
+IsLoop = 1
+LoopPos = 00.000
+
+
+//エンディングＢＧＭ
+[BGM_070]
+File = ed_good // Good Ending
+IsLoop = 0
+LoopPos = 00.000
+
+[BGM_071]
+File = ed_bad // Bad Ending
+IsLoop = 0
+LoopPos = 00.000
+
+[BGM_072]
+File = ed_good2 // Good Ending2(ナナセ専用)
+IsLoop = 0
+LoopPos = 00.000
+
+[BGM_073]
+File = ed_bad2 // Bad Ending2(ビャクヤ専用)
+IsLoop = 0
+LoopPos = 00.000
+
+[BGM_074]
+File = ed_16Wag // ED(ワーグナー専用)
+IsLoop = 0
+LoopPos = 00.000
+
+[BGM_075]
+File = ed_17Enk // ED(エンキドゥ専用)
+IsLoop = 0
+LoopPos = 00.000
+
+[BGM_076]
+File = ed_18Lnd // ED(ロンドレキア専用)
+IsLoop = 0
+LoopPos = 00.000
+
+
+//シーンＢＧＭ
+[BGM_081]
+File = sys_newchallenger //NewChallenger
+IsLoop = 0
+LoopPos = 0.0
+
+[BGM_082]
+File = sys_continue //コンティニュー
+IsLoop = 0
+LoopPos = 0.0
+
+[BGM_083]
+File = sys_gameover //ゲームオーバー
+IsLoop = 0
+LoopPos = 0.0
+
+[BGM_084]
+File = sys_vsdemo //ＶＳデモ
+IsLoop = 0
+LoopPos = 0.0
+
+[BGM_091]
+File = chr_05Gor_vs_15Cha // ゴルドーvsケイアス
+IsLoop = 1
+LoopPos = 17.025
+
+[BGM_092]
+File = chr_00Hyd_vs_08Set // ハイドvsセト
+IsLoop = 1
+LoopPos = 00.954
+
+[BGM_093]
+File = chr_16Wag_vs_18Lnd // ワーグナーvsロンドレキア
+IsLoop = 1
+LoopPos = 16.124
+
+
+//デモＢＧＭ
+[BGM_098]
+File = sys_windemo //勝利デモ
+IsLoop = 1
+LoopPos = 08.894
+
+[BGM_099]
+File = sys_chrselect //キャラクターセレクト
+IsLoop = 1
+LoopPos = 04.575
+
+//custom
+
+[BGM_076]
+File = melty_arc_theme //The theme of Arcueid（死角の辻）
+IsLoop = 1
+LoopPos = 05.885
+
+
+[BGM_077]
+File = cs_story_115 // song from chronicle
+IsLoop = 1
+LoopPos = 10.080
+
+
+
+[BGM_078]
+File = cmv_hyde_halcyon // song from unib 1.06 hyde cmv
+IsLoop = 1
+LoopPos = 0.612
+
+[BGM_079]
+File = vf5_snow_mountain // Virtua Fighter 5 Final Showdown OST - WOLF HAWKFIELD - Snow Mountain
+IsLoop = 1
+LoopPos = 7.140
+
+[BGM_080]
+File = gof2_darling_kiss // Darling... Kiss immediate ～ダキシメテ～ [climax edit] (ねがいステージ)
+IsLoop = 1
+LoopPos = 1.985
+
+
+
+[BGM_085]
+File = chr_18Naoto // naoto
+IsLoop = 1
+LoopPos = 19.766
+
+[BGM_086]
+File = chr_18S_Naoto // shadow naoto
+IsLoop = 1
+LoopPos = 00.279
+
+[BGM_087]
+File = p3_shadow // shadow (p3)
+IsLoop = 1
+LoopPos = 24.619
+
+[BGM_088]
+File = p4u_aegis // aegis theme
+IsLoop = 1
+LoopPos = 03.344
+
+[BGM_089]
+File = p4u_mitsuru // mitsuru theme
+IsLoop = 1
+LoopPos = 23.217
+
+[BGM_090]
+File = p4u_narukami // narukami theme
+IsLoop = 1
+LoopPos = 14.225
+
+[BGM_097]
+File = p4u_yukiko // yukiko theme
+IsLoop = 1
+LoopPos = 12.391
+
+
+
+[BGM_093]
+File = scraper_sky_homiez_high // ravedj
+IsLoop = 1
+LoopPos = 4.917
+
+[BGM_094]
+File = snow_doo_sisters // ravedj
+IsLoop = 1
+LoopPos = 0.712
+
+[BGM_095]
+File = unseen_uchihas // cav
+IsLoop = 1
+LoopPos = 10.667
+
+[BGM_096]
+File = chr_11Elt_2 // エルトナム
+IsLoop = 1
+LoopPos = 0.120
+
+
+
+[BGM_152]
+File = p4u_akihiko // akihiko theme
+IsLoop = 1
+LoopPos = 01.109
+
+
+
+[BGM_153]
+File = akatsuki_iw_fin
+IsLoop = 1
+LoopPos = 5.168
+
+
+
+[BGM_154]
+File = kof13_takuma // Kyokugen Training! Mountain Seclusion (Theme of Art of Fighting Team)
+IsLoop = 1
+LoopPos = 12.769
+
+[BGM_155]
+File = kof13_kim // Tame a Bad Boy (Theme of Kim Team)
+IsLoop = 1
+LoopPos = 11.100
+
+[BGM_156]
+File = kof13_exiori // Arashi no Saxophone 2 (Theme of EX Flame Iori)
+IsLoop = 1
+LoopPos = 11.457
+
+[BGM_157]
+File = kof13_iori // Stormy Saxophone 5 (Theme of Yagami Team)
+IsLoop = 1
+LoopPos = 12.036
+
+[BGM_158]
+File = kof13_king // Who is Queen (Theme of Women Team)
+IsLoop = 1
+LoopPos = 12.683
+
+[BGM_159]
+File = kof13_kdash // KDD-0063 (Theme of K' Team)
+IsLoop = 1
+LoopPos = 19.373
+
+[BGM_160]
+File = kof13_athena // Purity Soldiers (Theme of Psycho Soldiers Team)
+IsLoop = 1
+LoopPos = 17.331
+
+
+
+
+[BGM_161]
+File = as120_asuka // Asuka 120% Burning Remixes 02 - Theme of Asuka (Raito remix)
+IsLoop = 1
+LoopPos = 13.448
+
+[BGM_165]
+File = crank_white_nite // エルトナム
+IsLoop = 1
+LoopPos = 7.290
+
+
+[BGM_170]
+File = chr_EX_Hyd // hyde beta theme
+IsLoop = 1
+LoopPos = 08.068
+
+
+
+
+[BGM_199]
+File = unib_op // 1000 Years of Red and Black
+IsLoop = 1
+LoopPos = 71.271
+
+
+
+
+
+//100以降はやめとく=======
+
+//========================================================
+// 会話関係用追加曲定義(BattleRes\talk\st_bgm内で定義されてます)
+//  ※100～139まで予約中です
+//========================================================
+
+
+
+
+
+
+
+
+//199番まで使用可能です。200番以降はプログラムの修正が必要です

@@ -1,0 +1,99 @@
+merge_mvtbl <- function( Std_MoveTable )
+{
+	Std_MoveTable.Mv_Bound_0134 <- 
+	{
+		function Init_Std() // 
+		{
+			Battle_Std.BoundInit(); //ベクトル初期化・やられ状態セット
+		}
+		function Update_Std()
+		{
+			Battle_Std.BoundUpdate();	
+		}
+		function FrameUpdate_Std() // 
+		{
+		
+			//ベクトルが↓向いたら落下パターンへ
+			local s = BMvTbl.GetMvStatus();
+			if (s.FrameID==100) //落下チェックID中なら
+			{
+				local vec = BMvTbl.GetVector( { flags=_Vector_Bound }); //ベクトル取得
+				if (vec.y >= 0)
+				{
+					if (BMvTbl.JumpFrameID(256) == -1)
+					{
+						_dem("【警告】飛び先のフレームIDが無い");
+					}
+				}
+			}
+			local useval = (BMvEff.GRD_GetJudgeResult()>0)? def_GRD_BoundFU_Vorpal: def_GRD_BoundFU;
+			Battle_Std.GRD_AddValue({ val=useval, pressure=0, boundplus=1 });	
+		}
+		function Finalize_Std() // 
+		{
+			BtlMvStd.SetBoundFinalize();
+		}
+		function LastUpdate_Std() // 
+		{
+			BtlMvStd.ClearBound(); // 状態解除
+		}
+	}
+	
+	Std_MoveTable.Mv_Bound_0136 <- Std_MoveTable.Mv_Bound_0134;
+	Std_MoveTable.Mv_Bound_0259 <- Std_MoveTable.Mv_Bound_0134;
+	
+	Std_MoveTable.Mv_Bound_0124 <- 
+	{
+		flags=def_TmplFlags_NoFurimuki,
+		
+		function Init_Std() // 
+		{
+			Battle_Std.BoundInit();	
+
+			local enemy = BMvCore.GetEnemyCharaData();
+			if( enemy.push() )
+			{
+				local e_muki = BMvTbl.GetMuki();
+				
+				enemy.pop();
+				
+				local usemuki = (e_muki == -1)? _Direction_Left : _Direction_Right;
+				
+				BMvTbl.SetMuki(usemuki);	
+			}		
+		}
+		function Update_Std()
+		{
+			Battle_Std.BoundUpdate();
+		}
+		function FrameUpdate_Std()
+		{
+			local useval = (BMvEff.GRD_GetJudgeResult()>0)? def_GRD_BoundFU_Vorpal: def_GRD_BoundFU;
+			Battle_Std.GRD_AddValue({ val=useval, pressure=0, boundplus=1 });	
+		}
+		function Finalize_Std() // 
+		{
+			//抜け先が無いかも？
+			//状態の移行だけ行う
+			BtlMvStd.SetBoundFinalize();
+			// print("\nMv_Bound Finalize()");
+		}
+		function LastUpdate_Std() // 
+		{
+			if( Def_Rule_GroundBoundSlideKeep )
+			{
+				//地上状態では慣性を残す
+				if( BMvTbl.CheckPosState( _PosState_Ground  ) )
+				{
+					local vec = BMvTbl.GetVector( { flags=_Vector_Bound } );
+					BMvTbl.SetVector( { x=vec.x, addx=-vec.x/10, flags=_Vector_DivKeep } );
+					// print("\n vec.x:"+vec.x);
+				}
+			}
+			BtlMvStd.ClearBound(); // 状態解除(ベクトルが無くなる)
+			// print("\nMv_Bound LastUpdate()");		
+		}
+	}
+	
+	return Std_MoveTable;
+}

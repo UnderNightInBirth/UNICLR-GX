@@ -1,0 +1,8 @@
+small ico dimensions: 34x42px
+large ico dimensions: 46x54 with 2px border for selection
+
+icons placed must have a 5px gap to the sides and a 3px gap above and below other icons
+small icon MUST have a black border and use the background template
+
+large ico 40px move x
+large ico 45px move y

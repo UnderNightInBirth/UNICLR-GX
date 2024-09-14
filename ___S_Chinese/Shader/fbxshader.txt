@@ -1,0 +1,285 @@
+
+float4x4 g_mWorld;    // ワールド変換行列
+float4x4 g_mView;     // ビュー行列
+float4x4 g_mProj;     // 射影変換行列
+
+float3 g_cameraPos;            // 
+
+float3 g_lightPosition;            // 
+float3 g_lightVector;            // ライトの方向
+
+float4 g_lightDeffuse;           // ライトカラー（入射色）
+float4 g_lightAmbient;          // ライトカラー（入射色）
+float4 g_lightSpecular;          // ライトカラー（入射色）
+
+float4 g_mateDeffuse;
+float4 g_mateSpecular;
+float g_matePower;
+float g_mateIntensity;
+
+float2 g_FogCoord;
+float4 g_FogColor;
+
+
+texture g_diffuseMap;   // ディフューズマップ
+sampler diffuseSampler = sampler_state
+	{
+	   texture = <g_diffuseMap>;
+
+		MinFilter = LINEAR;
+		MagFilter = LINEAR;
+
+		AddressU = Wrap;
+		AddressV = Wrap;
+	};
+
+
+
+struct VS_IN
+{
+	float4 Position : POSITION0;
+
+	float4 Normal : NORMAL;
+	float4 Texcoord : TEXCOORD0;
+
+	float4 Diffuse: COLOR0;
+};
+
+
+struct VS_OUT
+{
+	float4 Position : POSITION0;
+
+	float4 UV : TEXCOORD0;   // UV座標
+	float4 WorldNormal : TEXCOORD1;
+	float4 WorldPosition : TEXCOORD2;
+
+	float4 Color: COLOR0;
+	float Fog: COLOR1;
+};
+
+struct PS_IN
+{
+	//float4 Position : POSITION0;
+
+	float4 UV : TEXCOORD0;   // UV座標
+	float4 WorldNormal : TEXCOORD1;
+	float4 WorldPosition : TEXCOORD2;
+
+	float4 Color: COLOR0;
+	float Fog: COLOR1;
+};
+
+
+//-------------------------------------------------------------------------------------------------
+// Desc : 
+// 
+// g_mWorld, g_mView, g_mProj
+// output.WorldNormal --- 光源位置 g_lightPosition
+// output.WorldPosition --- 座標をworld変換したもの、そのため g_mWorld 単体で必要
+//
+// g_lightDeffuse が設定されているため、input.Color は使用しない
+// 
+//-------------------------------------------------------------------------------------------------
+VS_OUT Diffuse_VS_Light ( VS_IN input )
+{
+	VS_OUT output = (VS_OUT)0;
+
+	// ローカル頂点をスクリーンへ
+
+    float4 worldPosition = mul( input.Position, g_mWorld );
+    float4 viewPosition = mul( worldPosition, g_mView);
+    output.Position = mul( viewPosition, g_mProj );
+
+	// UV座標を登録
+	output.UV = input.Texcoord;
+	// ワールド座標を取得
+	output.WorldNormal = float4( g_lightPosition, 1.0f );//input.Normal;
+	output.WorldPosition = worldPosition;//input.Position;
+
+	output.Color = 1.0f;
+
+	output.Fog = output.Position.w;
+
+	return output;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Desc : 
+//
+// g_lightDeffuse --- プログラム側から渡される光源色
+// g_FogColor --- プログラム側から渡されるフォグカラー
+//-------------------------------------------------------------------------------------------------
+float4 Diffuse_PS_Light( PS_IN input ) : COLOR0
+{
+	float4 OutColor = 0.0f; // 
+
+	float3 pos = input.WorldPosition.xyz * float3( 1.0f, 1.0f, 0.05f );
+	float3 lightpos = input.WorldNormal.xyz;
+	//lightpos = float3( lightpos.x, 0.15f, 0.15f );
+	float dist = distance( pos, lightpos) * 1.125f;
+
+	float lightAdd = 0.0f;
+	float3 torchColor = g_lightDeffuse.rgb;
+	float4 textureColor = tex2D( diffuseSampler, input.UV );;
+
+	//lightAdd = max( 0.2f, 1.0f - (dist * dist * 4.0f) );
+	lightAdd = max( 0.2f, 1.0f - (dist * 0.3f) );
+
+	float3 torch_output = lightAdd * torchColor;
+	float3 final_color = (torch_output * textureColor.rgb);
+
+	// フォグ係数
+	input.Fog = g_FogCoord.x + input.Fog * g_FogCoord.y;
+	final_color = lerp( g_FogColor, final_color, input.Fog );
+
+	OutColor = float4( final_color, textureColor.a );
+
+	return OutColor;   // ディフューズカラー算出
+}
+
+//-------------------------------------------------------------------------------------------------
+// Desc : 
+//-------------------------------------------------------------------------------------------------
+VS_OUT Diffuse_VS_Easy ( VS_IN input )
+{
+	VS_OUT output = (VS_OUT)0;
+
+	// ローカル頂点をスクリーンへ
+
+    float4 worldPosition = mul( input.Position, g_mWorld );
+    float4 viewPosition = mul( worldPosition, g_mView);
+    output.Position = mul( viewPosition, g_mProj );
+
+	// UV座標を登録
+	output.UV = input.Texcoord;
+	output.Color = input.Diffuse;
+
+	output.Fog = output.Position.w;
+
+	return output;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Desc : 
+//-------------------------------------------------------------------------------------------------
+float4 Diffuse_PS_Easy( PS_IN input ) : COLOR0
+{
+	float4 OutColor = tex2D( diffuseSampler, input.UV );   // 反射色
+	OutColor *= input.Color;
+
+	float4 output = OutColor;
+
+	// フォグ係数
+	input.Fog = g_FogCoord.x + input.Fog * g_FogCoord.y;
+	output = lerp( g_FogColor, output, input.Fog );
+
+	OutColor.rgb = output.rgb; // Aの変動は起こさない
+
+	return OutColor;   // ディフューズカラー算出
+}
+
+//-------------------------------------------------------------------------------------------------
+// Desc : 
+//-------------------------------------------------------------------------------------------------
+float4 CalcDiffuseColor( float3 pos, float3 normal )
+{
+	float3 directionToLight = normalize( g_lightPosition - pos );
+	float diffuseIntensity = saturate( dot( directionToLight, normal ) );
+	diffuseIntensity = 1.0f;
+
+	return g_lightDeffuse * diffuseIntensity * g_mateDeffuse;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Desc : 
+//-------------------------------------------------------------------------------------------------
+float4 CalcSpeculerColor( float3 pos, float3 normal )
+{
+	float3 directionToLight = normalize( g_lightPosition - pos );
+	float3 reflectionVector = normalize( reflect(-directionToLight, normal ));
+	float3 directionToCamera = normalize( g_cameraPos - pos );
+
+	return g_lightSpecular * g_mateIntensity * g_mateSpecular *
+                       pow( saturate( dot( reflectionVector, directionToCamera)), 
+                       g_matePower );
+}
+
+//-------------------------------------------------------------------------------------------------
+// Desc : 
+//-------------------------------------------------------------------------------------------------
+VS_OUT Diffuse_VS (
+	float3 position : POSITION0,
+	float3 normal : NORMAL,
+	float4 diffuse : COLOR0,
+	float4 inUV : TEXCOORD0 )
+{
+	VS_OUT output = (VS_OUT)0;
+
+	// ローカル頂点をスクリーンへ
+	float4x4 wvp = mul( mul( g_mWorld, g_mView), g_mProj);
+	output.Position = mul( float4( position, 1.0), wvp);
+
+	// 法線をワールド空間へ
+	output.WorldNormal =  normalize( mul( normal, g_mWorld ));
+	float4 worldPosition =  mul( float4(position, 1.0), g_mWorld);
+	output.WorldPosition = worldPosition / worldPosition.w;
+
+	output.Color = diffuse;
+
+	// UV座標を登録
+	output.UV = inUV;
+
+	return output;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Desc : 
+//-------------------------------------------------------------------------------------------------
+float4 Diffuse_NT_PS( PS_IN input ) : COLOR0
+{
+	// 拡散反射する光の色を算出
+	float4 OutColor;
+
+	float4 diffuse = CalcDiffuseColor( input.WorldPosition, input.WorldNormal );
+	float4 specular = CalcSpeculerColor( input.WorldPosition, input.WorldNormal );
+	specular.a = 1.0;
+
+	OutColor = (diffuse + specular) * g_lightAmbient;
+
+	OutColor.a = 1.0f;
+
+	return OutColor;   // ディフューズカラー算出
+}
+
+
+
+//////
+technique DefaultShader_Easy
+{
+	pass P0
+	{
+		VertexShader = compile vs_3_0 Diffuse_VS_Easy();
+		PixelShader = compile ps_3_0 Diffuse_PS_Easy();
+    }
+}
+
+technique DefaultShader_Light
+{
+	pass P0
+	{
+		VertexShader = compile vs_3_0 Diffuse_VS_Light();
+		PixelShader = compile ps_3_0 Diffuse_PS_Light();
+    }
+}
+
+technique DefaultShader_NT
+{
+	pass P0
+	{
+		VertexShader = compile vs_3_0 Diffuse_VS();
+		PixelShader = compile ps_3_0 Diffuse_NT_PS();
+    }
+}
+
+

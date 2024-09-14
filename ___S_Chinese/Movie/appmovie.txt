@@ -1,0 +1,32 @@
+
+[data]
+datamax = 7
+
+[data_00]
+File = ./Movie/uniac_op
+Volume = 10000 // 0-10000  ‚Å‚«‚é‚¾‚¯Œ³‘fŞ‚Ì‰¹—Ê‚ğ•Ï‚¦‚é‚æ‚¤‚É
+
+[data_01]
+File = ./Movie/uniexeac_op
+Volume = 10000 // 0-10000  ‚Å‚«‚é‚¾‚¯Œ³‘fŞ‚Ì‰¹—Ê‚ğ•Ï‚¦‚é‚æ‚¤‚É
+
+[data_02]
+File = ./Movie/uniexecs_op
+Volume = 10000 // 0-10000  ‚Å‚«‚é‚¾‚¯Œ³‘fŞ‚Ì‰¹—Ê‚ğ•Ï‚¦‚é‚æ‚¤‚É
+
+[data_03]
+File = ./Movie/uniestac_op
+Volume = 10000 // 0-10000  ‚Å‚«‚é‚¾‚¯Œ³‘fŞ‚Ì‰¹—Ê‚ğ•Ï‚¦‚é‚æ‚¤‚É
+
+[data_04]
+File = ./Movie/uniexepv_op
+Volume = 10000 // 0-10000  ‚Å‚«‚é‚¾‚¯Œ³‘fŞ‚Ì‰¹—Ê‚ğ•Ï‚¦‚é‚æ‚¤‚É
+
+[data_05]
+File = ./Movie/uniestcs_op
+Volume = 10000 // 0-10000  ‚Å‚«‚é‚¾‚¯Œ³‘fŞ‚Ì‰¹—Ê‚ğ•Ï‚¦‚é‚æ‚¤‚É
+
+[data_06]
+File = ./Movie/uniest2cs_op
+Volume = 10000 // 0-10000  ‚Å‚«‚é‚¾‚¯Œ³‘fŞ‚Ì‰¹—Ê‚ğ•Ï‚¦‚é‚æ‚¤‚É
+

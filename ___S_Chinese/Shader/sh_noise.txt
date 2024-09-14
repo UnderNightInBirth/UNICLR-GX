@@ -1,0 +1,114 @@
+
+
+struct VS_OUTPUT {
+    // float4 pos   : POSITION;
+    float4 color : COLOR0;
+    float4 speculer : COLOR1;
+    float2 texuv : TEXCOORD0;
+};
+
+texture diffuse_texture;
+sampler DiffuseTextureSampler = 
+	sampler_state
+	{
+		Texture = <diffuse_texture>;
+		MipFilter = NONE;
+		//MinFilter = LINEAR;
+		//MagFilter = LINEAR;
+		AddressU = Clamp;
+		AddressV = Clamp;
+	};
+
+texture temp_texture = NULL; // 
+sampler2D Tex_Temp = 
+	sampler_state
+	{
+		texture = <temp_texture>;
+	}; // 
+
+texture tex_Noise = NULL; // 
+sampler2D Tex_Noise = 
+	sampler_state
+	{
+		texture = <tex_Noise>;
+	}; // 
+
+float4 texel_size;
+
+float fPower = 1.0f; // 影響力
+float fValue = 1.0f; // 割合
+float2 diff_centeruv = { 1.0f/1024.0f * 320, 1.0f/512.0f * 240 };
+float2 diff_uv = { 1.0f/1024.0f * 320, 1.0f/512.0f * 240 };
+float2 diff_wh = { 1.0f/1024.0f * 320, 1.0f/512.0f * 240 };
+float2 diff_texel;
+
+
+struct OUTPUT_PS0
+{
+	float4 c0 : COLOR0;
+	float4 c1 : COLOR1;
+};
+
+struct OUTPUT_PS1
+{
+	float4 c0 : COLOR0;
+};
+
+OUTPUT_PS0 PS_0( VS_OUTPUT In )
+{
+	OUTPUT_PS0 Out = (OUTPUT_PS0)0;
+
+	float4 output;
+	float2 tc = diff_uv + (In.texuv * diff_wh); // UV
+
+	float4 NoiseColor;
+	float2 noise_uv = { 0.0f, In.texuv.y };
+	NoiseColor = tex2D( Tex_Noise, noise_uv );
+
+	float fShift = (NoiseColor.r * 2) - 1.0f;
+	tc.x += fShift * (fValue * diff_uv.x * fPower);
+	if( tc.x >= diff_wh.x) tc.x -= diff_wh.x;
+	output = tex2D( DiffuseTextureSampler, tc );
+
+	Out.c1 = output;
+
+    return Out;
+}
+
+// 戻す
+OUTPUT_PS1 PS_1( VS_OUTPUT In )
+{
+	OUTPUT_PS1 Out = (OUTPUT_PS1)0;
+	float2 tc = diff_uv + (In.texuv * diff_wh);
+	float4 OutColor;
+
+	// テクスチャ設定
+	OutColor = tex2D( Tex_Temp, tc ) * In.color;
+	OutColor += In.speculer;
+
+	Out.c0 = OutColor;
+
+	return Out;
+}
+
+
+technique TecNoise {
+	pass P0 {
+		PixelShader = compile ps_2_0 PS_0();
+
+		AlphaBlendEnable = True;
+		AlphaTestEnable = False;
+
+		ZEnable = False;
+		ZWriteEnable = False;
+    }
+	pass P1 {
+		PixelShader = compile ps_2_0 PS_1();
+
+		AlphaBlendEnable = True;
+		AlphaTestEnable = False;
+
+		ZEnable = False;
+		ZWriteEnable = False;
+    }
+}

@@ -1,0 +1,158 @@
+//コマンドテーブル skillは格ゲーコマンド表記
+btl_debPrint2("\n[PHO_CommandTable]");
+
+local t =
+{
+	Atk_StdBandC = {},
+	Atk_CroBandC = 
+	{
+		command = ["6+B+C"],
+	},
+	
+	Skill_41236SP = {},
+	Skill_41236SP_ABC = {},
+
+	Skill_236EX = {},
+	Skill_236BorC = {},
+	Skill_236A = {},
+	
+	Skill_0202EX = {},	
+	Skill_0202BorC = {},
+	Skill_0202A = {},	
+	
+	Skill_214EX = {},	
+	Skill_214BorC = {},	
+	Skill_214A = {},
+	
+	Skill_214A_Add = {
+		num = def_CN_Skill_AddCommand1,
+		command = ["4+A","4+B","4+C"],
+		
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_214A"] },
+			FrameIDCheck = { Only = [100,150] },
+		},
+		UpdateTable = { name = "Mv_Skill_214A_AddSt", }	
+	},
+	Skill_214B_Add = {
+		num = def_CN_Skill_AddCommand2,
+		command = ["4+A","4+B","4+C"],
+		
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_214B"] },
+			FrameIDCheck = { Only = [100,150] },
+		},
+		UpdateTable = { name = "Mv_Skill_214B_AddSt", }	
+	},
+
+	Skill_623A = {},	
+	Skill_623BorC = {},	
+	Skill_623EX = {},	
+
+	Skill_J236EX = { },
+	Skill_J236BorC = {
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.AddAirCount( 1, 0 ) ) return 0;
+			return 1;
+		}
+	},
+	Skill_J236A = {
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.AddAirCount( 1, 0 ) ) return 0;
+			return 1;
+		}
+	},
+	
+	Skill_J0202EX = {},	
+	Skill_J0202BorC = 
+	{
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.AddAirCount( 0, 0 ) ) return 0;
+			return 1;
+		}
+	},
+	Skill_J0202A = 
+	{
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.AddAirCount( 0, 0 ) ) return 0;
+			return 1;
+		}
+	},
+	
+	Atk_Std4B = {},
+	
+	/*
+	Atk_B_B =
+	{
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Atk_StdB"] },
+			FrameIDCheck = { Only = 100 },
+		}	
+	},
+	*/
+	
+	Atk_Std6B = {},	
+	Atk_Cro3C = {},	
+	Atk_Air4B = {},
+	Atk_Air2B = {},
+
+	
+
+}
+
+local ar =
+[
+	{
+		CheckMoveName="Mv_Atk_StdA",
+		UpdateMoveName="Mv_Atk_StdB",
+	},
+	{
+		CheckMoveName="Mv_Atk_StdB",
+		UpdateMoveName="Mv_Atk_StdC",
+		ResetTmplName="Atk_StdB",
+	},
+	{
+		CheckMoveName="Mv_Atk_StdC",
+		UpdateMoveName="Mv_Atk_CroC",
+		ResetTmplName="Atk_StdC",
+	},
+	{
+		CheckMoveName="Mv_Atk_CroC",
+		UpdateMoveName="Mv_Skill_214A",
+		ResetTmplName="Atk_CroC",
+	},
+	{
+		CheckMoveName="Mv_Skill_214A",
+		UpdateMoveName="Mv_Skill_214A_AddSt",
+		ResetTmplName="Skill_214A_Add",
+		SrcCmdTmpl="Skill_214A_Add",
+		CmdTmplFlags=def_CMDFlags_AnnounceSmaetSteer, //スマートステアアナウンスの追加
+	},
+	{
+		CheckMoveName="Mv_Skill_214A_Add",
+		UpdateMoveName="Mv_Skill_623EX",
+		ResetTmplName="Skill_214A_Add",
+		CmdCheck = 
+		{
+			Cost = { ComboGauge = 10000 },
+			SkillType = "ExSpecial",
+			HitStatus="Damage",
+			FrameIDCheck = { Only = [300,350] },
+		}		
+	},
+
+]
+Battle_Std.MakeStdCombo( t, ar );
+
+PHO_CommandTable <- Battle_Std.MakeCommandTable( t );
+

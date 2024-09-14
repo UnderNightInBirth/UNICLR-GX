@@ -1,0 +1,14 @@
+[System]
+ProjectName=Hyd
+[DataFile]
+FileNum= 4
+File00=_temp.HA6
+File01=Hyd.HA6
+File02=../BaseData.HA6
+File03=Hyd_JB.HA6
+[BmpcutFile]
+FileNum= 1
+File00=Hyd.cg
+[PAniFile]
+FileNum= 1
+File00=Hyd_ef00.pat

@@ -1,0 +1,214 @@
+//__dofile__( "./data/_combase.txt" );
+
+local nowskillnum = 0;
+
+//-------------------------------------------------------------
+// com動作生成
+
+local comcount = 200; // 最大数 できるだけギリギリに
+local com = CCom(comcount); // COM用オブジェクト
+
+com.SetGuardAvg( 40 ); // ガード確率
+
+
+local stmp = 0;
+local mtmp = 0;
+
+{	// ０は待機
+	stmp = com.GetSkill(0); // 作成
+	stmp.checkfunc = function() // チェック
+	{
+		return com_frequency2;
+	}
+	stmp.updatefunc = function() // 採用時の更新
+	{
+		return 1;
+	}
+	// 0-0
+	mtmp = stmp.PlusMove(); // 動き追加
+	mtmp.Set( 0, 0,  10, 50,  _eComMoveFlag_StickHold | _eComMoveFlag_MoveEnd );
+}
+
+// 共通アクション定義
+AddBasicMove( com, {
+	SPSkill_XlenType = 1, // ３ゲージの発動間合いタイプ 0:ド密着 1:密着～中距離 2:どこでも
+	AVG_ThrowRecover = 70, // 投げ抜け失敗確率
+	
+	UNI_Combo = { recipe = ["2C","2C","GuardEnd","9","B","B","C"] }, // ＵＮＩ汎用空コン
+	Assault_GedanA = "A",
+	Assault_TyudanC = "C",
+	
+	AirTuigeki_Combo = { recipe = ["9","B","B","C","J236A"] }, // 空中追撃コン
+	Hiroi_Combo = { recipe = ["B","214B"] }, // 拾いコン
+	Assault_Combo = { recipe = [ "6D","*C",{wait=30},"A","B","C","3C","236A","GuardEnd",{key="236A"}{dl=30},"2C","2C",["9jc",12],"iC",{wait=60} ], fintag="Fin_3C" }, // アサルトコン
+	
+	Sasikomi_Atk = [ // 差し込み技
+	{ recipe=["236A"] },
+	{ recipe=["623B"] },
+	{ recipe=["623B"] },
+	{ recipe=["3C"] },
+	{ recipe=["C"] },
+	],
+	Follow_Combo = [ // ガードされた時のフォロー連携 0:通常 2:必殺 3:ＥＸ
+	{ type=0, recipe=[ "A",{irekomi=4},"2A"] },
+	{ type=0, recipe=[ "6B","22A",{irekomi=50},"(3C)","GuardEnd","2B",{dl=10},"C","9",{dl=4},"B","B","C",{wait=60},"B","214B" ], omomi=5 },
+	{ type=1, recipe=[ "236B",{key="236B"} ] },
+	{ type=1, recipe=[ "236B",{key="236B"},{key="236B"} ] },
+	{ type=1, recipe=[ "236A" ] },
+	{ type=1, recipe=[ "22A" ] },
+	{ type=2, recipe=[ "236EX" ] },
+	{ type=2, recipe=[ "236EX" ] }, // 確率アップ
+	{ type=2, recipe=[ "236EX",{wait=50},"A" ] },
+	{ type=2, recipe=[ "236EX",{wait=50},"2B" ] },
+	{ type=2, recipe=[ "236EX",{wait=50},"214A" ] },
+	],
+	
+	// コンボ登録
+	Pro_Combos = [
+	{ // コンボ
+	xlen = 25000, // 発動距離
+	list = [
+		{ recipe=[ "+A+D",{stick2=10},{dl=25},"A","2C","2C","9","iC",{wait=60} ], fintag="Fin_3C" },
+		]
+	},	
+	
+	{ // コンボ
+	xlen = 25000, // 発動距離
+	list = [
+		{ recipe=[ "*A","B","GuardEnd","2B","C","3C","236A","GuardEnd",{key="236A"},{key="236A"}, ] },
+		{ recipe=[ "*A","B","2B","GuardEnd","C","3C","GuardEnd",{wait=40},"2C","2C","9","iC",{wait=60} ], fintag="Fin_3C" },
+		{ recipe=[ "*A","B","2B","GuardEnd","C","3C","GuardEnd","236A","GuardEnd",{key="236A"},{dl=30},"2C","2C",["9jc",12],"iC",{wait=60} ], fintag="Fin_3C" },
+		]
+	},
+	
+	{ // コンボ
+	xlen = 100000, // 発動距離
+	hazi_xlen = 150000, // 端までの距離
+	list = [
+		{ recipe=[ "236A","GuardEnd",{dl=50},"623B","GuardEnd",{dl=47},"B","236B","GuardEnd",{key="236A"},{wait=60},"2B",{dl=10},"C","9",{dl=4},"B","B","C",{wait=60},"B","214B" ] },
+		]
+	},
+	
+	{ // コンボ
+	xlen = 50000, // 発動距離
+	hazi_xlen = 100000, // 端までの距離
+	list = [
+		{ recipe=[ "*2B","C","GuardEnd","3C","22B",{irekomi=114},"2C","GuardEnd","22A",{irekomi=50},"B","9",{dl=4},"B","B","C",{dl=8} ], fintag="Fin_3C" },
+		]
+	},	
+	
+	{ // コンボ
+	xlen = 50000, // 発動距離
+	list = [
+		{ recipe=[ "*2B","GuardEnd","C","3C","236A","GuardEnd",{key="236A"}{dl=30},"2C","2C",["9jc",15],"iC","A",{dl=7},"B",{dl=6} ], fintag="Fin_3C" },
+		]
+	},
+	{ // コンボ
+	xlen = 80000, // 発動距離
+	NearNG = 60000, // 発動距離
+	list = [
+		{ recipe=[ "(3C)","GuardEnd",{dash=2},"2B",{dl=14},"3C","236A","GuardEnd",{key="236A"},{dl=30},"2B",{dl=10},"C","9",{dl=4},"B","B","C",{wait=60},"B","214B"] },
+		]
+	},
+	
+	{ // コンボ
+	xlen = 90000, // 発動距離
+	list = [
+		{ recipe=[ "*C","GuardEnd","236A",{key="236A"},"GuardEnd",{wait=40},"2C","2C","9","iC",{wait=60} ], fintag="Fin_3C" },
+		]
+	},
+	
+	{ // コンボ
+	xlen = 50000, // 発動距離
+	flag = ["CS"],
+	list = [
+		{ recipe=[ "+214A",{dl=30},"CS","B","GuardEnd","2B","C","3C",{wait=40},"2C","2C","9","iC",{wait=60} ], fintag="Fin_3C" },
+		]
+	},		
+	
+	
+	] // Pro_Combos		
+	
+	// コンボ登録
+	Pro_Finishs = [
+	
+	{ // コンボ
+		fintag = "Fin_3C",
+		list =
+		[
+			{ recipe=[ "3C","236A",{key="236A"},{key="236A"} ] },
+		]
+	},
+	{ // コンボ
+		fintag = "Fin_3C",
+		gauge = [50,0], // 
+		list =
+		[
+			{ recipe=[ "3C","236A",{key="236A"},"623EX" ] },
+			{ recipe=[ "3C","236A",{key="236A"},"22EX" ] },
+		]
+	},	
+	{ // コンボ
+		fintag = "Fin_3C",
+		gauge = [100,0], // 
+		list =
+		[
+			{ recipe=[ "3C","236A",{key="236A"},"IW" ] },
+		]
+	},	
+	
+	], // Pro_Finishs	
+	
+	
+	Pro_Control = [
+	{ // ----
+	x_range = [0,80000], // 発動距離
+	list = [
+		{ recipe=[ "66C","(22A)" ] },
+		{ recipe=[ "66C","214A" ] },
+		]
+	},	
+	{ // ----
+	x_range = [70000,140000], // 発動距離
+	gauge = [50,0], // 必要ゲージ
+	list = [
+		{ recipe=[ "(236A)","623B" ] },
+		{ recipe=[ "623B",{irekomi=30},"236EX",{wait=50},"A" ] },
+		]
+	},
+	
+	] // Pro_Control		
+	
+	
+} );
+
+
+//--------------------------------------------------------------
+{	// A連打コンボ
+	stmp = com.GetSkill(45); // 作成
+	stmp.SetLotWait( 320 ); // 終了、失敗時のウェイト
+	stmp.SetLotFailedAvg( 10 ); // 失敗確率
+	stmp.checkfunc = function() // チェック
+	{
+		local st = BCom.GetStatus();
+		if( !st.IsPMoveable() ) return 0; // 行動可能じゃないと発動しない
+		if( st.GetELenX() > 25000 ) return 0; // 遠いときは発動しない
+		if( !st.CheckPosState( _PosState_Ground ) ) return 0; // 地上じゃないとだめ
+		if( st.GetELenY() != 0 ) return 0; // 相手も地上を要求
+
+		return com_frequency1;
+	}
+	stmp.updatefunc = function() // 採用時の更新
+	{
+		return 1;
+	}
+	stmp.PlusTagChainCombo( "SSCombo", [ "A","A","GuardEnd","A","GuardEnd","A",["A",120],"A" ] );
+}
+
+nowskillnum = 80;
+
+// 最後にglobal_com_tmpへ渡す
+ComBase_GlobalComTmp_Set( com );
+
+print("\n\n>com Loaded<\n")
+

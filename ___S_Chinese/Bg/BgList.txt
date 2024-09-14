@@ -1,0 +1,507 @@
+// 0はランダム用 数字部分がそのままBGナンバーに
+// DataFile = // BGデータフォルダ名、BGファイル名は bg.fbx 固定
+// Scale = [X,Y,Z] // モデル拡大率
+// Pos = [X,Y,Z] // モデル移動量
+// ViewGrid = // 1ならばグリッド表示
+// MSAA = // MSAAレベル 0-16 設定値が対応していない場合、カードの最大値となる。通常は2で
+// TargetW =  // レンダリングターゲット幅 基本値1280
+// TargetH =  // レンダリングターゲット高さ 基本値720
+// VanishingPoint = // 消失点位置 基本値0.0
+//
+// StageSelTex = // ステージセレクトでのグラフィック -1だとなし
+// SelectDisable =  // 選択禁止か
+// RandomDisable =  // ランダム禁止か
+// VsDisable =  // 対戦禁止か
+//
+// ※ 浮動小数点定数に「f」を使ってはいけない。 ×「0.0f」 ○「0.0」
+
+BgList <-
+{
+	// BGセレクト並び順
+	// SelectDisable なものを入れても無効
+	// 0 は書かないように
+	// 同じものを書くといっぱい出てくるので注意
+	BgSelectList = [ 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 17, 18, 16, 9, 90, 99, 89 ], 
+
+	/////////////////////////////////////////////////////////
+	Bg_001 =
+	{
+		Name = "nigger1", // 全角32文字未満
+		DataFile = "bg01",
+
+		Scale = [ 2.0, 2.0, 2.0 ],
+		Position = [ 0.0, -0.05, 0.0 ],
+		ViewGrid = 0,
+		FOV = 45.0,
+		IsFog = 1,
+		FogStart = 2.0, FogEnd = 250.0, // フォグ開始位置、終了位置
+		FogColor = [ 0.17, 0.38, 0.59, 1.0 ], // RGBA  0.39, 0.58, 0.92, 1.0 
+
+		MSAA = 2,
+		
+		StageW = 4096, // ※1.06:(2560-128)
+
+		IsBloom = 0,
+		
+		StageSelTex = 1,
+	}
+	/////////////////////////////////////////////////////////
+	Bg_002 =
+	{
+		Name = "高層建築・屋上", // 全角32文字未満
+		DataFile = "bg02",
+
+		Scale = [ 10.0, 10.0, 10.0 ],
+		Position = [ 0.0, 0.0, -1.5 ],
+		ViewGrid = 0,
+		FOV = 45.0,
+
+		IsFog = 1,
+		FogStart = 2.0, FogEnd = 1000.0,
+		FogColor = [ 0.17, 0.41, 0.80, 1.0 ], // RGBA テスト用からー0.33, 0.80, 0.77, 1.0 
+
+		MSAA = 2,
+		
+		StageW = 4096, // ※1.06:(2560-128)
+
+		IsBloom = 0,
+		
+		StageSelTex = 2,
+	}
+	/////////////////////////////////////////////////////////
+	Bg_003 =
+	{
+		Name = "静寂の公園", // 全角32文字未満
+		DataFile = "bg03",
+
+		Scale = [ 10.0, 10.0, 10.0 ],
+		Position = [ 0.0, -0.05, 0.0 ],
+		ViewGrid = 0,
+		FOV = 45.0,
+
+		IsFog = 1,
+		FogStart = 2.0, FogEnd = 220.0,
+		FogColor = [ 0.24, 0.30, 0.83, 1.0 ], // RGBA
+
+		MSAA = 2,
+
+		StageW = 4096, // ※1.06:(2560-128)
+		
+		IsBloom = 0,
+		
+		StageSelTex = 3,
+	}
+	/////////////////////////////////////////////////////////
+	Bg_004 =
+	{
+		Name = "川沿いの広場", // 全角32文字未満
+		DataFile = "bg04",
+
+		Scale = [ 10.0, 10.0, 10.0 ],
+		Position = [ -0.4, 0.0, 2.0 ],
+		ViewGrid = 0,
+		FOV = 44.1,
+
+		IsFog = 1,
+		FogStart = 2.0, FogEnd = 700.0,
+		FogColor = [ 0.39, 0.58, 0.92, 1.0 ], // RGBA 0.39, 0.58, 0.92, 1.0 
+
+		MSAA = 2,
+		
+		StageW = 4096, // ※1.06:(2560-128)
+
+		IsBloom = 0,
+		
+		StageSelTex = 4,
+	}
+	/////////////////////////////////////////////////////////
+	Bg_005 =
+	{
+		Name = "高速道路・下層部", // 全角32文字未満
+		DataFile = "bg05",
+
+		Scale = [ 10.0, 10.0, 10.0 ],
+		Position = [ 0.3, 0.0, 0.0 ],
+		ViewGrid = 0,
+		FOV = 45.0,
+
+		IsFog = 1,
+		FogStart = 5.0, FogEnd = 1000.0,
+		FogColor = [ 0.39, 0.58, 0.92, 1.0 ], // RGBA
+
+		MSAA = 2,
+		
+		StageW = 4096, // ※1.06:(2560-128)
+
+		IsBloom = 0,
+		
+		StageSelTex = 5,
+	}
+	/////////////////////////////////////////////////////////
+	Bg_006 =
+	{
+		Name = "琥珀色の高架下", // 全角32文字未満
+		DataFile = "bg06",
+
+		Scale = [ 10.0, 10.0, 10.0 ],
+		Position = [ 0.0, 0.0, 0.0 ],
+		ViewGrid = 0,
+		FOV = 45.0,
+
+		IsFog = 1,
+		FogStart = 1.0, FogEnd = 500.0,
+		FogColor = [ 0.92, 0.61, 0.10, 1.0 ], // RGBA
+
+		MSAA = 2,
+		
+		StageW = 4096, // ※1.06:(2560-128)
+
+		IsBloom = 0,
+		
+		StageSelTex = 6,
+	}
+	/////////////////////////////////////////////////////////
+	Bg_007 =
+	{
+		Name = "明灯の商業施設", // 全角32文字未満
+        DataFile = "bg07",
+
+		Scale = [ 10.0, 10.0, 10.0 ],
+		Position = [ 0.0, 0.0, 0.0 ],
+		ViewGrid = 0,
+		FOV = 45.0,
+
+		IsFog = 1,
+		FogStart = 1.0, FogEnd = 300.0,
+		FogColor = [ 0.39, 0.58, 1.92, 1.0 ], // RGBA 0.39, 0.58, 0.92, 1.0   1.0, 0.76, 0.66, 1.0   0.0, 0.25, 0.90, 1.0
+
+		MSAA = 2,
+		
+		StageW = 4096, // ※1.06:(2560-128)
+
+		IsBloom = 0,
+		
+		StageSelTex = 7,
+	}
+	/////////////////////////////////////////////////////////
+	Bg_008 =
+	{
+		Name = "守人の社", // 全角32文字未満
+		DataFile = "bg08",
+
+		Scale = [ 10.0, 10.0, 10.0 ],
+		Position = [ 0.0, 0.0, 0.0 ],
+		ViewGrid = 0,
+		FOV = 45.0,
+
+		IsFog = 1,
+		FogStart = 3.0, FogEnd = 40.0,
+		FogColor = [ 0.30, 0.15, 0.63, 1.0 ], // RGBA テスト用からー0.80, 0.36, 0.13, 1.0
+
+		MSAA = 2,
+		
+		StageW = 4096, // ※1.06:(2560-128)
+
+		IsBloom = 0,
+		
+		StageSelTex = 8,
+	}
+	/////////////////////////////////////////////////////////
+	Bg_009 =
+	{
+		Name = "煌朧の祭壇", // 全角32文字未満
+		DataFile = "bg09",
+
+		Scale = [ 10.0, 10.0, 10.0 ],
+		Position = [ 0.0, 0.0, 0.0 ],
+		ViewGrid = 0,
+		FOV = 45.0,
+
+		IsFog = 1,
+		FogStart = 1.0, FogEnd = 1000.0,
+		FogColor = [ 0.23, 0.1, 0.05, 1.0 ], // RGBA テスト用からー0.33, 0.80, 0.77, 1.0 
+
+		MSAA = 2,
+		
+		StageW = 4096, // ※1.06:(2560-128)
+
+		IsBloom = 0,
+		
+		StageSelTex = 9,
+	}
+	/////////////////////////////////////////////////////////
+	Bg_010 =
+	{
+		Name = "紅く染まる駐車場", // 全角32文字未満
+		DataFile = "bg10",
+
+		Scale = [ 10.0, 10.0, 10.0 ],
+		Position = [ 0.0, 0.0, 0.0 ],
+		ViewGrid = 0,
+		FOV = 45.0,
+
+		IsFog = 1,
+		FogStart = 1.0, FogEnd = 2000.0,
+		FogColor = [ 0.80, 0.1, 0.05, 1.0 ], // RGBA テスト用からー0.33, 0.80, 0.77, 1.0 
+
+		MSAA = 2,
+		
+		StageW = 4096, // ※1.06:(2560-128)
+
+		IsBloom = 0,
+		
+		StageSelTex = 10,
+	}
+	/////////////////////////////////////////////////////////
+	Bg_011 =
+	{
+		Name = "朽ち荒れた廃墟", // 全角32文字未満
+		DataFile = "bg11",
+
+		Scale = [ 20.0, 20.0, 20.0 ],
+		Position = [ 0.0, 0.0, 3.5 ],
+		ViewGrid = 0,
+		FOV = 45.0,
+
+		IsFog = 1,
+		FogStart = 2.0, FogEnd = 220.0,
+		FogColor = [ 0.24, 0.30, 0.83, 1.0 ], // RGBA
+
+		MSAA = 2,
+		StageW = 4096, // 2560,4096
+
+		IsBloom = 0,
+		
+		StageSelTex = 11,
+	}
+	/////////////////////////////////////////////////////////
+	Bg_012 =
+	{
+		Name = "鳴動の工業施設", // 全角32文字未満
+		DataFile = "bg12",
+
+		Scale = [ 20.0, 20.0, 20.0 ],
+		Position = [ 0.0, 0.0, 3.6 ],
+		ViewGrid = 0,
+		FOV = 45.0,
+
+		IsFog = 1,
+		FogStart = 2.0, FogEnd = 220.0,
+		FogColor = [ 0.24, 0.60, 0.83, 1.0 ], // RGBA
+		VanishingPoint = 0.3
+
+		MSAA = 2,
+		StageW = 4096, // 2560,4096
+
+		IsBloom = 0,
+		
+		StageSelTex = 12,
+	}
+
+	/////////////////////////////////////////////////////////
+	Bg_013 =
+	{
+		Name = "眠りの噴水広場", // 全角32文字未満
+		DataFile = "bg13",
+
+		Scale = [ 20.0, 20.0, 20.0 ],
+		Position = [ 0.0, 0.0, 4 ],
+		ViewGrid = 0,
+		FOV = 40.0,
+
+		IsFog = 1,
+		FogStart = 3.0, FogEnd = 80.0,
+		FogColor = [ 0.39, 0.58, 0.92, 1.0 ], // RGBA テスト用からー0.80, 0.36, 0.13, 1.0
+
+		MSAA = 2,
+		
+		StageW = 4096, // ※1.06:(2560-128)
+
+		IsBloom = 0,
+		
+		StageSelTex = 13,
+	}
+	/////////////////////////////////////////////////////////
+	Bg_014 =
+	{
+		Name = "桜咲き散る旧校舎", // 全角32文字未満
+		DataFile = "bg14",
+
+		Scale = [ 21.0, 21.0, 21.0 ],
+		Position = [ 0.0, 0.0, 3.6 ],
+		ViewGrid = 0,
+		FOV = 45.0,
+
+		IsFog = 1,
+		FogStart = 2.0, FogEnd = 220.0,
+		FogColor = [ 0.24, 0.60, 0.83, 1.0 ], // RGBA
+		VanishingPoint = 0.3
+
+		MSAA = 2,
+		StageW = 4096, // 2560,4096
+
+		IsBloom = 0,
+		
+		StageSelTex = 14,
+	}
+	/////////////////////////////////////////////////////////
+	Bg_015 =
+	{
+		Name = "電影のカフェテリア", // 全角32文字未満
+		DataFile = "bg15",
+
+		Scale = [ 0.6, 0.6, 0.6 ],
+		Position = [ -0.5, 0.0,-2.5 ],
+		ViewGrid = 0,
+		FOV = 45.0,
+
+		IsFog = 1,
+		FogStart = 2.0, FogEnd = 1000.0,
+		FogColor = [ 0.17, 0.41, 0.80, 1.0 ], // RGBA テスト用からー0.33, 0.80, 0.77, 1.0 
+
+		MSAA = 2,
+		StageW = 4096, // 2560,4096
+
+		IsBloom = 0,
+		
+		StageSelTex = 16,
+	}
+	/////////////////////////////////////////////////////////
+	Bg_016 =
+	{
+		Name = "もみじ横町前通り", // 全角32文字未満
+		DataFile = "bg16",
+
+		Scale = [ 0.6, 0.6, 0.6 ],
+		Position = [ 1.5, 0.0,-3.0 ],
+		ViewGrid = 0,
+		FOV = 45.0,
+		VanishingPoint = 0.35
+
+		IsFog = 1,
+		FogStart = 2.0, FogEnd = 1000.0,
+		FogColor = [ 0.17, 0.41, 0.80, 1.0 ], // RGBA テスト用からー0.33, 0.80, 0.77, 1.0 
+
+		MSAA = 2,
+		StageW = 4096, // 2560,4096
+
+		IsBloom = 0,
+		
+		StageSelTex = 17,
+	}
+	/////////////////////////////////////////////////////////
+	Bg_017 =
+	{
+		Name = "環堺東・児童遊園", // 全角32文字未満
+		DataFile = "bg17",
+
+		Scale = [ 1.0, 1.0, 1.0 ],
+		Position = [ 0.0, 0.0, 1.0 ],
+		ViewGrid = 0,
+		FOV = 45.0,
+		VanishingPoint = 0.2
+
+		IsFog = 1,
+		FogStart = 2.0, FogEnd = 130.0,
+		FogColor = [ 0.0, 0.12, 0.15, 1.0 ], // RGBA
+
+
+		MSAA = 2,
+		StageW = 4096, // 2560,4096
+
+		IsBloom = 0,
+		
+		StageSelTex = 18,
+	}
+	/////////////////////////////////////////////////////////
+	Bg_018 =
+	{
+		Name = "極東の大聖堂", // 全角32文字未満
+		DataFile = "bg18",
+
+		Scale = [ 1.5, 1.5, 1.5 ],
+		Position = [ 0.0, 0.0, 0.0 ],
+		ViewGrid = 0,
+		FOV = 48.0,
+		VanishingPoint = 0.2
+
+		IsFog = 1,
+		FogStart = 2.0, FogEnd = 90.0,
+		FogColor = [ 0.3, 0.25, 0.0, 1.0 ], // RGBA
+
+		MSAA = 2,
+		StageW = 4096, // 2560,4096
+
+		IsBloom = 0,
+		
+		StageSelTex = 19,
+	}
+	/////////////////////////////////////////////////////////
+	Bg_090 =
+	{
+		Name = "トレーニングステージ", // 全角32文字未満
+		DataFile = "bg090",
+
+		RandomDisable = 1, // ランダム禁止か
+		VsDisable = 1, // 対戦禁止か
+		Scale = [ 10.0, 10.0, 10.0 ],
+		Position = [ 0.0, 0.0, 0.0 ],
+		ViewGrid = 0,
+		FOV = 30.0,
+
+		IsFog = 1,
+		FogStart = 0.0, FogEnd = 1000.0,
+		FogColor = [ 0.17, 0.41, 0.80, 1.0 ], // RGBA テスト用からー0.33, 0.80, 0.77, 1.0 
+
+		MSAA = 2,
+		StageW = 4096, // 2560,4096
+
+		LightType = 1,
+		LightColor = [ 0.38, 0.90, 0.86, 1.0 ], // 
+		
+		IsBloom = 0,
+		
+		StageSelTex = 15,
+	}
+
+	Bg_099 =
+	{
+		Name = "デバッグステージ", // 全角32文字未満
+		DataFile = "",
+		
+		SelectDisable = 0, // 選択禁止か
+		RandomDisable = 1, // ランダム禁止か
+		VsDisable = 1, // 対戦禁止か
+
+		ViewGrid = 1,
+		FOV = 45.0,
+		VanishingPoint = 0.35, //
+
+		StageW = 4096, // 2560 1280*3,
+		MSAA = 16,
+		
+		StageSelTex = 16,
+	}
+	
+	Bg_089 =
+	{
+		Name = "debug2", // 全角32文字未満
+		DataFile = "",
+		
+		SelectDisable = 0, // 選択禁止か
+		RandomDisable = 1, // ランダム禁止か
+		VsDisable = 1, // 対戦禁止か
+
+		ViewGrid = 0,
+		FOV = 45.0,
+		VanishingPoint = 0.35, //
+
+		StageW = 4096, // 2560 1280*3,
+		MSAA = 16,
+		
+		StageSelTex = 16,
+	}
+}
+
+
+

@@ -1,0 +1,10 @@
+[System]
+ProjectName=csel_Enk
+[DataFile]
+FileNum= 1
+File00=csel_Enk.HA6
+[BmpcutFile]
+FileNum= 1
+File00=csel_Enk.cg
+[PAniFile]
+FileNum= 0

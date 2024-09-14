@@ -1,0 +1,521 @@
+//コマンドテーブル skillは格ゲーコマンド表記
+btl_debPrint2("\n[VAT_CommandTable]");
+
+//受け身に使ったボタンのホールドは無効にする
+local HoldCheck = function(button=1)
+{
+	local pp = BMvTbl.GetPP(def_PP_RecoverHoldMask);
+	//_dm("結果："+pp+" button:"+button);
+	if( (BMvTbl.GetPP(def_PP_RecoverHoldMask)&button) !=0 )
+	{
+		return 0; //使えない
+	}
+	else
+	{
+		return 1; //使える
+	}
+};
+
+local spExCancelCheck = function( _pos, _ar )
+{
+	if( BMvTbl.IsCpu()==0 ) // プレイヤーの時
+	{
+		local btn_pos = BCMDTbl.GetSuccessButtonPos();
+		//_dp("\n btn_pos:"+btn_pos );
+		if( btn_pos == _pos )
+		{
+			if( BMvEff.GRD_GetJudgeResult() <= 0 ) return 0; // VP時じゃないとダメ
+			
+			if( !Battle_Std.IsMatchMvNameArray( _ar ) )
+			{
+				//_dp(" -> ng");
+				return 0;
+			}
+		}
+	}
+	return 1;
+}
+
+//当身成功時の追加技チェック
+local addCmdCheck_OnAtemi = function()
+{
+	//MVの一致＋フラグ系をすべてチェック
+	if( BMvTbl.GetMvName() != "Mv_Atk_CroAandB" || !( Battle_Std.MoveCode.CheckFlag( def_MC_CharaFlag1 ) || BMvTbl.GetMvStatus().Param2&1 ) )
+	{
+		// _dp(" -> ng");
+		return 0;
+	}
+	return 1;
+}
+
+local t =
+{
+
+	Skill_41236SP_ABC = {},
+	Skill_41236SP = {},
+	
+	Skill_236EX		= { 
+		CmdCheck = {	BallLimit = { [1] = 1 } },
+		command = "@T,<,52@6C@D,11@"
+		function CmdBeforeFunc()
+		{
+			// ダッシュ攻撃の入力っぽかったら失敗
+			if( BMvTbl.CheckCommandString( "0606+C" ) )
+			{
+				print("\n ダッシュ攻撃っぽいので失敗:EX");
+				BMvTbl.SetCommandFailTime( { command=def_CN_Skill_236EX, time=2 } );
+				return 0;
+			}
+			//こっちにspExCancelCheckがあると流石に強すぎそうなのでナシに
+			return 1;
+		}
+	},
+	Skill_236BorC		= {
+		command = ["@T,<,52@6B@D,11@","@T,<,52@6C@D,11@"]
+		function CmdBeforeFunc()
+		{
+			// ダッシュ攻撃の入力っぽかったら失敗
+			if( BMvTbl.CheckCommandString( ["0606+B","0606+C"] ) )
+			{
+				print("\n ダッシュ攻撃っぽいので失敗:B");
+				BMvTbl.SetCommandFailTime( { command=def_CN_Skill_236B, time=2 } );
+				return 0;
+			}
+			
+			// ボタンダッシュの入力っぽかったら両方失敗
+			if( BMvTbl.CheckCommandString( ["6+A+B"] ) )
+			{
+				BMvTbl.SetCommandFailTime( { command=def_CN_Skill_236A, time=40 } );
+				BMvTbl.SetCommandFailTime( { command=def_CN_Skill_236B, time=40 } );
+				return 0;
+			}
+			return 1;
+		}		
+	},
+	Skill_236A		= {
+		command = "@T,<,52@6A@D,11@",
+		function CmdBeforeFunc()
+		{
+			// ダッシュ攻撃の入力っぽかったら失敗
+			if( BMvTbl.CheckCommandString( ["0606+A"] ) )
+			{
+				print("\n ダッシュ攻撃っぽいので失敗:A");
+				BMvTbl.SetCommandFailTime( { command=def_CN_Skill_236A, time=2 } );
+				return 0;
+			}
+			
+			// ボタンダッシュの入力っぽかったら両方失敗
+			if( BMvTbl.CheckCommandString( ["6+A+B"] ) )
+			{
+				BMvTbl.SetCommandFailTime( { command=def_CN_Skill_236A, time=40 } );
+				BMvTbl.SetCommandFailTime( { command=def_CN_Skill_236B, time=40 } );
+				return 0;
+			}
+			return 1;
+		}		
+	}
+	
+	Dash_F_Douji = {
+	
+		function CmdAfterFunc()
+		{
+			// print("\n だせなくする");
+			// BMvTbl.SetCommandFailTime( { command=def_CN_Skill_236A, time=20 } );
+			// BMvTbl.SetCommandFailTime( { command=def_CN_Skill_236B, time=20 } );
+			return 1;
+		}	
+	}
+
+	
+	Skill_623EX		= { command = "@T,v,52@^C@D,11@", CmdCheck = { SkillType="ExSpecialJump", } },
+	Skill_623BorC	= { command = ["@T,v,52@^B@D,11@","@T,v,52@^C@D,11@"], CmdCheck = { SkillType="SpecialJump",} },
+	Skill_623A		= { command = "@T,v,37@^A@D,11@", CmdCheck = { SkillType="SpecialJump",} } // 181206 無敵技から対空無敵技に変更したのでタメ時間も緩和
+	
+	
+	
+	Skill_214EX		= {
+		command = ["@T,>,52@4C@D,11@",">4C"]
+		function CmdBeforeFunc() : (spExCancelCheck)
+		{
+			//cmdpos, 一致していないとダメなmvname配列
+			if( !spExCancelCheck( 1, ["Mv_Skill_214A","Mv_Skill_214B"] ) )
+			{
+				return 0;
+			}
+			return 1;
+		}
+	},
+	Skill_214BorC	= { command = ["@T,>,52@4B@D,11@","@T,>,52@4C@D,11@"] },
+	Skill_214A		= { command = ["@T,>,52@4A@D,11@"] }
+	
+	// 下開放だと、しゃがみタメをしながらレーザー打てるのでNG
+	/*
+	Skill_41236EX	= { command = ["@T,0,52@4C"] },
+	Skill_41236BorC	= { command = ["@T,0,52@4B","@T,0,52@4C"] },
+	Skill_41236A	= { command = ["@T,0,52@4A"] },
+	*/
+	
+	Skill_C0202A		= 
+	{
+		num = def_CN_Skill_63214A,
+		command = ["@B,A,60@@X,A,v@"], // しゃがみ設置が立ち設置に化けるバグがあったので修正
+		function CmdBeforeFunc() : (HoldCheck)
+		{
+			if( BMvTbl.IsCpu()==0 ) // プレイヤーの時
+			{
+				//レバー↓入ってないと失敗にする
+				if( !BMvTbl.CheckStickHold( (1<<1)|(1<<2)|(1<<3) ) )
+				{
+					return 0;
+				}
+			}
+			if( !HoldCheck(1<<0) ) return 0;
+			return 1;
+		},
+		UpdateTable = { name = "Mv_Skill_C0202A", }
+	},
+
+	Skill_0202A		= 
+	{
+		num = def_CN_Skill_421A,
+		command = ["@B,A,60@@X,A@"],
+		function CmdBeforeFunc() : (HoldCheck)
+		{
+			if( !HoldCheck(1<<0) ) return 0;
+			return 1;
+		},
+		UpdateTable = { name = "Mv_Skill_0202A", }
+	},
+
+	Skill_J0202A		= 
+	{
+		num = def_CN_Skill_0202A,
+		command = ["@B,A,60@@X,A@"],
+		function CmdBeforeFunc() : (HoldCheck)
+		{
+			if( !HoldCheck(1<<0) ) return 0;
+			if( BMvTbl.AddAirCount( def_ACS_VAT_J0202, 0 ) ) return 0; // ジャンプ中は1度しか出せない
+			return 1;
+		},
+		UpdateTable = { name = "Mv_Skill_J0202A", }
+	},
+	
+	//
+	Skill_C0202B		= 
+	{
+		num = def_CN_Skill_63214B,
+		command = ["@B,B,60@@X,B,v@"], // しゃがみ設置が立ち設置に化けるバグがあったので修正
+		function CmdBeforeFunc() : (HoldCheck)
+		{
+			if( BMvTbl.IsCpu()==0 ) // プレイヤーの時
+			{
+				//レバー↓入ってないと失敗にする
+				if( !BMvTbl.CheckStickHold( (1<<1)|(1<<2)|(1<<3) ) )
+				{
+					return 0;
+				}
+			}
+			if( !HoldCheck(1<<1) ) return 0;
+			return 1;
+		},
+		UpdateTable = { name = "Mv_Skill_C0202B", }
+	},
+
+	Skill_0202B		= 
+	{
+		num = def_CN_Skill_421B,
+		command = ["@B,B,60@@X,B@"],
+		function CmdBeforeFunc() : (HoldCheck)
+		{
+			if( !HoldCheck(1<<1) ) return 0;
+			return 1;
+		},
+		UpdateTable = { name = "Mv_Skill_0202B", }
+	},
+
+	Skill_J0202B		= 
+	{
+		num = def_CN_Skill_0202B,
+		command = ["@B,B,60@@X,B@"],
+		function CmdBeforeFunc() : (HoldCheck)
+		{
+			if( !HoldCheck(1<<1) ) return 0;
+			if( BMvTbl.AddAirCount( def_ACS_VAT_J0202, 0 ) ) return 0; // ジャンプ中は1度しか出せない
+			return 1;
+		},
+		UpdateTable = { name = "Mv_Skill_J0202B", }
+	},
+
+	//
+	Skill_C0202C		= 
+	{
+		num = def_CN_Skill_63214C,
+		command = ["@B,C,60@@X,C,v@"], // しゃがみ設置が立ち設置に化けるバグがあったので修正
+		function CmdBeforeFunc() : (HoldCheck)
+		{
+			if( BMvTbl.IsCpu()==0 ) // プレイヤーの時
+			{
+				//レバー↓入ってないと失敗にする
+				if( !BMvTbl.CheckStickHold( (1<<1)|(1<<2)|(1<<3) ) )
+				{
+					return 0;
+				}
+			}
+			if( !HoldCheck(1<<2) ) return 0;
+			return 1;
+		},
+		UpdateTable = { name = "Mv_Skill_C0202C", }
+	},
+
+	Skill_0202C		= 
+	{
+		num = def_CN_Skill_421C,
+		command = ["@B,C,60@@X,C@"],
+		function CmdBeforeFunc() : (HoldCheck)
+		{
+			if( !HoldCheck(1<<2) ) return 0;
+			return 1;
+		},
+		UpdateTable = { name = "Mv_Skill_0202C", }
+	},
+
+	Skill_J0202C		= 
+	{
+		num = def_CN_Skill_0202C,
+		command = ["@B,C,60@@X,C@"],
+		function CmdBeforeFunc() : (HoldCheck)
+		{
+			if( !HoldCheck(1<<2) ) return 0;
+			if( BMvTbl.AddAirCount( def_ACS_VAT_J0202, 0 ) ) return 0; // ジャンプ中は1度しか出せない
+			return 1;
+		},
+		UpdateTable = { name = "Mv_Skill_J0202C", }
+	},	
+
+	Skill_J623EX		= { command = "@T,^,42@vC" },
+	Skill_J623BorC	= { command = ["@T,^,42@vB","@T,^,42@vC"] },
+	Skill_J623A		= { command = "@T,^,42@vA" }
+
+	Skill_J236EX =
+	{
+		CmdCheck = {	BallLimit = { [1] = 1 } },
+		command = "@T,<,52@6C",
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.AddAirCount( def_ACS_VAT_J236EX, 0 ) ) return 0; // ジャンプ中は1度しか出せない
+			return 1;
+		}
+	},
+	Skill_J236BorC	=
+	{
+		command = ["@T,<,52@6B","@T,<,52@6C"],
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.AddAirCount( def_ACS_VAT_J236B, 0 ) ) return 0; // ジャンプ中は1度しか出せない
+			return 1;
+		}
+	},	
+	Skill_J236A		=
+	{
+		command = "@T,<,52@6A",
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.AddAirCount( def_ACS_VAT_J236A, 0 ) ) return 0; // ジャンプ中は1度しか出せない
+			return 1;
+		}
+	}
+
+	Skill_J214EX = {
+		// なんで地上とコマンド違うんだ？
+		command = ["@T,>,52@4C","64C"],
+		function CmdBeforeFunc() : (spExCancelCheck)
+		{
+			if( BMvTbl.AddAirCount( def_ACS_VAT_J214EX, 0 ) >=5 ) return 0; // ジャンプ中は5回しか出せない
+			
+			//cmdpos, 一致していないとダメなmvname配列
+			if( !spExCancelCheck( 1, ["Mv_Skill_J214A","Mv_Skill_J214B"] ) )
+			{
+				return 0;
+			}
+			return 1;
+		}
+	},
+	Skill_J214BorC	=
+	{
+		command = ["@T,>,52@4B","@T,>,52@4C"],
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.AddAirCount( def_ACS_VAT_J214B, 0 ) >=5 ) return 0; // ジャンプ中は5回しか出せない
+			return 1;
+		}
+	},	
+	Skill_J214A		=
+	{
+		command = "@T,>,52@4A"
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.AddAirCount( def_ACS_VAT_J214A, 0 ) >=5 ) return 0; // ジャンプ中は5回しか出せない
+			return 1;
+		}
+	}
+	
+	Atk_B_B = {
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Atk_StdB"] },
+//			HitStatus = "Hit",
+			FrameIDCheck = { Only = 100 },
+		},
+		command = ["0+B","4+B","6+B","7+B","8+B","9+B"],
+	},
+	Atk_2B_2B = {
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Atk_CroB"] },
+//			HitStatus = "Hit",
+			FrameIDCheck = { Only = 100 },
+		},
+		command = ["v+B"],
+	},	
+	Atk_2B_2B_2B = {
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Atk_2B_2B"] },
+			FrameIDCheck = { Only = 100 },
+		},
+		command = ["v+B","v+BBB@D,16@@L,10@"],//めっちゃ連打するとかなり先行がきく
+	},	
+	
+	Atk_StdBandC = {},
+	Atk_CroBandC = {},
+	Atk_AirBandC = {},
+
+	Atk_CroAandB = {
+		CmdCheck = {
+			//この弾き不要そうだが保険として残しておく
+			MvCheck = { SkillFail = ["Mv_Atk_StdBandC","Mv_Atk_CroBandC"] },
+		}
+	},
+	
+	//2ABの追加技
+	Skill_2AB_Add6C = {
+		num = def_CN_Skill_AddCommand1, command = ["6+C"], usegauge = 10000,
+		function CmdBeforeFunc() : (addCmdCheck_OnAtemi) { return addCmdCheck_OnAtemi(); }
+		CmdCheck = { SkillType = "AddCommand", MvCheck = { Only = ["Mv_Atk_CroAandB"] }, Cost = { ComboGauge = 10000 }, BallLimit = { [1] = 1 } }, UpdateTable = { name = "Mv_Skill_236EX", }
+	},
+	Skill_2AB_Add6B = {
+		num = def_CN_Skill_AddCommand2, command = ["6+B","6+C"],
+		function CmdBeforeFunc() : (addCmdCheck_OnAtemi) { return addCmdCheck_OnAtemi(); }
+		CmdCheck = { SkillType = "AddCommand", MvCheck = { Only = ["Mv_Atk_CroAandB"] }, }, UpdateTable = { name = "Mv_Skill_236B", }
+	},
+	Skill_2AB_Add6A = {
+		num = def_CN_Skill_AddCommand3, command = ["6+A"],
+		function CmdBeforeFunc() : (addCmdCheck_OnAtemi) { return addCmdCheck_OnAtemi(); }
+		CmdCheck = { SkillType = "AddCommand", MvCheck = { Only = ["Mv_Atk_CroAandB"] }, }, UpdateTable = { name = "Mv_Skill_236A", }
+	},
+	Skill_2AB_Add4C = {
+		num = def_CN_Skill_AddCommand4, command = ["4+C"], usegauge = 10000,
+		function CmdBeforeFunc() : (addCmdCheck_OnAtemi) { return addCmdCheck_OnAtemi(); }
+		CmdCheck = { SkillType = "AddCommand", MvCheck = { Only = ["Mv_Atk_CroAandB"] }, Cost = { ComboGauge = 10000 } }, UpdateTable = { name = "Mv_Skill_214EX", }
+	},
+	Skill_2AB_Add4B = {
+		num = def_CN_Skill_AddCommand5, command = ["4+B","4+C"],
+		function CmdBeforeFunc() : (addCmdCheck_OnAtemi) { return addCmdCheck_OnAtemi(); }
+		CmdCheck = { SkillType = "AddCommand", MvCheck = { Only = ["Mv_Atk_CroAandB"] }, }, UpdateTable = { name = "Mv_Skill_214B", }
+	},
+	Skill_2AB_Add4A = {
+		num = def_CN_Skill_AddCommand6, command = ["4+A"],
+		function CmdBeforeFunc() : (addCmdCheck_OnAtemi) { return addCmdCheck_OnAtemi(); }
+		CmdCheck = { SkillType = "AddCommand", MvCheck = { Only = ["Mv_Atk_CroAandB"] }, }, UpdateTable = { name = "Mv_Skill_214A", }
+	},
+	Skill_2AB_Add8C = {
+		num = def_CN_Skill_AddCommand7, command = ["^+C"], usegauge = 10000,
+		function CmdBeforeFunc() : (addCmdCheck_OnAtemi) { return addCmdCheck_OnAtemi(); }
+		CmdCheck = { SkillType = "AddCommand", MvCheck = { Only = ["Mv_Atk_CroAandB"] }, Cost = { ComboGauge = 10000 } }, UpdateTable = { name = "Mv_Skill_623EX", }
+	},
+	Skill_2AB_Add8B = {
+		num = def_CN_Skill_AddCommand8, command = ["^+B","^+C"],
+		function CmdBeforeFunc() : (addCmdCheck_OnAtemi) { return addCmdCheck_OnAtemi(); }
+		CmdCheck = { SkillType = "AddCommand", MvCheck = { Only = ["Mv_Atk_CroAandB"] }, }, UpdateTable = { name = "Mv_Skill_623B", }
+	},
+	Skill_2AB_Add8A = {
+		num = def_CN_Skill_AddCommand9, command = ["^+A"],
+		function CmdBeforeFunc() : (addCmdCheck_OnAtemi) { return addCmdCheck_OnAtemi(); }
+		CmdCheck = { SkillType = "AddCommand", MvCheck = { Only = ["Mv_Atk_CroAandB"] }, }, UpdateTable = { name = "Mv_Skill_623A", }
+	},
+	
+	//2+系なのは、2+B+Cを出しやすくするため
+	Skill_2AB_Add2C = {
+		num = def_CN_Skill_AddCommand10, command = ["2+C"], usegauge = 10000,
+		function CmdBeforeFunc() : (addCmdCheck_OnAtemi) { return addCmdCheck_OnAtemi(); }
+		CmdCheck = { SkillType = "AddCommand", MvCheck = { Only = ["Mv_Atk_CroAandB"] }, Cost = { ComboGauge = 10000 } }, UpdateTable = { name = "Mv_Skill_0202FinEX", }
+	},
+	Skill_2AB_Add2B = {
+		num = def_CN_Skill_AddCommand11, command = ["2+B","2+C"],
+		function CmdBeforeFunc() : (addCmdCheck_OnAtemi) { return addCmdCheck_OnAtemi(); }
+		CmdCheck = { SkillType = "AddCommand", MvCheck = { Only = ["Mv_Atk_CroAandB"] }, }, UpdateTable = { name = "Mv_Skill_C0202B", }
+	},
+	Skill_2AB_Add2A = {
+		num = def_CN_Skill_AddCommand12, command = ["2+A"],
+		function CmdBeforeFunc() : (addCmdCheck_OnAtemi) { return addCmdCheck_OnAtemi(); }
+		CmdCheck = { SkillType = "AddCommand", MvCheck = { Only = ["Mv_Atk_CroAandB"] }, }, UpdateTable = { name = "Mv_Skill_C0202A", }
+	},
+	
+	Atk_AirAandB = {
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.AddAirCount( def_ACS_VAT_JAB, 0 ) ) return 0; // ジャンプ中は1回しか出せない
+			return 1;
+		}
+	},
+	
+	Skill_236B_JAddAandB = {
+		num = def_CN_Skill_AddCommand13, command = ["A+B"],
+		flags = [ "lastdelay","airskill" ], posstatus = _PosState_Air,
+		CmdCheck = {
+			SkillType = "AddCommand", PosState="Air",
+			MvCheck = { Only = ["Mv_Skill_236B"] },
+			ParamFlagCheck = { Only = { [1]=1 } },
+		}
+		UpdateTable = { name = "Mv_Atk_AirAandB", },
+	},
+	
+}
+
+local ar =
+[
+	{
+		CheckMoveName="Mv_Atk_StdA",
+		UpdateMoveName="Mv_Atk_StdB",
+	},
+	{
+		CheckMoveName="Mv_Atk_StdB",
+		UpdateMoveName="Mv_Atk_StdC",
+		ResetTmplName="Atk_StdB",
+	},
+	{
+		CheckMoveName="Mv_Atk_StdC",
+		UpdateMoveName="Mv_Atk_StdBandC",
+		ResetTmplName="Atk_StdC",
+		//CmdTmplFlags=def_CMDFlags_AnnounceSmaetSteer, //スマートステアアナウンスの追加
+		//特殊技なので自動生成されてないからアナウンスでないのでMvに直接設定してある
+	},
+	{
+		CheckMoveName="Mv_Atk_StdBandC",
+		UpdateMoveName="Mv_Skill_623EX",
+		ResetTmplName="Atk_StdBandC",
+		CmdCheck = 
+		{
+			Cost = { ComboGauge = 10000 },
+			SkillType = "ExSpecial",
+			HitStatus="Damage",
+		}	
+	},
+]
+Battle_Std.MakeStdCombo( t, ar );
+
+VAT_CommandTable <- Battle_Std.MakeCommandTable( t );
+

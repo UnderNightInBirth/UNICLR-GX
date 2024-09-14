@@ -1,0 +1,569 @@
+//-----------------------------------------------------------------------------
+// ‚r‚d’è‹`
+//-----------------------------------------------------------------------------
+
+Battle_Std.SeTable[Def_ChrNo_Vat] = {};
+local se = Battle_Std.SeTable[Def_ChrNo_Vat];
+
+se["“oê‚P"] <- {
+	selist = { common = [103,106,107], }
+};
+se["“oê‚Q"] <- {
+	selist = { common = [103,106,107], }
+};
+
+se["ƒ‰ƒEƒ“ƒhŸ—˜"] <- {
+	selist = { common = [116,121], }
+};
+se["Œˆ’…Ÿ—˜"] <- {
+	selist = { common = [100,115], },
+};
+se["ƒ^ƒCƒ€ƒAƒbƒvŒˆ’…Ÿ—˜"] <- {
+	selist = { common = [113], }
+};
+se["ƒ^ƒCƒ€ƒAƒbƒv”s–k‚P"] <- {
+	selist = { common = [130,131,132], }
+};
+se["ƒ^ƒCƒ€ƒAƒbƒv”s–k‚Q"] <- {
+	selist = { common = [130,131,132], }
+};
+
+se["—§‚¿ãUŒ‚"] <- {
+	Param0 = 10,
+	average = 75,
+	selist = { common = [140,141,142,143], }
+};
+se["—§‚¿’†UŒ‚"] <- {
+	Param0=10,
+	selist = { common = [161], }
+};
+se["—§‚¿‹­UŒ‚"] <- {
+	Param0=10,
+	selist = { common = [163,164], }
+};
+se["‚µ‚á‚ª‚İãUŒ‚"] <- {
+	Param0=10,
+	average = 75,
+	selist = { common = [140,141,142,143], }
+};
+se["‚µ‚á‚ª‚İ’†UŒ‚"] <- {
+	Param0=10,
+	selist = { common = [154,156], }
+};
+se["‚µ‚á‚ª‚İ‹­UŒ‚"] <- {
+	Param0=10,
+	selist = { common = [167,168,170], }
+};
+se["ƒWƒƒƒ“ƒvãUŒ‚"] <- {
+	Param0=10,
+	average = 75,
+	selist = { common = [140,141,142,143], }
+};
+se["ƒWƒƒƒ“ƒv’†UŒ‚"] <- {
+	Param0=10,
+	selist = { common = [152,153,158], }
+};
+se["ƒWƒƒƒ“ƒv‹­UŒ‚"] <- {
+	Param0=10,
+	selist = { common = [160,174], }
+};
+se["ƒ_ƒbƒVƒ…’†UŒ‚"] <- {
+	Param0=10,
+	selist = { common = [157,171], }
+};
+se["ƒ_ƒbƒVƒ…‹­UŒ‚"] <- {
+	Param0=10,
+	selist = { common = [176,180], }
+};
+
+se["“Š‚°¬Œ÷"] <- {
+	Param0=10,
+	selist = { common = [182,184], }
+};
+
+/*
+se["“Š‚°‚Â‚©‚İ¬Œ÷"] <- {
+	selist = { common = [37,38,39], }
+};
+*/
+se["“Š‚°ƒXƒJ‚è"] <- {
+	selist = { common = [190,191], }
+};
+/*
+se["“Š‚°”²‚¯‚³‚ê‚È‚¢‚Â‚©‚İ¬Œ÷"] <- {
+	average = 0,
+	selist = { common = [130], }
+};
+*/
+
+se["“Š‚°”²‚¯"] <- {
+	selist = { common = [201,203], }
+};
+
+se["ƒK[ƒLƒƒƒ“"] <- {
+	selist = { common = [431], }
+}
+
+se["U‚èŒü‚«"] <- {
+	average = 30,
+	selist = { common = [213], }
+};
+
+se["’§”­"] <- {
+	selist = { common = [221,222], }
+};
+
+se["ƒAƒTƒ‹ƒg"] <- {
+	selist = { common = [230,231], }
+};
+
+se["‘Oƒ_ƒbƒVƒ…"] <- {
+	average = 80,
+	selist = { common = [240,241], }
+};
+se["Œã‚ëƒ_ƒbƒVƒ…"] <- {
+	selist = { common = [246,250], }
+};
+
+se["ƒK[ƒhã"] <- {
+	average = 50,
+	selist = { common = [253,254,255], }
+}
+
+se["ƒK[ƒh’†"] <- {
+	average = 75,
+	selist = { common = [260,261,265], }
+}
+
+se["ƒK[ƒh‹­"] <- {
+	selist = { common = [270,271,274], }
+}
+
+/*
+se["ƒK[ƒh–ß‚è"] <- {
+	average = 75,
+	selist = { common = [260,261,262,263], }
+};
+*/
+
+se["’†’iƒK[ƒh¬Œ÷"] <- {
+	selist = { common = [281,282,283], }
+};
+se["ƒK[ƒh¸”s"] <- {
+	selist = { common = [291,293], }
+};
+se["‚f‚q‚cƒuƒŒƒCƒN"] <- {
+	selist = { common = [291,293], }
+};
+
+se["ó‚¯g"] <- {
+	selist = { common = [300,306,307], }
+};
+
+se["ƒV[ƒ‹ƒh”­“®"] <- {
+	selist = { common = [310,311], }
+}
+
+se["ƒV[ƒ‹ƒh¬Œ÷"] <- {
+	selist = { common = [324,325,326], }
+}
+
+se["‚â‚ç‚êã"] <- {
+	average = 50,
+	selist = { common = [330,331,332], }
+}
+
+se["‚â‚ç‚ê’†"] <- {
+	average = 75,
+	selist = { common = [340,341,343,344,345], }
+}
+
+se["‚â‚ç‚ê‹­"] <- {
+	selist = { common = [350,351,352,354,355], }
+}
+
+se["ƒ‰ƒEƒ“ƒh‚j‚n"] <- {
+	dying = 1,
+	selist = { common = [365], }
+};
+
+se["ƒ‰ƒEƒ“ƒh”s–k"] <- {
+	dying = 1,
+	selist = { common = [362,363], }
+};
+
+se["Œˆ’…‚j‚n"] <- {
+	dying = 1,
+	selist = { common = [370], }
+};
+
+se["‹N‚«ã‚ª‚è"] <- {
+	selist = { common = [380,381,388], }
+};
+se["d‹N‚«ã‚ª‚è"] <- {
+	selist = { common = [390,391,396], }
+};
+
+
+se["ƒ”ƒF[ƒ‹ƒIƒt"] <- {
+	selist = { common = [403,405], }
+};
+
+se["ƒ`ƒFƒCƒ“ƒVƒtƒg"] <- {
+	selist = { common = [414], }
+};
+se["ƒRƒ“ƒZƒ“ƒgƒŒ[ƒVƒ‡ƒ“"] <- {
+	selist = { common = [410,421,424], }
+};
+
+//ˆÈ‰ºƒeƒXƒg—p‚Å•·‚¯‚ê‚Î‚¢‚¢‚â“I‚È‚à‚Ì
+
+se["Mv_Atk_B_B_FU"] <- {
+	Param0=10,
+	selist = { common = [155,175], }
+};
+
+se["Mv_Atk_2B_2B_FU"] <- {
+	Param0=10,
+	selist = { common = [155,175], }
+};
+
+se["Mv_Atk_StdBandC_FU"] <- 
+[
+	{
+		Param0=10, // ‚¨‚µ‚Á‚Ï
+			selist = { common = [491,492,498], }
+	},
+	{
+		Param0=20, // •Ğè”­Ë
+			selist = { common = [442,165], }
+	}
+]
+
+se["Mv_Atk_CroBandC_FU"] <- 
+[
+	{
+		Param0=20, // •Ğè”­Ë
+		selist = { common = [442,165], }
+	}
+]
+
+se["Mv_Atk_AirBandC_FU"] <- 
+[
+	{
+		Param0=10,
+			selist = { common = [493,494,495], }
+	},
+	{
+		Param0=20,
+			selist = { common = [442,165], }
+	}
+]
+
+//‚Q‚R‚UUi‹Êj
+se["Mv_Skill_236A_FU"] <- {
+	Param0=10,
+	selist = { common = [440,444,450], }
+};
+
+se["Mv_Skill_236B_FU"] <- {
+	Param0=10,
+	selist = { common = [441,445,446,450], }
+};
+
+se["Mv_Skill_236EX_Init"] <- [
+	{
+		selist = { common = [451], },
+	},
+	{
+		average = 0,
+		selist = { common = [444], },
+		[444] = 
+		{
+			delayframe = 87, //w’èƒtƒŒ[ƒ€’x‚ç‚¹‚é
+		},
+	}
+];
+
+se["Mv_Skill_236EX_FU"] <- {
+	Param0=10,
+	average = 0,
+	selist = { common = [444], }
+};
+
+
+//‚Q‚R‚UUi‹ó’†‹Êj
+se["Mv_Skill_J236A_FU"] <- {
+	Param0=10,
+	selist = { common = [440,444,450], }
+};
+
+se["Mv_Skill_J236B_FU"] <- {
+	Param0=10,
+	selist = { common = [441,445,446,450], }
+};
+
+se["Mv_Skill_J236EX_Init"] <- 
+[
+	{
+			selist = { common = [451], }
+	},
+	{
+		average = 0,
+		selist = { common = [444], },
+		[444] = 
+		{
+			delayframe = 87, //w’èƒtƒŒ[ƒ€’x‚ç‚¹‚é
+		},
+	}
+]
+
+se["Mv_Skill_J236EX_FU"] <- {
+	Param0=10,
+	average = 0,
+	selist = { common = [444], }
+};
+
+
+//‚U‚Q‚RUiƒTƒ}ƒ\j
+se["Mv_Skill_623A_FU"] <- {
+	Param0=10,
+	selist = { common = [461,459,463], }
+};
+
+se["Mv_Skill_623B_FU"] <- {
+	Param0=10,
+	selist = { common = [454,455,463], }
+};
+
+se["Mv_Skill_623B_Hit_Add_FU"] <- {
+	Param0=20, //ƒtƒBƒjƒbƒVƒ…
+	selist = { common = [462], }
+};
+
+se["Mv_Skill_623C_Hit_Add_FU"] <- {
+	Param0=20, //ƒtƒBƒjƒbƒVƒ…
+	selist = { common = [462], }
+};
+
+se["Mv_Skill_623EX_Init"] <- {
+	selist = { common = [460,464], }
+};
+
+//‚Q‚P‚SU(ƒŒ[ƒU[)
+se["Mv_Skill_214A_FU"] <- {
+	Param0=10,
+	selist = { common = [471,472], }
+};
+
+se["Mv_Skill_214B_FU"] <- {
+	Param0=10,
+	selist = { common = [470,472], }
+};
+
+se["Mv_Skill_214EX_Init"] <- {
+	selist = { common = [172], }
+};
+
+se["Mv_Skill_214EX_FU"] <- {
+	Param0=10,
+	selist = { common = [473], },
+	[473] = { delayframe = 15 },
+};
+
+//‚i‚Q‚P‚SU
+se["Mv_Skill_J214A_FU"] <- {
+	Param0=10,
+	selist = { common = [471,472], }
+};
+
+se["Mv_Skill_J214B_FU"] <- {
+	Param0=10,
+	selist = { common = [470,472], }
+};
+
+se["Mv_Skill_J214EX_Init"] <- {
+	selist = { common = [172], }
+};
+
+se["Mv_Skill_J214EX_FU"] <- {
+	Param0=10,
+	average = 100
+	selist = { common = [473], },
+	[473] = { delayframe = 15 },
+};
+
+//‚U‚Q‚RU(ƒhƒŠƒ‹)
+se["Mv_Skill_J623A_FU"] <- {
+	Param0=10,
+	selist = { common = [483,487], }
+};
+
+se["Mv_Skill_J623B_FU"] <- {
+	Param0=10,
+	selist = { common = [475,484,487], }
+};
+
+se["Mv_Skill_J623EX_Init"] <- {
+	selist = { common = [487], }
+};
+
+se["Mv_Skill_J623EX_FU"] <- 
+[
+	{
+		Param0=10, //‹}~‰º
+		average = 0,
+		selist = { common = [483], }
+	},
+	{
+		Param0=20, //R‚è
+			selist = { common = [488], }
+	},
+	{
+		Param0=30, //R‚è‚Æ‚Ç‚ß
+			selist = { common = [486], }
+	},
+]
+
+//‚Q‚QU(ƒrƒbƒgİ’u)
+se["Mv_Skill_0202A_FU"] <- 
+[
+	{
+		Param0=10,
+		selist = { common = [506], }
+	},
+	{
+		Param0=50, // ‚Æ‚Ç‚ß
+		selist = { common = [509], }
+	}
+]
+
+se["Mv_Skill_0202B_FU"] <-
+[
+	{
+		Param0=10,
+		selist = { common = [507], }
+	},
+	{
+		Param0=50, // ‚Æ‚Ç‚ß
+		selist = { common = [509], }
+	}
+]
+
+se["Mv_Skill_0202C_FU"] <- 
+[
+	{
+		Param0=10,
+		selist = { common = [508], }
+	},
+	{
+		Param0=50, // ‚Æ‚Ç‚ß
+		selist = { common = [509], }
+	}
+]
+
+se["Mv_Skill_C0202A_FU"] <- 
+[
+	{
+		Param0=10,
+		selist = { common = [506], }
+	},
+	{
+		Param0=50,
+		selist = { common = [509], }
+	}
+]
+
+se["Mv_Skill_C0202B_FU"] <- 
+[
+	{
+		Param0=10,
+		selist = { common = [507], }
+	},
+	{
+		Param0=50, // ‚Æ‚Ç‚ß
+		selist = { common = [509], }
+	}
+]
+
+se["Mv_Skill_C0202C_FU"] <- 
+[
+	{
+		Param0=10,
+		selist = { common = [508], }
+	},
+	{
+		Param0=50, // ‚Æ‚Ç‚ß
+		selist = { common = [509], }
+	}
+]
+
+se["Mv_Skill_J0202A_FU"] <- 
+[
+	{
+		Param0=10,
+		selist = { common = [506], }
+	},
+	{
+		Param0=50,
+		selist = { common = [509], }
+	}
+]
+
+se["Mv_Skill_J0202B_FU"] <- 
+[
+	{
+		Param0=10,
+		selist = { common = [507], }
+	},
+	{
+		Param0=50, // ‚Æ‚Ç‚ß
+		selist = { common = [509], }
+	}
+]
+
+se["Mv_Skill_J0202C_FU"] <- 
+[
+	{
+		Param0=10,
+		selist = { common = [508], }
+	},
+	{
+		Param0=50, // ‚Æ‚Ç‚ß
+		selist = { common = [509], }
+	}
+]
+
+se["Mv_Skill_0202FinEX_Init"] <- 
+{
+	selist = { common = [509], }
+}
+
+//‚h‚v
+se["Mv_Skill_41236SP_Init"] <- {
+	selist = { common = [516], }
+};
+
+se["Mv_Skill_41236SP_FU"] <- [
+	{
+		Param0=5,
+		average = 0,
+		selist = { common = [516], }
+	}
+];
+
+se["Mv_Atk_AirAandB_FU"] <- 
+{
+	Param0=10,
+	selist = { common = [457], }
+};
+
+se["Mv_Atk_CroAandB_FU"] <- 
+{
+	Param0=10,
+	selist = { common = [314], }
+};
+
+se["IWEUŒ‚"] <- {
+	selist = { common = [408], }
+};

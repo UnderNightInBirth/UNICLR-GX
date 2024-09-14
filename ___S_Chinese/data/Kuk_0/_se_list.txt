@@ -1,0 +1,506 @@
+print("\n>>_se_list");
+
+__dofile__("./script/btl_SEDefine.txt"); //ＳＥ定数
+
+local path = "./se/normal_se/"; // ファイルパス、登録しやすいように
+local btlpath = "./se/battle_se/";
+local chrpath = btlpath + "Enk/";
+local EXchrpath = btlpath + "EXEnk/";
+
+SeList_Table <-
+{
+	Status = [],
+};
+SeList_Table.Status.resize(700); // てきとう
+local st = SeList_Table.Status; // 登録しやすいように
+
+// st[5] = { file=btlpath+"SE_Bomb", type=1, category=-1, }; //IWとどめ
+// st[6] = { file=btlpath+"SE_BigBomb", type=1, category=-1, }; //IW とどめヒット
+
+// st[50] = { file=path+"SE073_GroundBreak", type=1, category=-1, }; //IWX 吸収
+// st[51] = { file=btlpath+"SE_BigBomb", type=1, category=-1, }; //IWX 大鎌の一閃
+// st[52] = { file=btlpath+"SE_EarthQuake", type=1, category=-1, }; //IWX地震
+
+// st[53] = { file=btlpath+"SE_ChargeUpEXLoop", type=1, category=-1, }; //IWX力タメループ
+// //st[54] = { file=btlpath+"SE_DrainPowerLoop", type=1, category=-1, }; //IWXすいこみループ
+// st[54] = { file=btlpath+"SE_Drain", type=1, category=-1, }; //IWXすいこみループ
+
+// st[55] = { file=btlpath+"SE_ChargeUpEXEndEcho", type=1, category=-1, }; //IWX力タメループ抜け
+// //st[56] = { file=btlpath+"SE_DrainPowerEndEcho", type=1, category=-1, }; //IWXすいこみループ抜け
+// st[56] = { file=btlpath+"SE_Drain", type=1, category=-1, }; //IWXすいこみループ抜け
+
+// st[57] = { file=path+"SE060_BoundMetal", type=1, category=-1, }; //IWXどっこいしょもつとこ
+
+st[38] = { file=btlpath+"SE_SpecialShotWeb", type=1, category=-1, }; // IWE相手すいよせ
+
+st[40] = { file=btlpath+"SE_ChargeUp", type=1, category=-1, }; // IWEため開始
+st[41] = { file=btlpath+"SE_SpecialTempest", type=1, category=-1, }; // IWE地震
+st[42] = { file=btlpath+"SE_GlassBreak", type=1, category=-1, }; // IWEガラス割れ&装備割れ
+st[43] = { file=btlpath+"SE_EarthQuake", type=1, category=-1, }; // IWEアップゴゴゴ
+st[44] = { file=btlpath+"SE_SwingGlass", type=1, category=-1, }; // IWEガラス割れはじめ
+st[45] = { file=btlpath+"SE_SpecialBomb", type=1, category=-1, }; // IWE爆発２
+st[50] = { file=btlpath+"SE_BombInsulator", type=1, category=-1, }; // IWEパンチ爆発開始
+st[51] = { file=btlpath+"SE_BombTheEarth", type=1, category=-1, }; // IWEとどめ爆発
+
+st[52] = { file=btlpath+"SE_ShotWindH", type=1, category=-1, }; // IW集中
+st[54] = { file=btlpath+"SE_SpecialBomb", type=1, category=-1, }; // IWとどめ
+st[55] = { file=btlpath+"SE_SpecialBomb", type=1, category=-1, }; // IW飛び道具発射
+
+st[60] = { file=btlpath+"SE_BombInsulator", type=1, category=-1, }; // どっしん系
+st[63] = { file=btlpath+"SE_BloodCongeals", type=1, category=-1, }; // エネルギー漏れ
+st[64] = { file=btlpath+"SE_BloodSplashB", type=1, category=-1, }; // エネルギー漏れ
+st[65] = { file=btlpath+"SE_Hari_Vanish", type=1, category=-1, }; // 着物脱ぐ
+
+st[67] = { file=btlpath+"SE_SpecialBomb", type=1, category=-1, }; // 236EXどん
+
+
+ 
+
+st[100] = { file=chrpath+"Enk05_2000", type=0, category=1, }; //その力、試させてもらおう
+st[101] = { file=chrpath+"Enk05_2001", type=0, category=1, }; //…参る！
+st[102] = { file=chrpath+"Enk05_2002", type=0, category=1, }; //…風が、強いな
+st[103] = { file=chrpath+"Enk05_2003", type=0, category=1, }; //さぁ、仕合おうぞ
+st[104] = { file=chrpath+"Enk05_2004", type=0, category=1, }; //覚悟はできたか？
+
+st[110] = { file=chrpath+"Enk05_2005", type=0, category=1, }; //待ち焦がれたぞ、この時を、！
+st[111] = { file=chrpath+"Enk05_2006", type=0, category=1, }; //時は満ちた
+
+st[115] = { file=chrpath+"Enk05_2007", type=0, category=1, }; //強欲のものよ、いざ勝負っ！（対ゴルドー）
+st[116] = { file=chrpath+"Enk05_2008", type=0, category=1, }; //まばゆき闇よ、いざ勝負っ！（対ヒルダ）
+st[117] = { file=chrpath+"Enk05_2009", type=0, category=1, }; //混沌のものよ、いざ勝負っ！（対ケイアス）
+
+st[120] = { file=chrpath+"Enk05_2011", type=0, category=1, }; //お前と闘えたこと、嬉しく思うぞ
+st[121] = { file=chrpath+"Enk05_2012", type=0, category=1, }; //魂の語り合い、楽しかったぞ"
+st[122] = { file=chrpath+"Enk05_2013", type=0, category=1, }; //こぶしに力が満ちる。感謝するぞ
+
+st[123] = { file=chrpath+"Enk05_2014", type=0, category=1, }; //この仕合、紙一重であった…
+st[124] = { file=chrpath+"Enk05_2015", type=0, category=1, }; //まだまだ未熟…出直すがいい。
+
+// st[130] = { file=chrpath+"Enk05_2019", type=0, category=1, }; //この力、少々扱いに困っていてな
+st[131] = { file=chrpath+"Enk05_2020", type=0, category=1, }; //まだまだ未熟よ
+st[132] = { file=chrpath+"Enk05_2021", type=0, category=1, }; //まるで戯びだな
+st[133] = { file=chrpath+"Enk05_2022", type=0, category=1, }; //その程度か？
+st[134] = { file=chrpath+"Enk05_2023", type=0, category=1, }; //もっと本気を見せてみろ
+// st[135] = { file=chrpath+"Enk05_2024", type=0, category=1, }; //力が…あふれているな…
+
+st[140] = { file=chrpath+"Enk05_2025", type=0, category=1, }; //うぬ…
+// st[141] = { file=chrpath+"Enk05_2026", type=0, category=1, }; //やむをえぬ…
+// st[142] = { file=chrpath+"Enk05_2027", type=0, category=1, }; //ぬかった…
+// st[143] = { file=chrpath+"Enk05_2028", type=0, category=1, }; //な、なんと…
+st[144] = { file=chrpath+"Enk05_2029", type=0, category=1, }; //不覚……
+
+// st[150] = { file=chrpath+"Enk05_2101", type=0, category=1, }; //ふっ
+st[151] = { file=chrpath+"Enk05_2102", type=0, category=1, }; //しっ
+st[152] = { file=chrpath+"Enk05_2103", type=0, category=1, }; //はっ
+st[153] = { file=chrpath+"Enk05_2104", type=0, category=1, }; //やっ
+// st[154] = { file=chrpath+"Enk05_2105_a", type=0, category=1, }; //せっ
+st[155] = { file=chrpath+"Enk05_2106_a", type=0, category=1, }; //しゅっ
+st[156] = { file=chrpath+"Enk05_2107", type=0, category=1, }; //たっ
+
+st[160] = { file=chrpath+"Enk05_2108", type=0, category=1, }; //せあっ
+st[161] = { file=chrpath+"Enk05_2109_a", type=0, category=1, }; //しゅっ
+// st[162] = { file=chrpath+"Enk05_2110", type=0, category=1, }; //たぁっ
+// st[163] = { file=chrpath+"Enk05_2111", type=0, category=1, }; //はあっ
+st[164] = { file=chrpath+"Enk05_2112_a", type=0, category=1, }; //ふっ
+st[165] = { file=chrpath+"Enk05_2113", type=0, category=1, }; //は！
+st[166] = { file=chrpath+"Enk05_2114", type=0, category=1, }; //せいっ
+// st[167] = { file=chrpath+"Enk05_2115_a", type=0, category=1, }; //とぁっ
+
+st[170] = { file=chrpath+"Enk05_2116", type=0, category=1, }; //でやっ！
+st[171] = { file=chrpath+"Enk05_2117", type=0, category=1, }; //はあっ！
+st[172] = { file=chrpath+"Enk05_2118", type=0, category=1, }; //ふんっ！
+// st[173] = { file=chrpath+"Enk05_2119_a", type=0, category=1, }; //ぬぅん！
+
+st[174] = { file=chrpath+"Enk05_2120_a", type=0, category=1, }; //でいあ！
+
+// st[175] = { file=chrpath+"Enk05_2121", type=0, category=1, }; //たあっ！
+// st[176] = { file=chrpath+"Enk05_2122", type=0, category=1, }; //はっ！
+st[177] = { file=chrpath+"Enk05_2123_a", type=0, category=1, }; //やっ！
+// st[178] = { file=chrpath+"Enk05_2124", type=0, category=1, }; //せいっ！
+st[179] = { file=chrpath+"Enk05_2125_a", type=0, category=1, }; //とあっ！
+
+st[180] = { file=chrpath+"Enk05_2126", type=0, category=1, }; //覚悟！
+// st[181] = { file=chrpath+"Enk05_2127", type=0, category=1, }; //御免！
+st[182] = { file=chrpath+"Enk05_2128", type=0, category=1, }; //もらった！
+st[183] = { file=chrpath+"Enk05_2129", type=0, category=1, }; //ここだ！
+st[184] = { file=chrpath+"Enk05_2130", type=0, category=1, }; //そこだ！
+st[185] = { file=chrpath+"Enk05_2131", type=0, category=1, }; //ふきとべ！
+st[186] = { file=chrpath+"Enk05_2132", type=0, category=1, }; //どりゃっ！
+// st[187] = { file=chrpath+"Enk05_2133", type=0, category=1, }; //ふんっ！
+
+// st[188] = { file=chrpath+"Enk05_2134", type=0, category=1, }; //みえまい！
+st[189] = { file=chrpath+"Enk05_2135", type=0, category=1, }; //まだまだ！
+st[190] = { file=chrpath+"Enk05_2136", type=0, category=1, }; //スキあり！
+st[191] = { file=chrpath+"Enk05_2137", type=0, category=1, }; //あまい！
+
+st[192] = { file=chrpath+"Enk05_2138", type=0, category=1, }; //とぁっー！
+// st[193] = { file=chrpath+"Enk05_2139", type=0, category=1, }; //ちかつしょう！
+// st[194] = { file=chrpath+"Enk05_2140", type=0, category=1, }; //せんきゅうたい！
+// st[195] = { file=chrpath+"Enk05_2141", type=0, category=1, }; //ふうれつしょう！
+// st[196] = { file=chrpath+"Enk05_2142", type=0, category=1, }; //こっちだ！
+st[197] = { file=chrpath+"Enk05_2143", type=0, category=1, }; //うけよっ！ 236C
+// st[198] = { file=chrpath+"Enk05_2144", type=0, category=1, }; //おもしろい！
+// st[199] = { file=chrpath+"Enk05_2145", type=0, category=1, }; //ぶるあぁっ！
+st[200] = { file=chrpath+"Enk05_2146", type=0, category=1, }; //でやあっ！ 236C
+st[201] = { file=chrpath+"Enk05_2147", type=0, category=1, }; //つらぬけっ！
+
+st[202] = { file=chrpath+"Enk05_2148", type=0, category=1, }; //うけよっ！
+// st[203] = { file=chrpath+"Enk05_2149", type=0, category=1, }; //はあぁああああああ！
+
+// st[204] = { file=chrpath+"Enk05_2116_a", type=0, category=1, }; //でやっ！
+
+st[205] = { file=chrpath+"Enk05_2118_a", type=0, category=1, }; //ふんっ！
+// st[206] = { file=chrpath+"Enk05_2125_a", type=0, category=1, }; //とあっ！
+st[207] = { file=chrpath+"Enk05_2121_a", type=0, category=1, }; //たあっ！
+
+
+st[210] = { file=chrpath+"Enk05_2201", type=0, category=1, }; //ふんっ
+// st[211] = { file=chrpath+"Enk05_2202", type=0, category=1, }; //せいっ！
+st[212] = { file=chrpath+"Enk05_2203", type=0, category=1, }; //むんっ！
+st[213] = { file=chrpath+"Enk05_2204", type=0, category=1, }; //はぁっ！ 22AorBorC
+st[214] = { file=chrpath+"Enk05_2205", type=0, category=1, }; //くらえっ！
+
+// st[220] = { file=chrpath+"Enk05_2206", type=0, category=1, }; //取った
+st[221] = { file=chrpath+"Enk05_2207", type=0, category=1, }; //すきあり！
+// st[223] = { file=chrpath+"Enk05_2208", type=0, category=1, }; //掴んだ！
+// st[224] = { file=chrpath+"Enk05_2209", type=0, category=1, }; //はぁっ！
+
+// st[230] = { file=chrpath+"Enk05_2210", type=0, category=1, }; //なんとっ
+st[231] = { file=chrpath+"Enk05_2211", type=0, category=1, }; //うむっ
+st[232] = { file=chrpath+"Enk05_2212", type=0, category=1, }; //不覚っ！
+// st[233] = { file=chrpath+"Enk05_2213", type=0, category=1, }; //まさかっ！？
+// st[234] = { file=chrpath+"Enk05_2214", type=0, category=1, }; //むっ！？
+
+st[235] = { file=chrpath+"Enk05_2215", type=0, category=1 }; //効かぬっ！
+st[236] = { file=chrpath+"Enk05_2216", type=0, category=1, prio=Def_SEP_ThrowTech, check=1 }; //あまいっ！
+// st[237] = { file=chrpath+"Enk05_2217", type=0, category=1, prio=Def_SEP_ThrowTech, check=1 }; //はぁっ！
+// st[238] = { file=chrpath+"Enk05_2218", type=0, category=1, prio=Def_SEP_ThrowTech, check=1 }; //乗らぬっ！
+st[239] = { file=chrpath+"Enk05_2219", type=0, category=1 }; //みえた
+// st[240] = { file=chrpath+"Enk05_2220", type=0, category=1, prio=Def_SEP_ThrowTech, check=1 }; //掴めまい
+st[241] = { file=chrpath+"Enk05_2221", type=0, category=1, prio=Def_SEP_ThrowTech, check=1 }; //させぬ！
+
+st[250] = { file=chrpath+"Enk05_2301", type=0, category=1, prio=Def_SEP_Furimuki }; //むっ
+st[251] = { file=chrpath+"Enk05_2302", type=0, category=1, prio=Def_SEP_Furimuki }; //ふっ
+st[252] = { file=chrpath+"Enk05_2303", type=0, category=1, prio=Def_SEP_Furimuki }; //そこか
+
+st[260] = { file=chrpath+"Enk05_2304", type=0, category=1, }; //ふっ
+st[261] = { file=chrpath+"Enk05_2305", type=0, category=1, }; //はっ
+// st[262] = { file=chrpath+"Enk05_2306", type=0, category=1, }; //とあっ
+st[263] = { file=chrpath+"Enk05_2307", type=0, category=1, }; //とっ
+
+// st[270] = { file=chrpath+"Enk05_2308", type=0, category=1, }; //ゆくぞっ
+// st[271] = { file=chrpath+"Enk05_2309", type=0, category=1, }; //そこだっ
+// st[272] = { file=chrpath+"Enk05_2310", type=0, category=1, }; //おそいっ
+st[273] = { file=chrpath+"Enk05_2311", type=0, category=1, }; //ふんっ
+st[274] = { file=chrpath+"Enk05_2312", type=0, category=1, }; //（距離を）詰めるっ
+st[275] = { file=chrpath+"Enk05_2313", type=0, category=1, }; //逃さぬ！
+
+
+// バックステップ（相手から距離を置く、逃げる、様子見的な動作です）(0.5秒程度)
+// st[280] = { file=chrpath+"Enk05_2320", type=0, category=1, }; //ふっ
+// st[281] = { file=chrpath+"Enk05_2321", type=0, category=1, }; //さがるっ
+st[282] = { file=chrpath+"Enk05_2322", type=0, category=1, }; //はっ
+// st[283] = { file=chrpath+"Enk05_2323", type=0, category=1, }; //むんっ
+st[284] = { file=chrpath+"Enk05_2334", type=0, category=1, }; //とあっ
+
+
+// 小攻撃ガード (0.5秒～1.0秒程度)
+// st[290] = { file=chrpath+"Enk05_2401", type=0, category=1, prio=Def_SEP_GuardLv1, check=1, }; //ふっ
+// st[291] = { file=chrpath+"Enk05_2402", type=0, category=1, prio=Def_SEP_GuardLv1, check=1, }; //むっ
+st[292] = { file=chrpath+"Enk05_2403", type=0, category=1, prio=Def_SEP_GuardLv1, check=1, }; //ふん
+st[293] = { file=chrpath+"Enk05_2404", type=0, category=1, prio=Def_SEP_GuardLv1, check=1, }; //はっ
+st[294] = { file=chrpath+"Enk05_2405", type=0, category=1, prio=Def_SEP_GuardLv1, check=1, }; //くっ
+
+// 中攻撃ガード(0.5秒～1.0秒程度)
+st[300] = { file=chrpath+"Enk05_2406", type=0, category=1, prio=Def_SEP_GuardLv2, check=1, }; //きかぬ
+st[301] = { file=chrpath+"Enk05_2407", type=0, category=1, prio=Def_SEP_GuardLv2, check=1, }; //ふんっ
+st[302] = { file=chrpath+"Enk05_2408", type=0, category=1, prio=Def_SEP_GuardLv2, check=1, }; //ぬんっ
+// st[303] = { file=chrpath+"Enk05_2409", type=0, category=1, prio=Def_SEP_GuardLv2, check=1, }; //ぐっ
+// st[304] = { file=chrpath+"Enk05_2410", type=0, category=1, prio=Def_SEP_GuardLv2, check=1, }; //ふむ
+
+// 大攻撃ガード(0.5秒～1.0秒程度) 
+// st[310] = { file=chrpath+"Enk05_2411", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; //ぐうっ
+// st[311] = { file=chrpath+"Enk05_2412", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; //ぬうっ
+st[312] = { file=chrpath+"Enk05_2413", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; //まだまだ！
+st[313] = { file=chrpath+"Enk05_2414", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; //これしき！
+st[314] = { file=chrpath+"Enk05_2415", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; //やるな！
+st[315] = { file=chrpath+"Enk05_2416", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; //おもい！
+
+// ジャストガード（余裕のあるガード、丸わかりだぜその攻撃、というガード）(0.5秒～1.0秒程度)
+st[320] = { file=chrpath+"Enk05_2417", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //みえた！
+// st[321] = { file=chrpath+"Enk05_2418", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //足りぬ！
+st[322] = { file=chrpath+"Enk05_2419", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //効かぬ！
+st[323] = { file=chrpath+"Enk05_2420", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //ゆるいぞ！
+// st[324] = { file=chrpath+"Enk05_2421", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //はあっ！
+
+
+// ガード失敗 (0.5秒～1.0秒程度)
+st[330] = { file=chrpath+"Enk05_2422", type=0, category=1, prio=Def_SEP_GuardMiss, check=1, }; //ぐはぁ！
+// st[331] = { file=chrpath+"Enk05_2423", type=0, category=1, prio=Def_SEP_GuardMiss, check=1, }; //不覚っ！
+st[332] = { file=chrpath+"Enk05_2424", type=0, category=1, prio=Def_SEP_GuardMiss, check=1, }; //これほどかっ！
+// st[333] = { file=chrpath+"Enk05_2425", type=0, category=1, prio=Def_SEP_GuardMiss, check=1, }; //なんとっ！？
+st[334] = { file=chrpath+"Enk05_2426", type=0, category=1, prio=Def_SEP_GuardMiss, check=1, }; //何っ！？
+
+// 受け身（攻撃で吹き飛ばされたあと、空中及び地上で体制を立て直す動作です）(1.0秒～1.5秒程度)
+// st[340] = { file=chrpath+"Enk05_2501", type=0, category=1, prio=Def_SEP_Recover, }; //はっ
+// st[341] = { file=chrpath+"Enk05_2502", type=0, category=1, prio=Def_SEP_Recover, }; //ふっ
+// st[342] = { file=chrpath+"Enk05_2503", type=0, category=1, prio=Def_SEP_Recover, }; //ぬんっ
+st[343] = { file=chrpath+"Enk05_2504", type=0, category=1, prio=Def_SEP_Recover, }; //とうっ
+// st[344] = { file=chrpath+"Enk05_2505", type=0, category=1, prio=Def_SEP_Recover, }; //むっ！
+// st[345] = { file=chrpath+"Enk05_2506", type=0, category=1, prio=Def_SEP_Recover, }; //ここからだ！
+st[346] = { file=chrpath+"Enk05_2507", type=0, category=1, prio=Def_SEP_Recover, }; //まだまだよ！
+// st[347] = { file=chrpath+"Enk05_2508", type=0, category=1, prio=Def_SEP_Recover, }; //みごとっ！
+// st[348] = { file=chrpath+"Enk05_2509", type=0, category=1, prio=Def_SEP_Recover, }; //やらせん！
+st[349] = { file=chrpath+"Enk05_2510", type=0, category=1, prio=Def_SEP_Recover, }; //やるな！
+
+// シールド発動（攻撃の受け止めが可能なシールドを軽く展開し、防御を固める動作）(0.5～1.5)
+// st[350] = { file=chrpath+"Enk05_2511", type=0, category=1, }; //はっ
+st[351] = { file=chrpath+"Enk05_2512", type=0, category=1, }; //来いっ
+st[352] = { file=chrpath+"Enk05_2513", type=0, category=1, }; //ここだ
+// st[353] = { file=chrpath+"Enk05_2514", type=0, category=1, }; //勝負っ
+// st[354] = { file=chrpath+"Enk05_2515", type=0, category=1, }; //みえる！
+st[355] = { file=chrpath+"Enk05_2516", type=0, category=1, }; //無駄だ
+
+
+// シールド受け止め（シールドで攻撃を受け止めるのに成功した瞬間です）(0.5～1.5)
+// st[360] = { file=chrpath+"Enk05_2520", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //はっ！
+st[361] = { file=chrpath+"Enk05_2521", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //ぬるいっ！
+// st[362] = { file=chrpath+"Enk05_2522", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //ふっ！
+// st[363] = { file=chrpath+"Enk05_2523", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //ぬおぉ！
+// st[364] = { file=chrpath+"Enk05_2524", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //遅いっ
+st[365] = { file=chrpath+"Enk05_2525", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //足りぬっ
+st[366] = { file=chrpath+"Enk05_2526", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //きかぬっ！
+st[367] = { file=chrpath+"Enk05_2527", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //涼風よ…
+
+// ダメージ（小）(0.5秒～1.0秒程度)
+// st[370] = { file=chrpath+"Enk05_2601", type=0, category=1, prio=Def_SEP_DamageLv1 }; //ぬっ
+st[371] = { file=chrpath+"Enk05_2602", type=0, category=1, prio=Def_SEP_DamageLv1 }; //うっ
+st[372] = { file=chrpath+"Enk05_2603", type=0, category=1, prio=Def_SEP_DamageLv1 }; //ぐっ
+st[373] = { file=chrpath+"Enk05_2604", type=0, category=1, prio=Def_SEP_DamageLv1 }; //くっ
+
+// ダメージ（中）(0.5秒～1.0秒程度)
+st[380] = { file=chrpath+"Enk05_2605", type=0, category=1, prio=Def_SEP_DamageLv2, check=1 }; //おうっ
+// st[381] = { file=chrpath+"Enk05_2606", type=0, category=1, prio=Def_SEP_DamageLv2, check=1 }; //ぐぬっ
+st[382] = { file=chrpath+"Enk05_2607", type=0, category=1, prio=Def_SEP_DamageLv2, check=1 }; //がっ
+st[383] = { file=chrpath+"Enk05_2608", type=0, category=1, prio=Def_SEP_DamageLv2, check=1 }; //くおっ
+st[384] = { file=chrpath+"Enk05_2609", type=0, category=1, prio=Def_SEP_DamageLv2, check=1 }; //ぬおっ
+// st[385] = { file=chrpath+"Enk05_2610", type=0, category=1, prio=Def_SEP_DamageLv2, check=1 }; //うべっ
+// st[386] = { file=chrpath+"Enk05_2611", type=0, category=1, prio=Def_SEP_DamageLv2, check=1 }; //ぬうっ
+// st[387] = { file=chrpath+"Enk05_2612", type=0, category=1, prio=Def_SEP_DamageLv2, check=1 }; //むうっ
+
+// ダメージ（大）(0.5秒～1.0秒程度)
+st[390] = { file=chrpath+"Enk05_2613", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; //がぁ！
+st[391] = { file=chrpath+"Enk05_2614", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; //かはっ！
+st[392] = { file=chrpath+"Enk05_2615", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; //不覚っ！
+st[393] = { file=chrpath+"Enk05_2616", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; //ぐわぁ！
+// st[394] = { file=chrpath+"Enk05_2617", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; //ぐふっ！
+st[395] = { file=chrpath+"Enk05_2618", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; //なんとっ！
+
+// ダウンを奪われる（１回目の敗北、ポイントを摂られる。絶叫ではないが、一端事切れる感じ）
+// (1秒～2秒程度)
+st[400] = { file=chrpath+"Enk05_2619", type=0, category=1, prio=Def_SEP_KO }; //ぬおぉおおっ！
+st[401] = { file=chrpath+"Enk05_2620", type=0, category=1, prio=Def_SEP_KO }; //効いた…ぞ…
+st[402] = { file=chrpath+"Enk05_2621", type=0, category=1, prio=Def_SEP_KO }; //がはぁっ！
+
+
+// 敗北（１回目の敗北後、起き上がってからのセリフ）(1秒程度)
+// st[410] = { file=chrpath+"Enk05_2622", type=0, category=1, prio=Def_SEP_KO }; //今のは…効いたぞっ
+// st[411] = { file=chrpath+"Enk05_2623", type=0, category=1, prio=Def_SEP_KO }; //お、おもしろい
+// st[412] = { file=chrpath+"Enk05_2624", type=0, category=1, prio=Def_SEP_KO }; //くぅぅう…(悔しみを漏らすかんじ)
+st[413] = { file=chrpath+"Enk05_2625", type=0, category=1, prio=Def_SEP_KO }; //これほどのものとは…
+st[414] = { file=chrpath+"Enk05_2626", type=0, category=1, prio=Def_SEP_KO }; //貴様、つよいな…
+st[415] = { file=chrpath+"Enk05_2627", type=0, category=1, prio=Def_SEP_KO }; //不覚っ…！
+// st[416] = { file=chrpath+"Enk05_2628", type=0, category=1, prio=Def_SEP_KO }; //なかなか…（やるな）
+
+// ノックアウト（２回目の敗北 その試合における敗北の決定 断末魔的に）
+st[420] = { file=chrpath+"Enk05_2629", type=0, category=1, prio=Def_SEP_KO }; //ぐわぁあああぁぁぁーーーーっ
+st[421] = { file=chrpath+"Enk05_2630", type=0, category=1, prio=Def_SEP_KO }; //ぬおぉおおおおおおーーーっ！
+st[422] = { file=chrpath+"Enk05_2631", type=0, category=1, prio=Def_SEP_KO }; //みごと…だ
+// st[423] = { file=chrpath+"Enk05_2632", type=0, category=1, prio=Def_SEP_KO }; //お前の勝ちだ…
+// st[424] = { file=chrpath+"Enk05_2633", type=0, category=1, prio=Def_SEP_KO }; //いまだ師の道は遠い…
+// st[425] = { file=chrpath+"Enk05_2634", type=0, category=1, prio=Def_SEP_KO }; //ここまでか…
+
+
+// 起きあがり（通常時ちょっと転んだが、まだまだやれるぜ、というものです）(1秒程度)
+st[430] = { file=chrpath+"Enk05_2640", type=0, category=1, }; //はっ
+st[431] = { file=chrpath+"Enk05_2641", type=0, category=1, }; //ふっ
+st[432] = { file=chrpath+"Enk05_2642", type=0, category=1, }; //この程度っ
+st[433] = { file=chrpath+"Enk05_2643", type=0, category=1, }; //効かぬっ
+// st[434] = { file=chrpath+"Enk05_2644", type=0, category=1, }; //まだまだ
+st[435] = { file=chrpath+"Enk05_2645", type=0, category=1, }; //おもしろい
+
+// 起きあがり（瀕死時やや劣勢で負けそう、というニュアンスをお願いします）(1秒程度)
+// st[440] = { file=chrpath+"Enk05_2650", type=0, category=1, }; //くっ…
+st[441] = { file=chrpath+"Enk05_2651", type=0, category=1, }; //まだだ…
+st[442] = { file=chrpath+"Enk05_2652", type=0, category=1, }; //これしきで…
+// st[443] = { file=chrpath+"Enk05_2653", type=0, category=1, }; //終わらぬ…
+st[444] = { file=chrpath+"Enk05_2654", type=0, category=1, }; //これほどとは！
+
+// ヴェールオフ（制限を解き放ち、最大の力を全力解放する動作です）(1.2秒程度)
+// st[450] = { file=chrpath+"Enk05_2701", type=0, category=1, }; //くおぉおおお！
+// st[451] = { file=chrpath+"Enk05_2702", type=0, category=1, }; //ふきとべっ！
+// st[452] = { file=chrpath+"Enk05_2703", type=0, category=1, }; //はぁっ！ J236C
+st[453] = { file=chrpath+"Enk05_2704", type=0, category=1, }; //ゆくぞっ！
+st[454] = { file=chrpath+"Enk05_2705", type=0, category=1, }; //こざかしいっ！
+
+st[455] = { file=chrpath+"Enk05_2706", type=0, category=1, }; //見切った！
+st[456] = { file=chrpath+"Enk05_2707", type=0, category=1, }; //たぎるぞっ！
+// st[457] = { file=chrpath+"Enk05_2708", type=0, category=1, }; //見せてやるぞ！
+// st[458] = { file=chrpath+"Enk05_2709", type=0, category=1, }; //ついてこれるか！
+
+// チェインシフト（攻撃の継続のために一瞬の気合いを入れる動作です）(1.0秒程度)
+st[460] = { file=chrpath+"Enk05_2710", type=0, category=1, }; //ここだっ！
+st[461] = { file=chrpath+"Enk05_2711", type=0, category=1, }; //見切った！
+st[462] = { file=chrpath+"Enk05_2712", type=0, category=1, }; //まだだ！
+// st[463] = { file=chrpath+"Enk05_2713", type=0, category=1, }; //つぎだっ！
+// st[464] = { file=chrpath+"Enk05_2714", type=0, category=1, }; //かっ！
+// st[465] = { file=chrpath+"Enk05_2715", type=0, category=1, }; //ふっ！
+st[466] = { file=chrpath+"Enk05_2716", type=0, category=1, }; //つづくぞっ！
+st[467] = { file=chrpath+"Enk05_2717", type=0, category=1, }; //そこかっ！
+st[468] = { file=chrpath+"Enk05_2718", type=0, category=1, }; //見せてやるぞ！
+
+// コンセントレーション（精神的な力を時間をかけ高める動作です。パワーを溜める）(1.2秒程度)
+st[470] = { file=chrpath+"Enk05_2719", type=0, category=1, }; //こぉおぉぉぉ……
+st[471] = { file=chrpath+"Enk05_2720", type=0, category=1, }; //はああぁぁ……
+// st[472] = { file=chrpath+"Enk05_2721", type=0, category=1, }; //高まれ…
+// st[473] = { file=chrpath+"Enk05_2722", type=0, category=1, }; //満ちろ！
+st[474] = { file=chrpath+"Enk05_2723", type=0, category=1, }; //いいぞっ
+st[475] = { file=chrpath+"Enk05_2724", type=0, category=1, }; //ぬおぉぉぉ……
+
+// バースト（相手の一方的な攻撃に対し、力任せに振り払う動作。いい加減にしろ！的な）(1.2秒程度)
+// st[480] = { file=chrpath+"Enk05_2726", type=0, category=1, }; //効かぬっ！
+// st[481] = { file=chrpath+"Enk05_2727", type=0, category=1, }; //ここまでだ！
+// st[482] = { file=chrpath+"Enk05_2728", type=0, category=1, }; //こちらの番よ！
+// st[483] = { file=chrpath+"Enk05_2729", type=0, category=1, }; //小賢しい！
+// st[484] = { file=chrpath+"Enk05_2730", type=0, category=1, }; //散れっ！
+// st[485] = { file=chrpath+"Enk05_2731", type=0, category=1, }; //はぁああああ！
+
+// 必殺技１【三戒衝 壱之戒 破】：腰の入った正拳突きからはじまる三段攻撃の一段目(1.0秒程度)
+// st[490] = { file=chrpath+"Enk05_3001", type=0, category=1, }; //せいっー！
+// st[491] = { file=chrpath+"Enk05_3002", type=0, category=1, }; //でやぁっ！
+// st[492] = { file=chrpath+"Enk05_3003", type=0, category=1, }; //やぶれよっ！
+// st[493] = { file=chrpath+"Enk05_3004", type=0, category=1, }; //うけよっ！
+st[494] = { file=chrpath+"Enk05_3005", type=0, category=1, }; //破っ！
+
+// 必殺技２【弐之戒 砕】：必殺技1から派生し、反対のこぶしから正拳突きを繰り出す(発動0.5秒)
+// st[500] = { file=chrpath+"Enk05_3101", type=0, category=1, }; //はぁっ！
+// st[501] = { file=chrpath+"Enk05_3102", type=0, category=1, }; //とぅっ！
+// st[502] = { file=chrpath+"Enk05_3103", type=0, category=1, }; //くだけよっ！
+// st[503] = { file=chrpath+"Enk05_3104", type=0, category=1, }; //たぁっ！
+st[504] = { file=chrpath+"Enk05_3105", type=0, category=1, }; //ふんっ！
+// st[505] = { file=chrpath+"Enk05_3106", type=0, category=1, }; //せいっ！
+st[506] = { file=chrpath+"Enk05_3107", type=0, category=1, }; //砕っ！
+
+// 必殺技３【参之戒 穿】：必殺技2から派生し、タックル→衝打を行う(派生2:発動1.0秒)
+// st[510] = { file=chrpath+"Enk05_3201", type=0, category=1, }; //はぁあああ！
+st[511] = { file=chrpath+"Enk05_3202", type=0, category=1, }; //さんかいしょう！
+// st[512] = { file=chrpath+"Enk05_3203", type=0, category=1, }; //うがてよっ！
+st[513] = { file=chrpath+"Enk05_3204", type=0, category=1, }; //穿っ（せんっ）！
+
+// 必殺技４【弐之戒(裏) 断】：必殺技1から派生し体をかがめ足払いをくりだす(発動:1.0秒程度)
+// st[520] = { file=chrpath+"Enk05_3301", type=0, category=1, }; //断たれよっ！
+// st[521] = { file=chrpath+"Enk05_3302", type=0, category=1, }; //こっちだ！
+// st[522] = { file=chrpath+"Enk05_3303", type=0, category=1, }; //スキあり！
+st[523] = { file=chrpath+"Enk05_3304", type=0, category=1, }; //せいっ！
+// st[524] = { file=chrpath+"Enk05_3305", type=0, category=1, }; //みえまい！
+// st[525] = { file=chrpath+"Enk05_3306", type=0, category=1, }; //ぬぅん！
+st[526] = { file=chrpath+"Enk05_3307", type=0, category=1, }; //断っ（だんっ）！
+
+// 必殺技５【参之戒(裏) 烈】：必殺技4から派生し、屈んだ状態からアッパーを繰り出す
+st[530] = { file=chrpath+"Enk05_3401", type=0, category=1, }; //でやあぁああ！
+// st[531] = { file=chrpath+"Enk05_3402", type=0, category=1, }; //仕舞いよ！
+st[532] = { file=chrpath+"Enk05_3403", type=0, category=1, }; //終わりだっ！
+// st[533] = { file=chrpath+"Enk05_3404", type=0, category=1, }; //ふんっ！
+// st[534] = { file=chrpath+"Enk05_3405", type=0, category=1, }; //ふきとべっ！
+// st[535] = { file=chrpath+"Enk05_3406", type=0, category=1, }; //はぁっ！
+st[536] = { file=chrpath+"Enk05_3407", type=0, category=1, }; //烈（れつ）！
+
+// 必殺技６【連環腿】：ジャンプしながら二段蹴りをくりだす(発動:1.0秒程度)
+st[540] = { file=chrpath+"Enk05_3410", type=0, category=1, }; //せいっ！
+// st[541] = { file=chrpath+"Enk05_3411", type=0, category=1, }; //とあっ！
+st[542] = { file=chrpath+"Enk05_3412", type=0, category=1, }; //むだだっ！
+st[543] = { file=chrpath+"Enk05_3413", type=0, category=1, }; //もらった！
+// st[544] = { file=chrpath+"Enk05_3415", type=0, category=1, }; //れんかんたいっ！
+
+// 必殺技７：空中から急降下蹴りを繰り出す(発動:0.5秒)
+// st[550] = { file=chrpath+"Enk05_3420", type=0, category=1, }; //ゆくぞっ！
+// st[551] = { file=chrpath+"Enk05_3421", type=0, category=1, }; //うけよっ！
+// st[552] = { file=chrpath+"Enk05_3422", type=0, category=1, }; //はっ！
+st[553] = { file=chrpath+"Enk05_3423", type=0, category=1, }; //そこだっ！
+st[554] = { file=chrpath+"Enk05_3424", type=0, category=1, }; //でやぁ！
+// st[555] = { file=chrpath+"Enk05_3425", type=0, category=1, }; //ざんくうせんっ！
+
+// 必殺技８【転律之構 柔】：相手を受け流す当身
+// st[560] = { file=chrpath+"Enk05_3430", type=0, category=1, }; //ふっ！
+st[561] = { file=chrpath+"Enk05_3431", type=0, category=1, }; //とった！
+st[562] = { file=chrpath+"Enk05_3432", type=0, category=1, }; //あまい！
+st[563] = { file=chrpath+"Enk05_3433", type=0, category=1, }; //おそいっ！
+st[564] = { file=chrpath+"Enk05_3434", type=0, category=1, }; //見切った！
+// st[565] = { file=chrpath+"Enk05_3435", type=0, category=1, }; //ぬるいぞっ！
+
+
+
+// st[570] = { file=chrpath+"Enk05_3450", type=0, category=1, }; //（構え）うけよっ！
+// st[571] = { file=chrpath+"Enk05_3451", type=0, category=1, }; //（発動）らせん そうしょうだっ！
+st[572] = { file=chrpath+"Enk05_3452", type=0, category=1, }; //（構え）おおおおぉ！
+st[573] = { file=chrpath+"Enk05_3453", type=0, category=1, }; //（発動）はあああぁ！！
+// st[574] = { file=chrpath+"Enk05_3454", type=0, category=1, }; //（構え）こぉおおお！ 
+st[575] = { file=chrpath+"Enk05_3455", type=0, category=1, }; //（発動）はじけろおっ！！
+
+st[580] = { file=chrpath+"Enk05_3500", type=0, category=1, }; // 強き者。礼を尽くそう……。
+// st[581] = { file=chrpath+"Enk05_3501", type=0, category=1, }; // これが『深淵』よりの牙よ。
+// st[582] = { file=chrpath+"Enk05_3502", type=0, category=1, }; // 貴様を……穿つ！
+// st[583] = { file=chrpath+"Enk05_3503", type=0, category=1, }; // お見せしよう。『獣』たる謂われを。
+st[584] = { file=chrpath+"Enk05_3504", type=0, category=1, }; // 受けよ。我が最大の『拳』。
+// st[585] = { file=chrpath+"Enk05_3505", type=0, category=1, }; // 顕現解放……
+
+// st[590] = { file=chrpath+"Enk05_3510", type=0, category=1, }; //我が心の枷。解き砕き。力よ宿れ。この刹那に。
+// st[591] = { file=chrpath+"Enk05_3511", type=0, category=1, }; //全身なる力と全霊なる魂。一点に集い絞り射貫かん！
+// st[592] = { file=chrpath+"Enk05_3512", type=0, category=1, }; //敵を。敵を。強き。敵を！砕け。砕け。貫き。砕け！
+// st[593] = { file=chrpath+"Enk05_3513", type=0, category=1, }; //悪しき魔を狩る罪斬りの大太刀！
+
+st[600] = { file=chrpath+"Enk05_3514", type=0, cateogyr=1, }; //狩魔之紋――。烙印とし、深く刻めぇぃ！！
+st[601] = { file=chrpath+"Enk05_3514_1", type=0, cateogyr=1, }; //
+// st[602] = { file=chrpath+"Enk05_3514_2", type=0, cateogyr=1, }; //
+
+// st[610] = { file=chrpath+"Enk05_3540", type=0, category=1, }; //深く。静かに、眠るが良い。
+// st[611] = { file=chrpath+"Enk05_3541", type=0, category=1, }; //お前を乗り越え。俺はまた前に進もう
+// st[612] = { file=chrpath+"Enk05_3542", type=0, category=1, }; //風穴が空いたか。惰弱なものよ……
+// st[613] = { file=chrpath+"Enk05_3543", type=0, category=1, }; //あと幾つ。斬れば良いのだろうな
+
+// st[620] = { file=chrpath+"Enk05_3550", type=0, category=1, }; //そうこなくてはな……。
+// st[621] = { file=chrpath+"Enk05_3551", type=0, category=1, }; //あぁ、次で終わらせよう
+// st[622] = { file=chrpath+"Enk05_3552", type=0, category=1, }; //往生際の悪いものよ！
+// st[623] = { file=chrpath+"Enk05_3553", type=0, category=1, }; //まだまだ、楽しめそうだな……
+
+// st[630] = { file=chrpath+"Enk05_3701", type=0, category=1, }; //チェスト！
+st[631] = { file=chrpath+"Enk05_3702", type=0, category=1, }; //螺旋（らせん）！
+st[632] = { file=chrpath+"Enk05_3703", type=0, category=1, }; //放出！ 22C
+// st[633] = { file=chrpath+"Enk05_3704", type=0, category=1, }; //つぶす！
+// st[634] = { file=chrpath+"Enk05_3705", type=0, category=1, }; //ケェーーー！
+// st[635] = { file=chrpath+"Enk05_3706", type=0, category=1, }; //児戯にも等しい！
+// st[636] = { file=chrpath+"Enk05_3707", type=0, category=1, }; //片腹痛い！
+// st[637] = { file=chrpath+"Enk05_3708", type=0, category=1, }; //スキだらけだな。
+// st[638] = { file=chrpath+"Enk05_3709", type=0, category=1, }; //まわせ！
+// st[639] = { file=chrpath+"Enk05_3710", type=0, category=1, }; //セヤァーー！
+// st[640] = { file=chrpath+"Enk05_3711", type=0, category=1, }; //オオオオォォー！
+
+
+// st[650] = { file=chrpath+"Enk05_3801", type=0, category=1, }; //（対ハイド）小僧！
+// st[651] = { file=chrpath+"Enk05_3802", type=0, category=1, }; //（対リンネ）こむすめ！
+// st[652] = { file=chrpath+"Enk05_3803", type=0, category=1, }; //（対ワレン）おぬし！
+// st[653] = { file=chrpath+"Enk05_3804", type=0, category=1, }; //（対カーマイン）若造！
+// st[654] = { file=chrpath+"Enk05_3805", type=0, category=1, }; //（対オリエ）おんな！
+// st[655] = { file=chrpath+"Enk05_3806", type=0, category=1, }; //（対ゴルドー）強欲！
+// st[656] = { file=chrpath+"Enk05_3807", type=0, category=1, }; //（対メルカヴァ）化物！（かぶつ！）
+// st[657] = { file=chrpath+"Enk05_3808", type=0, category=1, }; //（対セト）きさま！
+// st[658] = { file=chrpath+"Enk05_3809", type=0, category=1, }; //（対ヒルダ）まばゆき闇！
+// st[659] = { file=chrpath+"Enk05_3810", type=0, category=1, }; //（対ケイアス）混沌の！
+// st[660] = { file=chrpath+"Enk05_3811", type=0, category=1, }; //（対ナナセ）むすめ！
+
+st[660] = { file=EXchrpath+"kiblast_1", type=1, category=1, };
+st[670] = { file=EXchrpath+"instant_transmission", type=1, category=1, };
+
+
+
+

@@ -1,0 +1,315 @@
+//コマンドテーブル skillは格ゲーコマンド表記
+btl_debPrint2("\n[ENK_CommandTable]");
+
+local check_236Add = function()
+{
+	local spCancelFlag = BCMDTbl.CheckCancelFlag(1);
+	if( spCancelFlag == _CancelFlag_None )
+	{
+		return 0;
+	}
+	if( spCancelFlag == _CancelFlag_Damage )
+	{
+		// 判定ツールがDAMAGEの時は空振りorガードだと出せない
+		local hs = BMvTbl.GetMvHitStatus();
+		if( !(hs.Type & _HitType_Damage) ) return 0;
+	}
+	if( spCancelFlag == _CancelFlag_Hit )
+	{
+		// 判定ツールがHITの時＆Param2&4のときは空振りだと出せない
+		// ※Param2&4じゃないときは、空振り時も出せる
+		local mvs = BMvTbl.GetMvStatus();
+		if( mvs.Param2&4 )
+		{
+			local hs = BMvTbl.GetMvHitStatus();
+			if( !(hs.Type & _HitType_Hit) ) return 0;
+		}
+	}
+	return 1;
+}
+
+local check_214Add = function()
+{
+	local mvcode = BMvTbl.GetMoveCode();
+	if( !BCMDTbl.CheckCancel( _SkillType_Special ) )
+	{
+		//必殺Cが不可能のとき
+		//成立条件は通常攻撃でParam2が1に設定してあり、攻撃Hit時のみ
+		local hs = BMvTbl.GetMvHitStatus();
+		if( (mvcode&def_MC_Atk) && hs.Type&_HitType_Hit )
+		{
+			return 1;
+		}
+	}
+	return 0;	
+}
+
+local t =
+{
+	Skill_41236SP_ABC = {},
+	Skill_41236SP = {},
+
+	Skill_236EX = {},
+	Skill_236BorC = {},
+	Skill_236A = {}
+	
+	/*
+	Skill_236_AddA = 
+	{
+		num = def_CN_Atk_AddCommand1,
+		command = ["236A","26A@D,12@","6+A"],
+		function CmdBeforeFunc() : (check_236Add)
+		{
+			if( !check_236Add() ) return 0;
+			if( Battle_Std.MoveCodeEx.CheckFlag( 1, def_MC1_ExtendAction ) ) return 0;// エクステンドで派生不可にする
+			return 1;
+		}
+		CmdCheck = 
+		{
+			SkillType = "AddCommand", MvCheck = { Only = ["Mv_Skill_236A","Mv_Skill_236B"] }
+		}
+	},
+	*/
+	
+	Skill_236_AddB = 
+	{
+		num = def_CN_Atk_AddCommand2,
+		command = ["236A","26A@D,12@","6+A","236B","236C", "26B@D,12@","26C@D,12@","6+B","6+C"],
+		function CmdBeforeFunc() : (check_236Add)
+		{
+			if( !check_236Add() ) return 0;
+			if( Battle_Std.MoveCodeEx.CheckFlag( 1, def_MC1_ExtendAction ) ) return 0;// エクステンドで派生不可にする
+			return 1;
+		}
+		CmdCheck = 
+		{
+			SkillType = "AddCommand", MvCheck = { Only = ["Mv_Skill_236A","Mv_Skill_236B"] }
+		}
+	},	
+
+	Skill_236_AddA_Add = 
+	{
+		num = def_CN_Atk_AddCommand3,
+		command = ["236A","26A@D,12@","6+A"],
+		function CmdBeforeFunc() : (check_236Add)
+		{
+			if( !check_236Add() ) return 0;
+			return 1;
+		}
+		CmdCheck = 
+		{
+			SkillType = "AddCommand", HitStatus = "Always", MvCheck = { Only = ["Mv_Skill_236_AddA"] }
+		}
+	},	
+	
+	Skill_236_AddB_Add = 
+	{
+		num = def_CN_Atk_AddCommand4,
+		command = ["236A","26A@D,12@","6+A","236B","236C", "26B@D,12@","26C@D,12@","6+B","6+C"],
+		function CmdBeforeFunc() : (check_236Add)
+		{
+			if( !check_236Add() ) return 0;
+			return 1;
+		}
+		CmdCheck = 
+		{
+			SkillType = "AddCommand", MvCheck = { Only = ["Mv_Skill_236_AddB"] }
+		}
+	},	
+	
+	Skill_623EX = {},
+	Skill_623BorC = {},
+	Skill_623A = {},
+	
+	Skill_214EX = {},
+	Skill_214BorC = {},
+	Skill_214A = {},
+	Skill_NormalAtkAdd214A = {
+		num = def_CN_Skill_AddCommand2, //この優先度が低いと、通常技でちゃうかも？
+		command = ["214A"],
+		function CmdBeforeFunc() : (check_214Add)
+		{
+			if( !check_214Add() ) return 0;
+		}
+		CmdCheck = { SkillType="AddCommand", MvCheck={ SkillFail="Mv_Skill_214A"}, CommandButton = def_PP_CBS_ButtonA, ParamFlagCheck = { Only = { [2]=1 } }, },
+		UpdateTable = { name = "Mv_Skill_214A", }
+	},
+	Skill_NormalAtkAdd214B = {
+		num = def_CN_Skill_AddCommand1, //この優先度が低いと、通常技でちゃうかも？
+		command = ["214B"],
+		function CmdBeforeFunc() : (check_214Add)
+		{
+			if( !check_214Add() ) return 0;
+		}
+		CmdCheck = { SkillType="AddCommand", MvCheck={ SkillFail="Mv_Skill_214B"}, CommandButton = def_PP_CBS_ButtonB, ParamFlagCheck = { Only = { [2]=1 } }, },
+		UpdateTable = { name = "Mv_Skill_214B", }
+	},
+	
+	Skill_0202EX = {},	
+	Skill_0202BorC = {},
+	Skill_0202A = {},
+
+	Skill_J236EX = {},
+	Skill_J236BorC = {},
+	Skill_J236A = {},
+	
+	Atk_Std6C = {},
+	// Atk_Air6C = {},
+	Atk_JC_JC = {},
+	
+	/*
+	Skill_StdC_AddC = 
+	{
+		num = def_CN_Atk_AddCommand5,
+		command = ["0+C"],
+		function CmdBeforeFunc() : (check_236Add)
+		{
+			if( !check_236Add() ) return 0;
+			return 1;
+		}
+		CmdCheck = 
+		{
+			SkillType = "Special", MvCheck = { Only = ["Mv_Atk_StdC","Mv_Skill_StdBBB_AddC"] },
+		}
+	}
+	*/
+	
+	Skill_StdCAddC_AddC = 
+	{
+		num = def_CN_Atk_AddCommand6,
+		command = ["0+C"],
+		function CmdBeforeFunc() : (check_236Add)
+		{
+			if( !check_236Add() ) return 0;
+			return 1;
+		}
+		CmdCheck = 
+		{
+			SkillType = "Special", MvCheck = { Only = ["Mv_Skill_StdC_AddC"] },
+		}
+	}
+	
+	Skill_CroC_AddC = 
+	{
+		num = def_CN_Atk_AddCommand7,
+		command = ["v+C"],
+		function CmdBeforeFunc() : (check_236Add)
+		{
+			if( !check_236Add() ) return 0;
+			return 1;
+		}
+		CmdCheck = 
+		{
+			SkillType = "Special", MvCheck = { Only = ["Mv_Atk_CroC"] },
+		}
+	}
+	
+	Skill_CroCAddC_AddC = 
+	{
+		num = def_CN_Atk_AddCommand8,
+		command = ["v+C"],
+		function CmdBeforeFunc() : (check_236Add)
+		{
+			if( !check_236Add() ) return 0;
+			return 1;
+		}
+		CmdCheck = 
+		{
+			SkillType = "Special", MvCheck = { Only = ["Mv_Skill_CroC_AddC"] },
+		}
+	}	
+	
+	/*
+	Skill_StdB_AddB = 
+	{
+		num = def_CN_Atk_AddCommand9,
+		command = ["0+B"],
+		function CmdBeforeFunc() : (check_236Add)
+		{
+			if( !check_236Add() ) return 0;
+			return 1;
+		}
+		CmdCheck = 
+		{
+			SkillType = "Special", MvCheck = { Only = ["Mv_Atk_StdB"] },
+		}
+	}
+	*/
+	
+	Skill_StdBAddB_AddB = 
+	{
+		num = def_CN_Atk_AddCommand10,
+		command = ["0+B"],
+		function CmdBeforeFunc() : (check_236Add)
+		{
+			if( !check_236Add() ) return 0;
+			return 1;
+		}
+		CmdCheck = 
+		{
+			SkillType = "Special", MvCheck = { Only = ["Mv_Skill_StdB_AddB"] },
+		}
+	}
+	
+	Skill_StdBBB_AddC = 
+	{
+		num = def_CN_Atk_AddCommand11,
+		command = ["0+C"],
+		function CmdBeforeFunc() : (check_236Add)
+		{
+			if( !check_236Add() ) return 0;
+			return 1;
+		}
+		CmdCheck = 
+		{
+			SkillType = "Special", MvCheck = { Only = ["Mv_Skill_StdBAddB_AddB"] },
+		}
+	}	
+	
+	Atk_Std4B = {},
+	Atk_Std4C = {},
+	Atk_Std3C = {},
+
+	Atk_StdBandC = 0,
+	
+	Atk_StdA = 
+	{
+		//CmdCheck = { SkillType = "Normal",	}, //連打不可にする
+	}
+
+}
+
+local ar =
+[
+	{
+		CheckMoveName="Mv_Atk_StdA",
+		UpdateMoveName="Mv_Atk_StdB",
+	},
+	{
+		CheckMoveName="Mv_Atk_StdB",
+		UpdateMoveName="Mv_Atk_StdC",
+		ResetTmplName="Atk_StdB",
+	},
+	{
+		CheckMoveName="Mv_Atk_StdC",
+		UpdateMoveName="Mv_Skill_0202A",
+		ResetTmplName="Atk_StdC",
+		CmdTmplFlags=def_CMDFlags_AnnounceSmaetSteer, //スマートステアアナウンスの追加
+	},
+	{
+		CheckMoveName="Mv_Skill_0202A",
+		UpdateMoveName="Mv_Skill_236EX",
+		ResetTmplName="Skill_0202A",
+		CmdCheck = 
+		{
+			Cost = { ComboGauge = 10000 },
+			SkillType = "ExSpecial",
+			HitStatus="Damage",
+		}	
+	},
+]
+Battle_Std.MakeStdCombo( t, ar );
+
+KUK_CommandTable <- Battle_Std.MakeCommandTable( t );
+
+

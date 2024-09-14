@@ -1,0 +1,298 @@
+
+Scene_TitleFunc <-  // 何を追加してもいいが Finalize() で関数のみになること
+{
+	IsDone = 0, // ロードできたか
+	Count = 0,
+};
+
+// はじまり
+function Scene_TitleFunc::Initialize()
+{
+	local p = Scene_TitleFunc;
+	local fnc = tPAni;
+
+	p.IsDone = 1; // とりあえず成功にしておく
+
+	local prio = 0; // 全体プライオリティ
+
+	// 枠生成
+	p.PA_Bg <- tPAni.CDat();
+	p.PA_Manager <- fnc.CAniManager(); // マネージャ生成
+
+	// PAniデータ読み込み
+	local sFilePath = "./grpdat/Title";
+	local sPcFile;
+	local ret=0;
+
+	// title00.pat読み込み
+	sPcFile = format( "%s/title06.pat", sFilePath ); // 
+	if( p.PA_Bg.Load( sPcFile ) == 0 )
+	{
+		print( format( "\n >> %s Load error.", sFilePath ) );
+		p.IsDone = 0;
+	}
+
+	if( p.IsDone != 0 )
+	{
+		// 中心表示位置設定
+		local cx = 1280/2;
+		local cy = (720/2)+16; //下に16ドットズラす
+		p.PA_Bg.SetPosition( cx, cy ); //
+	
+		local framestep = 1.0/60; // 1フレーム
+		local fWait = 0.0;
+		local fr = 0;
+	
+		// フレーム登録
+	
+		// bg00
+		fr = p.PA_Manager.Add( p.PA_Bg, "bg00" );
+
+		fWait = framestep * 96;
+		fr.AddFrame( "title00_001", fWait );
+		fr.AddFrame( "title00_002", fWait );
+		fr.AddFrame( "title00_003", fWait );
+
+		fWait = framestep * 96;
+		fr.AddTag("loop");
+		fr.AddFrame( "title01_000", fWait );
+		fr.AddFrame( "title01_001", fWait );
+		fr.AddFrame( "title01_002", fWait );
+		fr.AddFrame( "title01_003", fWait );
+		fr.AddFrame( "title01_004", fWait );
+		fr.AddFrame( "title01_005", fWait );
+		fr.AddFrame( "title01_006", fWait );
+		fr.AddFrame( "title01_007", fWait );
+		fr.AddFrame( "title01_008", fWait );
+		fr.AddFrame( "title01_009", fWait );
+		fr.AddFrame( "title01_010", fWait );
+		fr.AddFrame( "title01_011", fWait );
+		fr.AddTagJump("loop");
+
+		fr.SetPrio( prio );
+
+		// Line下
+		fr = p.PA_Manager.Add( p.PA_Bg, "line00" );
+
+		fWait = framestep * 70;
+		fr.AddTag("loop");
+		fr.AddFrame( "line_d000", fWait );
+		fr.AddFrame( "line_d001", fWait );
+		fr.AddFrame( "line_d002", fWait );
+		fr.AddFrame( "line_d003", fWait );
+		fr.AddFrame( "line_d004", fWait );
+		fr.AddFrame( "line_d005", fWait );
+		fr.AddFrame( "line_d006", fWait );
+		fr.AddFrame( "line_d007", fWait );
+		fr.AddFrame( "line_d008", fWait );
+		fr.AddFrame( "line_d009", fWait );
+		fr.AddFrame( "line_d010", fWait );
+		fr.AddFrame( "line_d011", fWait );
+		fr.AddFrame( "line_d012", fWait );
+		fr.AddFrame( "line_d013", fWait );
+		fr.AddFrame( "line_d014", fWait );
+		fr.AddFrame( "line_d015", fWait );
+		fr.AddFrame( "line_d016", fWait );
+		fr.AddFrame( "line_d017", fWait );
+		fr.AddFrame( "line_d018", fWait );
+		fr.AddFrame( "line_d019", fWait );
+		fr.AddFrame( "line_d020", fWait );
+		fr.AddFrame( "line_d021", fWait );
+		fr.AddFrame( "line_d022", fWait );
+		fr.AddFrame( "line_d023", fWait );
+		fr.AddTagJump("loop");
+
+		fr.SetPrio( prio+1 );
+
+
+		// bg01
+		fr = p.PA_Manager.Add( p.PA_Bg, "bg01" );
+
+		fWait = framestep * 48;
+		fr.AddFrame( "buil00_000", fWait );
+		fr.AddFrame( "buil00_001", fWait );
+		fr.AddFrame( "buil00_002", fWait );
+
+		fWait = framestep * 16;
+		fr.AddFrame( "buil01_000", fWait );
+		
+		fWait = framestep * 3;
+		fr.AddTag("loop");
+		fr.AddFrame( "buil01_100", fWait );
+		fr.AddFrame( "buil01_101", fWait );
+		fr.AddFrame( "buil01_102", fWait );
+		fr.AddFrame( "buil01_103", fWait );
+		fr.AddFrame( "buil01_104", fWait );
+		fr.AddFrame( "buil01_105", fWait );
+		fr.AddFrame( "buil01_106", fWait );
+	
+		fWait = framestep * 118;
+		fr.AddFrame( "buil01_000", fWait );
+
+		fWait = framestep * 3;
+		fr.AddFrame( "buil01_100", fWait );
+		fr.AddFrame( "buil01_101", fWait );
+		fr.AddFrame( "buil01_102", fWait );
+		fr.AddFrame( "buil01_103", fWait );
+		fr.AddFrame( "buil01_104", fWait );
+		fr.AddFrame( "buil01_105", fWait );
+		fr.AddFrame( "buil01_106", fWait );
+
+		fWait = framestep * 70;
+		fr.AddFrame( "buil01_000", fWait );
+
+		fWait = framestep * 3;
+		fr.AddFrame( "buil01_100", fWait );
+		fr.AddFrame( "buil01_101", fWait );
+		fr.AddFrame( "buil01_102", fWait );
+		fr.AddFrame( "buil01_103", fWait );
+		fr.AddFrame( "buil01_104", fWait );
+		fr.AddFrame( "buil01_105", fWait );
+		fr.AddFrame( "buil01_106", fWait );
+
+		fWait = framestep * 148;
+		fr.AddFrame( "buil01_000", fWait );
+
+		fWait = framestep * 3;
+		fr.AddFrame( "buil01_100", fWait );
+		fr.AddFrame( "buil01_101", fWait );
+		fr.AddFrame( "buil01_102", fWait );
+		fr.AddFrame( "buil01_103", fWait );
+		fr.AddFrame( "buil01_104", fWait );
+		fr.AddFrame( "buil01_105", fWait );
+		fr.AddFrame( "buil01_106", fWait );
+
+		fWait = framestep * 30;
+		fr.AddFrame( "buil01_000", fWait );
+
+		fWait = framestep * 3;
+		fr.AddFrame( "buil01_100", fWait );
+		fr.AddFrame( "buil01_101", fWait );
+		fr.AddFrame( "buil01_102", fWait );
+		fr.AddFrame( "buil01_103", fWait );
+		fr.AddFrame( "buil01_104", fWait );
+		fr.AddFrame( "buil01_105", fWait );
+		fr.AddFrame( "buil01_106", fWait );
+
+		fWait = framestep * 96;
+		fr.AddFrame( "buil01_000", fWait );
+
+		fr.AddTagJump("loop");
+
+		fr.SetPrio( prio+2 );
+
+		// Line下
+		fr = p.PA_Manager.Add( p.PA_Bg, "line01" );
+
+		fWait = framestep * 90;
+		fr.AddFrame( "line_u007", fWait );
+		fWait = framestep * 40;
+		fr.AddTag("loop");
+		fr.AddFrame( "line_u000", fWait );
+		fr.AddFrame( "line_u001", fWait );
+		fr.AddFrame( "line_u002", fWait );
+		fr.AddFrame( "line_u003", fWait );
+		fr.AddFrame( "line_u004", fWait );
+		fr.AddFrame( "line_u005", fWait );
+		fr.AddFrame( "line_u006", fWait );
+		fr.AddFrame( "line_u007", fWait );
+		fr.AddFrame( "line_u008", fWait );
+		fr.AddFrame( "line_u009", fWait );
+		fr.AddFrame( "line_u010", fWait );
+		fr.AddFrame( "line_u011", fWait );
+		fr.AddFrame( "line_u012", fWait );
+		fr.AddFrame( "line_u013", fWait );
+		fr.AddFrame( "line_u014", fWait );
+		fr.AddFrame( "line_u015", fWait );
+		fr.AddFrame( "line_u016", fWait );
+		fr.AddFrame( "line_u017", fWait );
+		fr.AddFrame( "line_u018", fWait );
+		fr.AddFrame( "line_u019", fWait );
+		fr.AddFrame( "line_u020", fWait );
+		fr.AddFrame( "line_u021", fWait );
+		fr.AddFrame( "line_u022", fWait );
+		fr.AddFrame( "line_u023", fWait );
+		fr.AddTagJump("loop");
+
+		fr.SetPrio( prio+3 );
+
+		// ロゴ
+		fr = p.PA_Manager.Add( p.PA_Bg, "logo" );
+		fWait = framestep * 10;
+		fr.AddFrame( "logo00_000", fWait );
+		fr.AddFrame( "logo00_001", fWait );
+		fr.AddFrame( "logo00_002", fWait );
+		fr.AddFrame( "logo00_003", fWait );
+		fr.AddFrame( "logo00_004", fWait );
+		fr.AddFrame( "logo00_005", fWait );
+		fr.AddFrame( "logo00_006", fWait );
+		fr.AddFrame( "logo00_007", fWait );
+		fr.AddFrame( "logo00_008", fWait );
+
+		fWait = framestep * 10;
+		fr.AddTag("loop");
+		fr.AddFrame( "logo01_000", fWait );
+		fr.AddFrame( "logo01_001", fWait );
+		fr.AddTagJump("loop");
+
+		fr.SetPrio( prio+4 );
+		//fr.SetView( 0 );
+		
+		// LIME
+		fr = p.PA_Manager.Add( p.PA_Bg, "LIME" );
+		fWait = framestep * 90;
+		fr.AddFrame( "logo00_000", fWait );
+		fWait = framestep * 10;
+		fr.AddFrame( "lime_1", fWait );
+		fr.AddFrame( "lime_3", fWait );
+		
+		fWait = framestep * 10;
+		fr.AddTag("loop");
+		fr.AddFrame( "lime_4", fWait );
+		fr.AddTagJump("loop");
+
+		fr.SetPrio( prio+5 );
+	
+	
+	}
+}
+
+// 終了処理
+function Scene_TitleFunc::Finalize()
+{
+	local p = Scene_TitleFunc;
+	local fnc = tPAni;
+
+	// アニメマネージャの解放、登録した中身も全部消える
+	delete p.PA_Manager;
+
+	// PAniオブジェクトの解放
+	delete p.PA_Bg;
+
+	delete Scene_TitleFunc;
+
+	print("\nScene_TitleFunc::Finalize()");
+}
+
+//
+function Scene_TitleFunc::Update()
+{
+	local p = Scene_TitleFunc;
+	local fnc = tPAni;
+
+	p.PA_Manager.Update();
+	p.Count++;
+}
+
+//
+function Scene_TitleFunc::Render()
+{
+	local p = Scene_TitleFunc;
+	local fnc = tPAni;
+
+	p.PA_Manager.Render();
+
+	//print( format( "\n[Count:%d]", p.Count ) );
+}
+
+print("\n\ntitle.txt Running!!!");

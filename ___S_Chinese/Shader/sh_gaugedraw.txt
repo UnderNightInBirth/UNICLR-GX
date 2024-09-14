@@ -1,0 +1,61 @@
+
+// MagicCircuit描画
+// fValueの位置に光を入れる
+
+sampler2D TexSample_Empty = sampler_state
+{
+//   MagFilter = Linear;  MinFilter = Linear;
+}; // テクスチャサンプラ（空
+
+struct VS_INPUT {
+    float4 pos   : POSITION;
+    float4 color : COLOR0;
+    float4 speculer : COLOR1;
+    float2 texuv : TEXCOORD0;
+};
+
+struct VS_OUTPUT {
+    float4 pos   : POSITION;
+    float4 color : COLOR0;
+    float4 speculer : COLOR1;
+    float2 texuv : TEXCOORD0;
+};
+
+// 
+float fValue = 0.0f;
+
+float fSU = 0.0f;
+float fWidth = 1.0f;
+float fColor = 1.0f;
+
+#define POSBOADER (0.35f)
+
+float4 PS_TecMagicCircuitDraw( VS_OUTPUT In ) : COLOR
+{
+	float4 OutColor;
+
+	// テクスチャ設定
+	OutColor = tex2D( TexSample_Empty, In.texuv) * In.color;
+	OutColor += In.speculer;
+
+	float fpos = abs( ((In.texuv.x - fSU) / fWidth) - fValue );
+
+	if( fpos >= POSBOADER ) {
+		fpos = abs(fpos-1.0f); // 折り返しチェック
+		if( fpos >= POSBOADER ) return OutColor;
+	}
+
+	fpos = 1.0f - (fpos / POSBOADER); // 0.0f-1.0fに
+
+	OutColor.rgb = lerp( OutColor.rgb, float3( fColor, fColor, fColor), fpos ); // 下の色と補間
+
+    return OutColor;
+}
+
+// 
+technique TecMagicCircuitDraw {
+    pass P0 {
+        pixelShader  = compile ps_2_0 PS_TecMagicCircuitDraw();
+    }
+}
+

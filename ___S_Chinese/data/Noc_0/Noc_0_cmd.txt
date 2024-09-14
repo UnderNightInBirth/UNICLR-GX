@@ -1,0 +1,521 @@
+//コマンドテーブル skillは格ゲーコマンド表記
+btl_debPrint2("\n[BYA_CommandTable]");
+
+local t =
+{
+	//投げ追加
+	Throw_F_Hit_Add4 =
+	{
+		num = def_CN_Skill_AddCommand1,	
+		command = ["4","7","1"],
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Throw_F_Hit",] },
+			FrameIDCheck = { Only = 100 },
+		},
+		function CmdAfterFunc()
+		{
+			local pos = BCMDTbl.GetSuccessButtonPos();
+			//_dpn("pos:"+pos);
+			BMvTbl.SetPP(def_TS_Bya_ThrowType,pos);
+			return 1;
+		}
+		UpdateTable = { name = "Mv_Throw_F_Hit_Add4", },		
+	},	
+
+	Atk_AirA = { CmdCheck = { SkillType = "NormalRapid" },},
+	Atk_AirB = { CmdCheck = { SkillType = "NormalRapid" },},
+	
+	Atk_StdBandC = {},
+	// Atk_AirBandC = {}, // つよい
+	
+	Skill_41236SP_ABC = {},
+	Skill_41236SP = {},
+
+	// ３回攻撃
+	Skill_236EX = {},
+	Skill_236BorC = {},
+	Skill_236A = {},
+	Skill_236_AddA =
+	{
+		num = def_CN_Skill_AddCommand2,
+		command = ["6A@L,10@","6B@L,10@","6C@L,10@"],
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_236A"] },
+			FrameIDCheck = { Only = [110,150,200] },
+		}	
+		UpdateTable = { name = "Mv_Skill_236_AddA", }	
+	},
+	Skill_236Add_JAddA =
+	{
+		num = def_CN_Skill_AddCommand3,
+		command = ["6A@L,14@","6B@L,14@","6C@L,14@"], posstatus = _PosState_Air,
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_236_AddA"] },
+			FrameIDCheck = { Only = [110,120] },
+			PosState = "Air"
+		}
+		UpdateTable = { name = "Mv_Skill_236Add_JAddASt", }	
+	},
+	Skill_236Add_AddA =
+	{
+		num = def_CN_Skill_AddCommand16,
+		command = ["6A","6B","6C"],
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_236_AddA"] },
+			FrameIDCheck = { Only = 150 },
+		}
+		UpdateTable = { name = "Mv_Skill_236Add_AddA", }	
+	},
+	
+	Skill_236_AddB =
+	{
+		num = def_CN_Skill_AddCommand4,
+		command = ["6A@L,10@","6B@L,10@","6C@L,10@"],
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_236B"] },
+			FrameIDCheck = { Only = [110,150,200] },
+		}	
+		UpdateTable = { name = "Mv_Skill_236_AddB", }	
+	},
+	Skill_236Add_JAddB =
+	{
+		num = def_CN_Skill_AddCommand5,
+		command = ["6A@L,14@","6B@L,14@","6C@L,14@"], posstatus = _PosState_Air,
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_236_AddB"] },
+			FrameIDCheck = { Only = [110,120] },
+			PosState = "Air"
+		}
+		UpdateTable = { name = "Mv_Skill_236Add_JAddBSt", }	
+	},
+	Skill_236Add_AddB =
+	{
+		num = def_CN_Skill_AddCommand17,
+		command = ["6A","6B","6C"],
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_236_AddB"] },
+			FrameIDCheck = { Only = 150 },
+		}
+		UpdateTable = { name = "Mv_Skill_236Add_AddB", }	
+	},
+	
+	//罠設置関係
+	Skill_236_AddTrapA =
+	{
+		num = def_CN_Skill_AddCommand6,
+		command = ["4+A","214A","24A@D,12@"],
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_236A","Mv_Skill_236B"] },
+			FrameIDCheck = { Only = [100,110,150,200] },
+		}	
+		UpdateTable = { name = "Mv_Skill_236_AddTrapA", }	
+	},	
+	Skill_236_AddTrapB =
+	{
+		num = def_CN_Skill_AddCommand7,
+		command = ["4+B","214B","24B@D,12@"],
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_236A","Mv_Skill_236B"] },
+			FrameIDCheck = { Only = [100,110,150,200] },
+		}	
+		UpdateTable = { name = "Mv_Skill_236_AddTrapB", }	
+	},	
+	Skill_236_AddTrapC =
+	{
+		num = def_CN_Skill_AddCommand8,
+		command = ["4+C","214C","24C@D,12@"],
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_236A","Mv_Skill_236B"] },
+			FrameIDCheck = { Only = [100,110,150,200] },
+		}	
+		UpdateTable = { name = "Mv_Skill_236_AddTrapC", }	
+	},
+	
+	Skill_236Add_JAddTrapA =
+	{
+		num = def_CN_Skill_AddCommand9,
+		command = ["4+A","214A","24A@D,12@"], posstatus = _PosState_Always,
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_236_AddA","Mv_Skill_236_AddB"] },
+			FrameIDCheck = { Only = [100,110,120,150] },
+			PosState = "Always",
+		}	
+		UpdateTable = { name = "Mv_Skill_236Add_JAddTrapA", }	
+	},
+	Skill_236Add_JAddTrapB =
+	{
+		num = def_CN_Skill_AddCommand10,
+		command = ["4+B","214B","24B@D,12@"], posstatus = _PosState_Always,
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_236_AddA","Mv_Skill_236_AddB"] },
+			FrameIDCheck = { Only = [100,110,120,150] },
+			PosState = "Always",
+		}	
+		UpdateTable = { name = "Mv_Skill_236Add_JAddTrapB", }	
+	},	
+	Skill_236Add_JAddTrapC =
+	{
+		num = def_CN_Skill_AddCommand11,
+		command = ["4+C","214C","24C@D,12@"], posstatus = _PosState_Always,
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_236_AddA","Mv_Skill_236_AddB"] },
+			FrameIDCheck = { Only = [100,110,120,150] },
+			PosState = "Always",
+		}	
+		UpdateTable = { name = "Mv_Skill_236Add_JAddTrapC", }	
+	},	
+	
+	
+	// くるくる中派生
+	Skill_214_JAddA =
+	{
+		num = def_CN_Skill_AddCommand12,
+		command = "A", posstatus = _PosState_Air,
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_214_JAddJumpA","Mv_Skill_214_JAddJumpB","Mv_Skill_214_JAddJumpC"] },
+			PosState = "Air"
+			FrameIDCheck = { Only = [200,250] },
+		}
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.GetPP(def_TS_Bya_WebTrapAddJumpEnableInput) == 0 ) return 0; // 追加出せないタイミング
+			return 1;
+		}
+	},
+
+	Skill_214_JAddB =
+	{
+		num = def_CN_Skill_AddCommand13,
+		command = "B", posstatus = _PosState_Air,
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_214_JAddJumpA","Mv_Skill_214_JAddJumpB","Mv_Skill_214_JAddJumpC"] },
+			PosState = "Air"
+			FrameIDCheck = { Only = [200,250] },
+		}	
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.GetPP(def_TS_Bya_WebTrapAddJumpEnableInput) == 0 ) return 0; // 追加出せないタイミング
+			return 1;
+		}
+	},
+	Skill_214_JAddC =
+	{
+		num = def_CN_Skill_AddCommand14,
+		command = "C", posstatus = _PosState_Air,
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_214_JAddJumpA","Mv_Skill_214_JAddJumpB","Mv_Skill_214_JAddJumpC"] },
+			PosState = "Air"
+			FrameIDCheck = { Only = [200,250] },
+		}	
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.GetPP(def_TS_Bya_WebTrapAddJumpEnableInput) == 0 ) return 0; // 追加出せないタイミング
+			return 1;
+		}
+	},
+	Skill_214_JAddD =
+	{
+		num = def_CN_Skill_AddCommand15,
+		command = "D", posstatus = _PosState_Air,
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Skill_214_JAddJumpA","Mv_Skill_214_JAddJumpB","Mv_Skill_214_JAddJumpC"] },
+			PosState = "Air",
+			FrameIDCheck = { Only = [200,250] },
+		}	
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.GetPP(def_TS_Bya_WebTrapAddJumpEnableInput) == 0 ) return 0; // 追加出せないタイミング
+			return 1;
+		}
+	},
+
+	
+	Skill_214C = {
+		function CmdBeforeFunc()
+		{
+			local limitCount = (BMvEff.GRD_GetJudgeResult() > 0)? 2 : 1;
+			if( BMvTbl.AddAirCount( 0, 0 ) >= limitCount ) return 0;
+			return 1;
+		}	
+	},
+	Skill_214B = {
+		function CmdBeforeFunc()
+		{
+			local limitCount = (BMvEff.GRD_GetJudgeResult() > 0)? 2 : 1;
+			if( BMvTbl.AddAirCount( 0, 0 ) >= limitCount ) return 0;
+			return 1;
+		}
+	},
+	Skill_214A = {
+		function CmdBeforeFunc()
+		{
+			local limitCount = (BMvEff.GRD_GetJudgeResult() > 0)? 2 : 1;
+			if( BMvTbl.AddAirCount( 0, 0 ) >= limitCount ) return 0;
+			return 1;
+		}	
+	},	
+	
+	Skill_J214C = {
+		function CmdBeforeFunc()
+		{
+			local limitCount = (BMvEff.GRD_GetJudgeResult() > 0)? 2 : 1;
+			if( BMvTbl.AddAirCount( 0, 0 ) >= limitCount ) return 0;
+			return 1;
+		}	
+	},
+	Skill_J214B = {
+		function CmdBeforeFunc()
+		{
+			local limitCount = (BMvEff.GRD_GetJudgeResult() > 0)? 2 : 1;
+			if( BMvTbl.AddAirCount( 0, 0 ) >= limitCount ) return 0;
+			return 1;
+		}	
+	},
+	Skill_J214A = {
+		function CmdBeforeFunc()
+		{
+			local limitCount = (BMvEff.GRD_GetJudgeResult() > 0)? 2 : 1;
+			if( BMvTbl.AddAirCount( 0, 0 ) >= limitCount ) return 0;
+			return 1;
+		}	
+	},
+	
+	Skill_214_JAddJumpA =
+	{
+		num = def_CN_Skill_AddCommand25,
+		command = ["A"], posstatus = _PosState_Air,
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = [
+			"Mv_Skill_214A","Mv_Skill_214B","Mv_Skill_214C","Mv_Skill_J214A","Mv_Skill_J214B","Mv_Skill_J214C",
+			"Mv_Skill_236_AddTrapA","Mv_Skill_236_AddTrapB","Mv_Skill_236_AddTrapC",
+			"Mv_Skill_236Add_JAddTrapA","Mv_Skill_236Add_JAddTrapB","Mv_Skill_236Add_JAddTrapC",
+			] },
+			PosState = "Air"
+			FrameIDCheck = { Only = [150] }, // 100だと前回の罠にいくことあるよ
+		}	
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.AddAirCount( 1, 0 ) >= 1 ) return 0;
+			local trap_tobival = BMvTbl.TobiParam_Func( { slot=def_TS_Bya_WebTrap, type=_ValGet } );
+			local trapatk_tobival = BMvTbl.TobiParam_Func( { slot=def_TS_Bya_WebTrapAtk, type=_ValGet } );
+			if( trap_tobival < 1 && trapatk_tobival < 0 ) return 0;
+			return 1;
+		}	
+	},
+	Skill_214_JAddJumpB =
+	{
+		num = def_CN_Skill_AddCommand26,
+		command = ["B"], posstatus = _PosState_Air,
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = [
+			"Mv_Skill_214A","Mv_Skill_214B","Mv_Skill_214C","Mv_Skill_J214A","Mv_Skill_J214B","Mv_Skill_J214C",
+			"Mv_Skill_236_AddTrapA","Mv_Skill_236_AddTrapB","Mv_Skill_236_AddTrapC",
+			"Mv_Skill_236Add_JAddTrapA","Mv_Skill_236Add_JAddTrapB","Mv_Skill_236Add_JAddTrapC",
+			] },
+			PosState = "Air"
+			FrameIDCheck = { Only = [150] }, // 100だと前回の罠にいくことあるよ
+		}	
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.AddAirCount( 1, 0 ) >= 1 ) return 0;
+			local trap_tobival = BMvTbl.TobiParam_Func( { slot=def_TS_Bya_WebTrap, type=_ValGet } );
+			local trapatk_tobival = BMvTbl.TobiParam_Func( { slot=def_TS_Bya_WebTrapAtk, type=_ValGet } );
+			if( trap_tobival < 1 && trapatk_tobival < 0 ) return 0;
+			return 1;
+		}	
+	},
+	Skill_214_JAddJumpC =
+	{
+		num = def_CN_Skill_AddCommand27,
+		command = ["C"], posstatus = _PosState_Air,
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = [
+			"Mv_Skill_214A","Mv_Skill_214B","Mv_Skill_214C","Mv_Skill_J214A","Mv_Skill_J214B","Mv_Skill_J214C",
+			"Mv_Skill_236_AddTrapA","Mv_Skill_236_AddTrapB","Mv_Skill_236_AddTrapC",
+			"Mv_Skill_236Add_JAddTrapA","Mv_Skill_236Add_JAddTrapB","Mv_Skill_236Add_JAddTrapC",
+			] },
+			PosState = "Air"
+			FrameIDCheck = { Only = [150] }, // 100だと前回の罠にいくことあるよ
+		}	
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.AddAirCount( 1, 0 ) >= 1 ) return 0;
+			local trap_tobival = BMvTbl.TobiParam_Func( { slot=def_TS_Bya_WebTrap, type=_ValGet } );
+			local trapatk_tobival = BMvTbl.TobiParam_Func( { slot=def_TS_Bya_WebTrapAtk, type=_ValGet } );
+			if( trap_tobival < 1 && trapatk_tobival < 0 ) return 0;
+			return 1;
+		}	
+	},	
+	
+	Skill_i214_JAddA =
+	{
+		num = def_CN_Skill_AddCommand35,
+		command = ["A"], posstatus = _PosState_Air,
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = [
+			"Mv_Skill_214A","Mv_Skill_214B","Mv_Skill_214C","Mv_Skill_J214A","Mv_Skill_J214B","Mv_Skill_J214C",
+			"Mv_Skill_236_AddTrapA","Mv_Skill_236_AddTrapB","Mv_Skill_236_AddTrapC",
+			"Mv_Skill_236Add_JAddTrapA","Mv_Skill_236Add_JAddTrapB","Mv_Skill_236Add_JAddTrapC",
+			] },
+			PosState = "Air"
+			FrameIDCheck = { Only = [200] },
+		}
+	},
+	Skill_i214_JAddB =
+	{
+		num = def_CN_Skill_AddCommand36,
+		command = ["B"], posstatus = _PosState_Air,
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = [
+			"Mv_Skill_214A","Mv_Skill_214B","Mv_Skill_214C","Mv_Skill_J214A","Mv_Skill_J214B","Mv_Skill_J214C",
+			"Mv_Skill_236_AddTrapA","Mv_Skill_236_AddTrapB","Mv_Skill_236_AddTrapC",
+			"Mv_Skill_236Add_JAddTrapA","Mv_Skill_236Add_JAddTrapB","Mv_Skill_236Add_JAddTrapC",
+			] },
+			PosState = "Air"
+			FrameIDCheck = { Only = [200] },
+		}
+	},
+	Skill_i214_JAddC =
+	{
+		num = def_CN_Skill_AddCommand37,
+		command = ["C"], posstatus = _PosState_Air,
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = [
+			"Mv_Skill_214A","Mv_Skill_214B","Mv_Skill_214C","Mv_Skill_J214A","Mv_Skill_J214B","Mv_Skill_J214C",
+			"Mv_Skill_236_AddTrapA","Mv_Skill_236_AddTrapB","Mv_Skill_236_AddTrapC",
+			"Mv_Skill_236Add_JAddTrapA","Mv_Skill_236Add_JAddTrapB","Mv_Skill_236Add_JAddTrapC",
+			] },
+			PosState = "Air"
+			FrameIDCheck = { Only = [200] },
+		}
+	},
+	Skill_i214_JAddD =
+	{
+		num = def_CN_Skill_AddCommand38,
+		command = ["D"], posstatus = _PosState_Air,
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = [
+			"Mv_Skill_214A","Mv_Skill_214B","Mv_Skill_214C","Mv_Skill_J214A","Mv_Skill_J214B","Mv_Skill_J214C",
+			"Mv_Skill_236_AddTrapA","Mv_Skill_236_AddTrapB","Mv_Skill_236_AddTrapC",
+			"Mv_Skill_236Add_JAddTrapA","Mv_Skill_236Add_JAddTrapB","Mv_Skill_236Add_JAddTrapC",
+			] },
+			PosState = "Air"
+			FrameIDCheck = { Only = [200] },
+		}
+		UpdateTable = { name = "Mv_Skill_214_JAddD", }// タメても同じ技が出る
+	},
+
+	Skill_623EX = {},
+	Skill_623BorC = {},
+	Skill_623A = {},
+
+	Atk_Cro3C = {},	
+	Atk_Air2C = {},
+	
+	Atk_B_B = {
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = { Only = ["Mv_Atk_StdB"] },
+			FrameIDCheck = { Only = 100 },
+		},
+	},
+}
+
+local ar =
+[
+	{
+		CheckMoveName="Mv_Atk_StdA",
+		UpdateMoveName="Mv_Atk_StdB",
+	},
+	{
+		CheckMoveName="Mv_Atk_StdB",
+		UpdateMoveName="Mv_Atk_StdC",
+		ResetTmplName="Atk_StdB",
+	},
+	{
+		CheckMoveName="Mv_Atk_StdC",
+		UpdateMoveName="Mv_Skill_236A",
+		ResetTmplName="Atk_StdC",
+	},
+	{
+		CheckMoveName="Mv_Skill_236A",
+		UpdateMoveName="Mv_Skill_236_AddA",
+		ResetTmplName="Skill_236A",
+		SrcCmdTmpl="Skill_236_AddA",
+	},
+	{
+		CheckMoveName="Mv_Skill_236_AddA",
+		UpdateMoveName="Mv_Skill_236Add_JAddASt",
+		ResetTmplName="Skill_236_AddA",
+		SrcCmdTmpl="Skill_236Add_JAddA",
+		CmdTmplFlags=def_CMDFlags_AnnounceSmaetSteer, //スマートステアアナウンスの追加
+		posstatus = _PosState_Air,
+	},
+	{
+		CheckMoveName="Mv_Skill_236Add_AddA",
+		UpdateMoveName="Mv_Skill_623EX",
+		ResetTmplName="Skill_236Add_JAddA",
+		CmdCheck = 
+		{
+			Cost = { ComboGauge = 10000 },
+			SkillType = "ExSpecial",
+			HitStatus="Damage",
+			// PosState="Air",
+			FrameIDCheck = { Only = 500 },
+		}		
+	},
+
+]
+Battle_Std.MakeStdCombo( t, ar );
+
+NOC_CommandTable <- Battle_Std.MakeCommandTable( t );
+

@@ -1,0 +1,434 @@
+print("\n>>_se_list");
+
+__dofile__("./script/btl_SEDefine.txt"); //ＳＥ定数
+
+local path = "./se/normal_se/"; // ファイルパス、登録しやすいように
+local btlpath = "./se/battle_se/";
+local chrpath = btlpath + "Set/";
+
+SeList_Table <-
+{
+	Status = [],
+};
+SeList_Table.Status.resize(620); // てきとう
+local st = SeList_Table.Status; // 登録しやすいように
+
+st[0] = { volumetype=0, file=btlpath+"SE_ShotBall", type=0, category=2, }; 
+st[1] = { volumetype=0, file=btlpath+"SE_VisionDash", type=0, category=2, }; 
+st[10] = { volumetype=0, file=path+"SE202_BladeC", type=0, category=3, }; //IWE用
+st[11] = { volumetype=0, file=path+"SE202_BladeC", type=0, category=3, }; //IWE用とどめ
+st[12] = { volumetype=0, file=btlpath+"SE_BigBomb", type=1, category=-1, }; //IWXとどめ
+
+st[15] = { volumetype=0, file=btlpath+"SE_BigBomb", type=1, category=-1, }; //IWとどめ
+
+st[20] = { volumetype=0, file=btlpath+"SE_ApperLightWall", type=1, category=-1, }; //B+C発動
+
+
+//登場
+//st[100] = { volumetype=1, file=chrpath+"Set00_2000", type=0, category=1, }; //消えろ、お前では無理だ。
+st[101] = { volumetype=1, file=chrpath+"Set00_2001", type=0, category=1, }; //命が惜しければ邪魔をするな。
+st[102] = { volumetype=1, file=chrpath+"Set00_2002", type=0, category=1, }; //無駄な抵抗はよせ
+st[103] = { volumetype=1, file=chrpath+"Set00_2003", type=0, category=1, }; //お前ごときが…フン！
+// st[104] = { volumetype=1, file=chrpath+"Set00_2004", type=0, category=1, }; //今日が貴様の命日となる。
+st[105] = { volumetype=1, file=chrpath+"Set00_2005", type=0, category=1, }; //能書きはいい。構えろ。
+// st[106] = { volumetype=1, file=chrpath+"Set00_2006", type=0, category=1, }; //お前は…何を求め、俺の前に立つ…？
+// st[107] = { volumetype=1, file=chrpath+"Set00_2007", type=0, category=1, }; //虚空に歪みが見える…纏っているな、お前
+// st[108] = { volumetype=1, file=chrpath+"Set00_2008", type=0, category=1, }; //恐怖を捨てろ…それができねば、俺には勝てん
+
+//勝利
+st[110] = { volumetype=1, file=chrpath+"Set00_2100", type=0, category=1, }; //背負ったものの差だ。
+st[111] = { volumetype=1, file=chrpath+"Set00_2101", type=0, category=1, }; //この程度で終わりか。
+// st[112] = { volumetype=1, file=chrpath+"Set00_2102", type=0, category=1, }; //お前は遅すぎた。
+st[113] = { volumetype=1, file=chrpath+"Set00_2103", type=0, category=1, }; //拍子抜けだ。
+st[114] = { volumetype=1, file=chrpath+"Set00_2104", type=0, category=1, }; //夜はまだ…終わらない。
+// st[115] = { volumetype=1, file=chrpath+"Set00_2105", type=0, category=1, }; //…他愛ない
+st[116] = { volumetype=1, file=chrpath+"Set00_2106", type=0, category=1, }; //…迷いは判断を鈍らす
+//st[117] = { volumetype=1, file=chrpath+"Set00_2107", type=0, category=1, }; //抵抗など無駄と知れ
+// st[118] = { volumetype=1, file=chrpath+"Set00_2108", type=0, category=1, }; //死はいざなうもの…。全ての原因はお前自身にある
+
+//敗北
+// st[130] = { volumetype=1, file=chrpath+"Set00_2200", type=0, category=1, }; //時間が…
+st[131] = { volumetype=1, file=chrpath+"Set00_2201", type=0, category=1, }; //くっ…
+st[132] = { volumetype=1, file=chrpath+"Set00_2202", type=0, category=1, }; //腑に落ちん…
+st[133] = { volumetype=1, file=chrpath+"Set00_2203", type=0, category=1, }; //受け入れがたい事態だ
+
+//弱攻撃
+st[140] = { volumetype=1, file=chrpath+"Set00_2300", type=0, category=1, }; //はっ
+st[141] = { volumetype=1, file=chrpath+"Set00_2301", type=0, category=1, }; //ふっ
+st[142] = { volumetype=1, file=chrpath+"Set00_2302", type=0, category=1, }; //たっ
+st[143] = { volumetype=1, file=chrpath+"Set00_2303", type=0, category=1, }; //シッ！
+st[144] = { volumetype=1, file=chrpath+"Set00_2304", type=0, category=1, }; //シャッ！
+
+//中攻撃
+//st[150] = { volumetype=1, file=chrpath+"Set00_2400", type=0, category=1, }; //そこだ
+//st[151] = { volumetype=1, file=chrpath+"Set00_2401", type=0, category=1, }; //斬っ
+st[152] = { volumetype=1, file=chrpath+"Set00_2402", type=0, category=1, }; //しゅっ
+st[153] = { volumetype=1, file=chrpath+"Set00_2403", type=0, category=1, }; //せい
+st[154] = { volumetype=1, file=chrpath+"Set00_2404", type=0, category=1, }; //はっ
+st[155] = { volumetype=1, file=chrpath+"Set00_2405", type=0, category=1, }; //ぬん
+st[156] = { volumetype=1, file=chrpath+"Set00_2406", type=0, category=1, }; //セァ！
+
+//強攻撃
+st[160] = { volumetype=1, file=chrpath+"Set00_2500", type=0, category=1, }; //もらった
+st[161] = { volumetype=1, file=chrpath+"Set00_2501", type=0, category=1, }; //遅い！
+st[162] = { volumetype=1, file=chrpath+"Set00_2502", type=0, category=1, }; //連撃！
+st[163] = { volumetype=1, file=chrpath+"Set00_2503", type=0, category=1, }; //絶！
+st[164] = { volumetype=1, file=chrpath+"Set00_2504", type=0, category=1, }; //ぬーん！
+st[165] = { volumetype=1, file=chrpath+"Set00_2505", type=0, category=1, }; //せい！
+st[166] = { volumetype=1, file=chrpath+"Set00_2506", type=0, category=1, }; //テェイ…ヤッ！
+st[167] = { volumetype=1, file=chrpath+"Set00_2507", type=0, category=1, }; //屈辱を晒せ
+
+//特殊攻撃
+//st[170] = { volumetype=1, file=chrpath+"Set00_2600", type=0, category=1, }; //くらえ！
+st[171] = { volumetype=1, file=chrpath+"Set00_2601", type=0, category=1, }; //けやっ！
+st[172] = { volumetype=1, file=chrpath+"Set00_2602", type=0, category=1, }; //見きれるか
+//st[173] = { volumetype=1, file=chrpath+"Set00_2603", type=0, category=1, }; //邪魔だ
+st[174] = { volumetype=1, file=chrpath+"Set00_2604", type=0, category=1, }; //裂けろ
+st[175] = { volumetype=1, file=chrpath+"Set00_2605", type=0, category=1, }; //断ち切る
+//st[176] = { volumetype=1, file=chrpath+"Set00_2606", type=0, category=1, }; //無様に地を這え
+//st[177] = { volumetype=1, file=chrpath+"Set00_2607", type=0, category=1, }; //見えているか？
+// st[178] = { volumetype=1, file=chrpath+"Set00_2608", type=0, category=1, }; //こっちだ
+st[179] = { volumetype=1, file=chrpath+"Set00_2609", type=0, category=1, }; //逆だよ
+st[180] = { volumetype=1, file=chrpath+"Set00_2610", type=0, category=1, }; //そこだ！
+// st[181] = { volumetype=1, file=chrpath+"Set00_2611", type=0, category=1, }; //がら空きだぞ！
+
+//投げ成功
+// st[190] = { volumetype=1, file=chrpath+"Set00_2700", type=0, category=1, }; //受け取れ！
+st[191] = { volumetype=1, file=chrpath+"Set00_2701", type=0, category=1, }; //宙を…舞え
+st[192] = { volumetype=1, file=chrpath+"Set00_2702", type=0, category=1, }; //舞いて…散れ
+//st[193] = { volumetype=1, file=chrpath+"Set00_2703", type=0, category=1, }; //こういうことも出来る
+// st[194] = { volumetype=1, file=chrpath+"Set00_2704", type=0, category=1, }; //他愛ない
+// st[195] = { volumetype=1, file=chrpath+"Set00_2705", type=0, category=1, }; //造作もない
+
+//投げ失敗
+// st[196] = { volumetype=1, file=chrpath+"Set00_2800", type=0, category=1, }; //ちっ
+st[197] = { volumetype=1, file=chrpath+"Set00_2801", type=0, category=1, }; //なにっ
+//st[198] = { volumetype=1, file=chrpath+"Set00_2802", type=0, category=1, }; //かわしたか
+//st[199] = { volumetype=1, file=chrpath+"Set00_2803", type=0, category=1, }; //逃れただと？
+
+//投げ抜け
+st[200] = { volumetype=1, file=chrpath+"Set00_2900", type=0, category=1, prio=Def_SEP_ThrowTech, check=1 }; //させるか
+st[201] = { volumetype=1, file=chrpath+"Set00_2901", type=0, category=1, prio=Def_SEP_ThrowTech, check=1 }; //無駄
+//st[202] = { volumetype=1, file=chrpath+"Set00_2902", type=0, category=1, prio=Def_SEP_ThrowTech, check=1 }; //遅すぎる
+st[203] = { volumetype=1, file=chrpath+"Set00_2903", type=0, category=1, prio=Def_SEP_ThrowTech, check=1 }; //この程度
+// st[204] = { volumetype=1, file=chrpath+"Set00_2904", type=0, category=1, prio=Def_SEP_ThrowTech, check=1 }; //スピードは速さだ
+
+//振り向き
+st[210] = { volumetype=1, file=chrpath+"Set00_3000", type=0, category=1, prio=Def_SEP_Furimuki }; //む
+// st[211] = { volumetype=1, file=chrpath+"Set00_3001", type=0, category=1, prio=Def_SEP_Furimuki }; //見えている
+// st[212] = { volumetype=1, file=chrpath+"Set00_3002", type=0, category=1, prio=Def_SEP_Furimuki }; //捉えているぞ
+//st[213] = { volumetype=1, file=chrpath+"Set00_3003", type=0, category=1, prio=Def_SEP_Furimuki }; //巻いたつもりか
+
+//挑発
+// st[220] = { volumetype=1, file=chrpath+"Set00_3100", type=0, category=1, }; //風が…騒がしい
+// st[221] = { volumetype=1, file=chrpath+"Set00_3101", type=0, category=1, }; //貴様…なめているのか
+st[222] = { volumetype=1, file=chrpath+"Set00_3102", type=0, category=1, }; //…そろそろ本気を見せたらどうだ
+//st[223] = { volumetype=1, file=chrpath+"Set00_3103", type=0, category=1, }; //これが覚悟の差だよ
+// st[224] = { volumetype=1, file=chrpath+"Set00_3104", type=0, category=1, }; //この夜の元へ、なにをしに来た？
+//st[225] = { volumetype=1, file=chrpath+"Set00_3105", type=0, category=1, }; //片づける方の身にもなって欲しいものだな
+
+//ジャンプ
+//st[230] = { volumetype=1, file=chrpath+"Set00_3200", type=0, category=1, }; //高く…
+// st[231] = { volumetype=1, file=chrpath+"Set00_3201", type=0, category=1, }; //瞬…
+st[232] = { volumetype=1, file=chrpath+"Set00_3202", type=0, category=1, }; //フッ…
+st[233] = { volumetype=1, file=chrpath+"Set00_3203", type=0, category=1, }; //ハッ…
+st[234] = { volumetype=1, file=chrpath+"Set00_3204", type=0, category=1, }; //シッ…
+
+//ダッシュ
+// st[240] = { volumetype=1, file=chrpath+"Set00_3300", type=0, category=1, }; //覚悟
+st[241] = { volumetype=1, file=chrpath+"Set00_3301", type=0, category=1, }; //駆ける
+// st[242] = { volumetype=1, file=chrpath+"Set00_3302", type=0, category=1, }; //切り込む
+//st[243] = { volumetype=1, file=chrpath+"Set00_3303", type=0, category=1, }; //突破する
+//st[245] = { volumetype=1, file=chrpath+"Set00_3304", type=0, category=1, }; //…詰める
+st[246] = { volumetype=1, file=chrpath+"Set00_3305", type=0, category=1, }; //好機
+st[247] = { volumetype=1, file=chrpath+"Set00_3306", type=0, category=1, }; //見えるか？
+// st[248] = { volumetype=1, file=chrpath+"Set00_3307", type=0, category=1, }; //瞬く間だ
+
+//バックダッシュ
+// st[250] = { volumetype=1, file=chrpath+"Set00_3400", type=0, category=1, }; //ふんっ
+st[251] = { volumetype=1, file=chrpath+"Set00_3401", type=0, category=1, }; //引く
+//st[252] = { volumetype=1, file=chrpath+"Set00_3402", type=0, category=1, }; //しゅたっ！
+st[253] = { volumetype=1, file=chrpath+"Set00_3403", type=0, category=1, }; //殺気！
+//st[254] = { volumetype=1, file=chrpath+"Set00_3404", type=0, category=1, }; //様子見だ
+// st[255] = { volumetype=1, file=chrpath+"Set00_3405", type=0, category=1, }; //…ここは引く
+//st[256] = { volumetype=1, file=chrpath+"Set00_3406", type=0, category=1, }; //…間合いを取る
+//st[257] = { volumetype=1, file=chrpath+"Set00_3407", type=0, category=1, }; //戦略的にさ
+//st[258] = { volumetype=1, file=chrpath+"Set00_3408", type=0, category=1, }; //止まること無く、な
+//st[259] = { volumetype=1, file=chrpath+"Set00_3409", type=0, category=1, }; //捉えられるか？
+
+//ガード小
+st[260] = { volumetype=1, file=chrpath+"Set00_3500", type=0, category=1, prio=Def_SEP_GuardLv1, check=1, }; //ふん
+st[261] = { volumetype=1, file=chrpath+"Set00_3501", type=0, category=1, prio=Def_SEP_GuardLv1, check=1, }; //くっ
+st[262] = { volumetype=1, file=chrpath+"Set00_3502", type=0, category=1, prio=Def_SEP_GuardLv1, check=1, }; //てぃ
+
+//ガード中
+st[265] = { volumetype=1, file=chrpath+"Set00_3600", type=0, category=1, prio=Def_SEP_GuardLv2, check=1, }; //効かん
+st[266] = { volumetype=1, file=chrpath+"Set00_3601", type=0, category=1, prio=Def_SEP_GuardLv2, check=1, }; //純朴な…
+// st[267] = { volumetype=1, file=chrpath+"Set00_3602", type=0, category=1, prio=Def_SEP_GuardLv2, check=1, }; //…なるほど
+st[268] = { volumetype=1, file=chrpath+"Set00_3603", type=0, category=1, prio=Def_SEP_GuardLv2, check=1, }; //…ほう
+
+//ガード大
+st[270] = { volumetype=1, file=chrpath+"Set00_3700", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; //くっ！
+st[271] = { volumetype=1, file=chrpath+"Set00_3701", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; //重い…！
+st[272] = { volumetype=1, file=chrpath+"Set00_3702", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; //ぐうっ…！
+// st[273] = { volumetype=1, file=chrpath+"Set00_3703", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; //この俺が…っ！
+//st[274] = { volumetype=1, file=chrpath+"Set00_3704", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; //守勢一方とは…！
+//st[275] = { volumetype=1, file=chrpath+"Set00_3705", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; //突破口を…！
+st[276] = { volumetype=1, file=chrpath+"Set00_3706", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; //…耐え切れるか？
+//st[277] = { volumetype=1, file=chrpath+"Set00_3707", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; //遅いんだよ
+//st[278] = { volumetype=1, file=chrpath+"Set00_3708", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; //無駄だと言ったろ
+
+//余裕ガード
+//st[280] = { volumetype=1, file=chrpath+"Set00_3800", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //格差だ
+//st[281] = { volumetype=1, file=chrpath+"Set00_3801", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //哀れな
+//st[282] = { volumetype=1, file=chrpath+"Set00_3802", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //ムダだ
+st[283] = { volumetype=1, file=chrpath+"Set00_3803", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //未熟
+//st[284] = { volumetype=1, file=chrpath+"Set00_3804", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //…話にならんな
+st[285] = { volumetype=1, file=chrpath+"Set00_3805", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //なんだそれは
+//st[286] = { volumetype=1, file=chrpath+"Set00_3806", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //せん無きこと
+st[287] = { volumetype=1, file=chrpath+"Set00_3807", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //取るに足りん
+//st[288] = { volumetype=1, file=chrpath+"Set00_3808", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //当たる…とでも思ったか？
+// st[289] = { volumetype=1, file=chrpath+"Set00_3809", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //見えるんだよ
+//st[290] = { volumetype=1, file=chrpath+"Set00_3810", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //解りきっている
+
+//ガード失敗
+st[295] = { volumetype=1, file=chrpath+"Set00_3900", type=0, category=1, prio=Def_SEP_GuardMiss, check=1, }; //油断した！
+// st[296] = { volumetype=1, file=chrpath+"Set00_3901", type=0, category=1, prio=Def_SEP_GuardMiss, check=1, }; //何だと！
+st[297] = { volumetype=1, file=chrpath+"Set00_3902", type=0, category=1, prio=Def_SEP_GuardMiss, check=1, }; //何っ！？
+st[298] = { volumetype=1, file=chrpath+"Set00_3903", type=0, category=1, prio=Def_SEP_GuardMiss, check=1, }; //バカな！？
+
+//受け身
+// st[300] = { volumetype=1, file=chrpath+"Set00_4000", type=0, category=1, prio=Def_SEP_Recover }; //やはりな
+//st[301] = { volumetype=1, file=chrpath+"Set00_4001", type=0, category=1, prio=Def_SEP_Recover }; //立て直す
+// st[302] = { volumetype=1, file=chrpath+"Set00_4002", type=0, category=1, prio=Def_SEP_Recover }; //ふん
+st[303] = { volumetype=1, file=chrpath+"Set00_4003", type=0, category=1, prio=Def_SEP_Recover }; //はっ
+st[304] = { volumetype=1, file=chrpath+"Set00_4004", type=0, category=1, prio=Def_SEP_Recover }; //把握
+// st[305] = { volumetype=1, file=chrpath+"Set00_4005", type=0, category=1, prio=Def_SEP_Recover }; //甘い
+st[306] = { volumetype=1, file=chrpath+"Set00_4006", type=0, category=1, prio=Def_SEP_Recover }; //くだらん
+// st[307] = { volumetype=1, file=chrpath+"Set00_4007", type=0, category=1, prio=Def_SEP_Recover }; //やるな
+// st[308] = { volumetype=1, file=chrpath+"Set00_4008", type=0, category=1, prio=Def_SEP_Recover }; //惜しかったな
+// st[309] = { volumetype=1, file=chrpath+"Set00_4009", type=0, category=1, prio=Def_SEP_Recover }; //ふっ…そうでなくてはな
+st[310] = { volumetype=1, file=chrpath+"Set00_4010", type=0, category=1, prio=Def_SEP_Recover }; //なかなかの腕だ
+
+//シールド発動
+// st[320] = { volumetype=1, file=chrpath+"Set00_4100", type=0, category=1, }; //ふん
+st[321] = { volumetype=1, file=chrpath+"Set00_4101", type=0, category=1, }; //防ぐ
+st[322] = { volumetype=1, file=chrpath+"Set00_4102", type=0, category=1, }; //来るか…？
+//st[323] = { volumetype=1, file=chrpath+"Set00_4103", type=0, category=1, }; //警戒
+//st[324] = { volumetype=1, file=chrpath+"Set00_4104", type=0, category=1, }; //哨戒(しょうかい)
+//st[325] = { volumetype=1, file=chrpath+"Set00_4105", type=0, category=1, }; //備える…
+st[326] = { volumetype=1, file=chrpath+"Set00_4106", type=0, category=1, }; //ハッ
+
+//シールド成功
+//st[330] = { volumetype=1, file=chrpath+"Set00_4200", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //そんなもの
+//st[331] = { volumetype=1, file=chrpath+"Set00_4201", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //ふん
+st[332] = { volumetype=1, file=chrpath+"Set00_4202", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //その程度
+//st[333] = { volumetype=1, file=chrpath+"Set00_4203", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //緩慢な
+// st[334] = { volumetype=1, file=chrpath+"Set00_4204", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //愚かな
+//st[335] = { volumetype=1, file=chrpath+"Set00_4205", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //ふっ、造作もない
+st[336] = { volumetype=1, file=chrpath+"Set00_4206", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //あまりにも稚拙
+st[337] = { volumetype=1, file=chrpath+"Set00_4207", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //見え見えだ
+//st[338] = { volumetype=1, file=chrpath+"Set00_4208", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //３手先も読める
+//st[339] = { volumetype=1, file=chrpath+"Set00_4209", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //力だけだな
+
+//やられ弱
+st[340] = { volumetype=1, file=chrpath+"Set00_4300", type=0, category=1, prio=Def_SEP_DamageLv1 }; //くっ
+st[341] = { volumetype=1, file=chrpath+"Set00_4301", type=0, category=1, prio=Def_SEP_DamageLv1 }; //ちっ
+
+//やられ中
+st[345] = { volumetype=1, file=chrpath+"Set00_4400", type=0, category=1, prio=Def_SEP_DamageLv2, check=1 }; //ぐっ
+st[346] = { volumetype=1, file=chrpath+"Set00_4401", type=0, category=1, prio=Def_SEP_DamageLv2, check=1 }; //つっ
+st[347] = { volumetype=1, file=chrpath+"Set00_4402", type=0, category=1, prio=Def_SEP_DamageLv2, check=1 }; //何っ
+st[348] = { volumetype=1, file=chrpath+"Set00_4403", type=0, category=1, prio=Def_SEP_DamageLv2, check=1 }; //があっ
+
+//やられ強
+st[350] = { volumetype=1, file=chrpath+"Set00_4500", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; //貴様…！
+st[351] = { volumetype=1, file=chrpath+"Set00_4501", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; //ぐうっ！
+//st[352] = { volumetype=1, file=chrpath+"Set00_4502", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; //はがぁ！
+st[353] = { volumetype=1, file=chrpath+"Set00_4503", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; //ガハッ…！
+st[354] = { volumetype=1, file=chrpath+"Set00_4504", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; //ぐーあぁ！
+st[355] = { volumetype=1, file=chrpath+"Set00_4505", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; //うおぉぉーーー
+
+//ＫＯ１
+st[360] = { volumetype=1, file=chrpath+"Set00_4600", type=0, category=1, prio=Def_SEP_KO }; //ぬあああぁぁ！
+st[361] = { volumetype=1, file=chrpath+"Set00_4601", type=0, category=1, prio=Def_SEP_KO }; //俺を止めるとは…
+st[362] = { volumetype=1, file=chrpath+"Set00_4602", type=0, category=1, prio=Def_SEP_KO }; //上等…！
+st[363] = { volumetype=1, file=chrpath+"Set00_4603", type=0, category=1, prio=Def_SEP_KO }; //まぐれ当たりだ……
+st[364] = { volumetype=1, file=chrpath+"Set00_4604", type=0, category=1, prio=Def_SEP_KO }; //こんな小石に躓くとは……
+
+//ＫＯ２
+st[370] = { volumetype=1, file=chrpath+"Set00_4700", type=0, category=1, prio=Def_SEP_KO }; //うわぁぁぁぁぁぁぁああああーーーーー
+// st[371] = { volumetype=1, file=chrpath+"Set00_4701", type=0, category=1, prio=Def_SEP_KO }; //こんな…ことが…！
+st[372] = { volumetype=1, file=chrpath+"Set00_4702", type=0, category=1, prio=Def_SEP_KO }; //これが…因果の導いた答え…か
+//st[373] = { volumetype=1, file=chrpath+"Set00_4703", type=0, category=1, prio=Def_SEP_KO }; //これこそが…天命の定めし理…
+//st[374] = { volumetype=1, file=chrpath+"Set00_4704", type=0, category=1, prio=Def_SEP_KO }; //我が遺恨…背負って生きよ…
+st[375] = { volumetype=1, file=chrpath+"Set00_4705", type=0, category=1, prio=Def_SEP_KO }; //この俺が……敗れるだと……？
+
+//起き上がり
+//st[380] = { volumetype=1, file=chrpath+"Set00_4800", type=0, category=1, }; //油断しただけだ
+st[381] = { volumetype=1, file=chrpath+"Set00_4801", type=0, category=1, }; //次は無いと思え
+//st[382] = { volumetype=1, file=chrpath+"Set00_4802", type=0, category=1, }; //落ち着いたか
+// st[383] = { volumetype=1, file=chrpath+"Set00_4803", type=0, category=1, }; //偶然とは恐ろしいものだ
+st[384] = { volumetype=1, file=chrpath+"Set00_4804", type=0, category=1, }; //何ら支障はない
+// st[385] = { volumetype=1, file=chrpath+"Set00_4805", type=0, category=1, }; //なるほど…言うだけのことはあるか
+st[386] = { volumetype=1, file=chrpath+"Set00_4806", type=0, category=1, }; //それなりには…できるようだな
+// st[387] = { volumetype=1, file=chrpath+"Set00_4807", type=0, category=1, }; //この程度か
+// st[388] = { volumetype=1, file=chrpath+"Set00_4808", type=0, category=1, }; //こんなものではないはずだ
+
+//重傷起き上がり
+//st[390] = { volumetype=1, file=chrpath+"Set00_4900", type=0, category=1, }; //ふん…
+// st[391] = { volumetype=1, file=chrpath+"Set00_4901", type=0, category=1, }; //くっ…
+st[392] = { volumetype=1, file=chrpath+"Set00_4902", type=0, category=1, }; //ここまでとは…！
+//st[393] = { volumetype=1, file=chrpath+"Set00_4903", type=0, category=1, }; //想定以上に手ごわい…！
+st[394] = { volumetype=1, file=chrpath+"Set00_4904", type=0, category=1, }; //活路を見出さねば…！
+//st[395] = { volumetype=1, file=chrpath+"Set00_4905", type=0, category=1, }; //これが死か……
+//st[396] = { volumetype=1, file=chrpath+"Set00_4906", type=0, category=1, }; //一撃でひっくり返すか
+// st[397] = { volumetype=1, file=chrpath+"Set00_4907", type=0, category=1, }; //それでも勝つのは俺だ
+st[398] = { volumetype=1, file=chrpath+"Set00_4908", type=0, category=1, }; //風前の灯火か
+
+//ヴェールオフ
+// st[400] = { volumetype=1, file=chrpath+"Set00_5000", type=0, category=1, }; //本気でいくぞ！
+st[401] = { volumetype=1, file=chrpath+"Set00_5001", type=0, category=1, }; //戯れはここまでだ
+st[402] = { volumetype=1, file=chrpath+"Set00_5002", type=0, category=1, }; //遊びは終わりだ
+//st[403] = { volumetype=1, file=chrpath+"Set00_5003", type=0, category=1, }; //そろそろ幕といこうか
+//st[404] = { volumetype=1, file=chrpath+"Set00_5004", type=0, category=1, }; //覚悟はできているか？
+st[405] = { volumetype=1, file=chrpath+"Set00_5005", type=0, category=1, }; //常しえの闇で眠れ！
+
+//チェインシフト 
+st[410] = { volumetype=1, file=chrpath+"Set00_5100", type=0, category=1, }; //ついてこれるか！
+st[411] = { volumetype=1, file=chrpath+"Set00_5101", type=0, category=1, }; //刹那
+//st[412] = { volumetype=1, file=chrpath+"Set00_5102", type=0, category=1, }; //瞬刻(しゅんこく)
+//st[413] = { volumetype=1, file=chrpath+"Set00_5103", type=0, category=1, }; //たたみかける
+// st[414] = { volumetype=1, file=chrpath+"Set00_5104", type=0, category=1, }; //終わらない
+// st[415] = { volumetype=1, file=chrpath+"Set00_5105", type=0, category=1, }; //まだだ
+//st[416] = { volumetype=1, file=chrpath+"Set00_5106", type=0, category=1, }; //渡さない！
+
+//コンセントレーション
+st[420] = { volumetype=1, file=chrpath+"Set00_5200", type=0, category=1, }; //想起…
+//st[421] = { volumetype=1, file=chrpath+"Set00_5201", type=0, category=1, }; //想いを馳せよう……
+st[422] = { volumetype=1, file=chrpath+"Set00_5202", type=0, category=1, }; //顕現の力よ……
+st[423] = { volumetype=1, file=chrpath+"Set00_5203", type=0, category=1, }; //封滅……
+// st[424] = { volumetype=1, file=chrpath+"Set00_5204", type=0, category=1, }; //ハァァァァアアアア…　　吐く
+//st[425] = { volumetype=1, file=chrpath+"Set00_5205", type=0, category=1, }; //スゥゥゥゥウウウウ…　　吸う
+
+//バースト
+//st[430] = { volumetype=1, file=chrpath+"Set00_5300", type=0, category=1, }; //目障りだ！
+//st[431] = { volumetype=1, file=chrpath+"Set00_5301", type=0, category=1, }; //失せろ！
+//st[432] = { volumetype=1, file=chrpath+"Set00_5302", type=0, category=1, }; //借りを返すぞ！
+//st[433] = { volumetype=1, file=chrpath+"Set00_5303", type=0, category=1, }; //命賭して！
+
+//２３６
+st[440] = { volumetype=1, file=chrpath+"Set00_6000", type=0, category=1, }; //捕らえる
+//st[441] = { volumetype=1, file=chrpath+"Set00_6001", type=0, category=1, }; //そこだ
+//st[442] = { volumetype=1, file=chrpath+"Set00_6002", type=0, category=1, }; //飲まれろ
+st[443] = { volumetype=1, file=chrpath+"Set00_6003", type=0, category=1, }; //闇に飲まれよ
+//st[444] = { volumetype=1, file=chrpath+"Set00_6004", type=0, category=1, }; //ハッ
+//st[445] = { volumetype=1, file=chrpath+"Set00_6005", type=0, category=1, }; //縛！
+st[446] = { volumetype=1, file=chrpath+"Set00_6006", type=0, category=1, }; //縛れ
+//st[447] = { volumetype=1, file=chrpath+"Set00_6007", type=0, category=1, }; //大人しくしていろ
+//st[448] = { volumetype=1, file=chrpath+"Set00_6008", type=0, category=1, }; //バインド
+st[449] = { volumetype=1, file=chrpath+"Set00_6009", type=0, category=1, }; //行け
+st[450] = { volumetype=1, file=chrpath+"Set00_6010", type=0, category=1, }; //縫縛
+//st[451] = { volumetype=1, file=chrpath+"Set00_6011", type=0, category=1, }; //セグメント
+st[452] = { volumetype=1, file=chrpath+"Set00_6012", type=0, category=1, }; //縫縛のセグメント
+st[453] = { volumetype=1, file=chrpath+"Set00_6013", type=0, category=1, }; //ケーリュケイオン
+
+//２１４
+st[460] = { volumetype=1, file=chrpath+"Set00_6100", type=0, category=1, }; //見切れるか
+st[461] = { volumetype=1, file=chrpath+"Set00_6101", type=0, category=1, }; //邪魔だ
+st[462] = { volumetype=1, file=chrpath+"Set00_6102", type=0, category=1, }; //斬ッ！
+st[463] = { volumetype=1, file=chrpath+"Set00_6103", type=0, category=1, }; //絶ッ！
+st[464] = { volumetype=1, file=chrpath+"Set00_6104", type=0, category=1, }; //仕留める
+st[465] = { volumetype=1, file=chrpath+"Set00_6105", type=0, category=1, }; //一閃！
+st[466] = { volumetype=1, file=chrpath+"Set00_6106", type=0, category=1, }; //神速
+st[467] = { volumetype=1, file=chrpath+"Set00_6107", type=0, category=1, }; //斬るとは…こういうことだ
+st[468] = { volumetype=1, file=chrpath+"Set00_6108", type=0, category=1, }; //罪に落ちよ
+// st[469] = { volumetype=1, file=chrpath+"Set00_6109", type=0, category=1, }; //理想をいだ抱いて罪に落ちよ
+st[470] = { volumetype=1, file=chrpath+"Set00_6110", type=0, category=1, }; //お前の意思を…拒絶する
+st[471] = { volumetype=1, file=chrpath+"Set00_6111", type=0, category=1, }; //双鈎のヴェンジェンス
+
+//２２
+st[480] = { volumetype=1, file=chrpath+"Set00_6200", type=0, category=1, }; //捕らえられまい
+//st[481] = { volumetype=1, file=chrpath+"Set00_6201", type=0, category=1, }; //どこを見ている
+st[482] = { volumetype=1, file=chrpath+"Set00_6202", type=0, category=1, }; //虚影だ
+st[483] = { volumetype=1, file=chrpath+"Set00_6203", type=0, category=1, }; //朧
+st[484] = { volumetype=1, file=chrpath+"Set00_6204", type=0, category=1, }; //こっちだ
+//st[485] = { volumetype=1, file=chrpath+"Set00_6205", type=0, category=1, }; //…後ろだ
+st[486] = { volumetype=1, file=chrpath+"Set00_6206", type=0, category=1, }; //…上だ
+st[487] = { volumetype=1, file=chrpath+"Set00_6207", type=0, category=1, }; //みえまい
+//st[488] = { volumetype=1, file=chrpath+"Set00_6208", type=0, category=1, }; //捉えることなど不可能
+st[489] = { volumetype=1, file=chrpath+"Set00_6209", type=0, category=1, }; //消失…
+//st[490] = { volumetype=1, file=chrpath+"Set00_6210", type=0, category=1, }; //消失のコンフュージョン
+
+//Ｊ２１４
+st[500] = { volumetype=1, file=chrpath+"Set00_6300", type=0, category=1, }; //そこだ
+st[501] = { volumetype=1, file=chrpath+"Set00_6301", type=0, category=1, }; //遅い
+st[502] = { volumetype=1, file=chrpath+"Set00_6302", type=0, category=1, }; //逃がさん
+// st[503] = { volumetype=1, file=chrpath+"Set00_6303", type=0, category=1, }; //死を…くれてやる！
+st[504] = { volumetype=1, file=chrpath+"Set00_6304", type=0, category=1, }; //貫く
+//st[505] = { volumetype=1, file=chrpath+"Set00_6305", type=0, category=1, }; //我が閃光は全てを穿通する
+st[506] = { volumetype=1, file=chrpath+"Set00_6306", type=0, category=1, }; //穿通のペネトレイト
+//st[507] = { volumetype=1, file=chrpath+"Set00_6307", type=0, category=1, }; //斜交のペネトレイター
+
+//６３２１４
+st[510] = { volumetype=1, file=chrpath+"Set00_6400", type=0, category=1, }; //終わりだ
+st[511] = { volumetype=1, file=chrpath+"Set00_6401", type=0, category=1, }; //落胆させる
+st[512] = { volumetype=1, file=chrpath+"Set00_6402", type=0, category=1, }; //乞ても遅い…
+
+//相手の背後に出現
+st[520] = { volumetype=1, file=chrpath+"Set00_6500", type=0, category=1, }; //残像だ
+//st[521] = { volumetype=1, file=chrpath+"Set00_6501", type=0, category=1, }; //滑稽だな
+
+//乱舞から打ち上げて、超高速で滅多切り
+//st[530] = { volumetype=1, file=chrpath+"Set00_6600", type=0, category=1, }; //混沌の調べだ…
+st[531] = { volumetype=1, file=chrpath+"Set00_6601", type=0, category=1, }; //終わらせる…
+//st[532] = { volumetype=1, file=chrpath+"Set00_6602", type=0, category=1, }; //いくぞっ！
+
+//超技（とどめ）
+st[534] = { volumetype=1, file=chrpath+"Set00_6700_s0", type=0, category=1, }; //最後だ…
+st[535] = { volumetype=1, file=chrpath+"Set00_6700_s1", type=0, category=1, }; //絶！
+st[536] = { volumetype=1, file=chrpath+"Set00_6701", type=0, category=1, }; //本能は死を恐れる…ならば、俺を恐れることに何ら矛盾はない
+//st[537] = { volumetype=1, file=chrpath+"Set00_6702", type=0, category=1, }; //全ての幻想は消える…そこにあるのは究極の安息。すなわち…死だ
+
+//対キャラ別
+//st[550] = { volumetype=1, file=chrpath+"Set00_7100", type=0, category=1, }; //ハイド！（対ハイド）
+//st[551] = { volumetype=1, file=chrpath+"Set00_7100_a", type=0, category=1, }; //インスレーター！（対ハイド）
+//st[552] = { volumetype=1, file=chrpath+"Set00_7101", type=0, category=1, }; //リンネ！（対リンネ）
+//st[553] = { volumetype=1, file=chrpath+"Set00_7101_a", type=0, category=1, }; //夜刀の姫！（対リンネ）
+//st[554] = { volumetype=1, file=chrpath+"Set00_7102", type=0, category=1, }; //ワレンシュタイン！（対ワレン）
+//st[555] = { volumetype=1, file=chrpath+"Set00_7102_a", type=0, category=1, }; //ヘカトンケイル！（対ワレン）
+//st[556] = { volumetype=1, file=chrpath+"Set00_7103", type=0, category=1, }; //ブラッドスパイク！（対カーマイン）
+//st[557] = { volumetype=1, file=chrpath+"Set00_7104", type=0, category=1, }; //リヒトクライス！（対オリエ）
+//st[558] = { volumetype=1, file=chrpath+"Set00_7105", type=0, category=1, }; //ハーヴェスター（対ゴルドー）
+//st[559] = { volumetype=1, file=chrpath+"Set00_7107", type=0, category=1, }; //虚無！（対メルカヴァ）　
+//st[560] = { volumetype=1, file=chrpath+"Set00_7108", type=0, category=1, }; //人形！（対バティスタ）
+//st[561] = { volumetype=1, file=chrpath+"Set00_7110", type=0, category=1, }; //ユズリハ！（対ユズリハ）
+//st[562] = { volumetype=1, file=chrpath+"Set00_7111", type=0, category=1, }; //パラドクス！（対ヒルダ）
+//st[563] = { volumetype=1, file=chrpath+"Set00_7112", type=0, category=1, }; //ワンダラー！（対エルトナム）　
+//st[564] = { volumetype=1, file=chrpath+"Set00_7112_a", type=0, category=1, }; //アルケミスト！（対エルトナム）　
+//st[565] = { volumetype=1, file=chrpath+"Set00_7113", type=0, category=1, }; //ウィンドミル！（対ナナセ）
+//st[566] = { volumetype=1, file=chrpath+"Set00_7114", type=0, category=1, }; //アンブラル！（対ケイアス）
+
+//ＩＷＥ
+//st[600] = { volumetype=1, file=chrpath+"Set00_6800", type=0, category=1, }; //終わりとしよう……。
+//st[601] = { volumetype=1, file=chrpath+"Set00_6801", type=0, category=1, }; //お遊びはここまでだ……。
+//st[602] = { volumetype=1, file=chrpath+"Set00_6802", type=0, category=1, }; //逃がしはしないっ……！
+//st[603] = { volumetype=1, file=chrpath+"Set00_6803", type=0, category=1, }; //我が刃より逃れようなど……。
+
+//ＩＷＥ乱舞中
+//st[605] = { volumetype=1, file=chrpath+"Set00_6810", type=0, category=1, }; //永脈をた断ち、裂き、封じ、
+//st[606] = { volumetype=1, file=chrpath+"Set00_6811", type=0, category=1, }; //瞬きと閃き、無刃のきらめ
+//st[607] = { volumetype=1, file=chrpath+"Set00_6812", type=0, category=1, }; //静寂なるみなも水面にとう投じられ
+st[608] = { volumetype=1, file=chrpath+"Set00_6813", type=0, category=1, }; //歩み立つがい良い、揺らぎ迫る境界
+st[609] = { volumetype=1, file=chrpath+"Set00_6814", type=0, category=1, }; //境界のディスタント！
+
+//ＩＷＥトドメ
+//st[610] = { volumetype=1, file=chrpath+"Set00_6820", type=0, category=1, }; //さまよ彷徨い、ゆ逝くがいい……。
+//st[611] = { volumetype=1, file=chrpath+"Set00_6821", type=0, category=1, }; //その瞳は、果てになにを見た……？
+//st[612] = { volumetype=1, file=chrpath+"Set00_6822", type=0, category=1, }; //寂しかろうが、直に賑やかになるさ
+//st[613] = { volumetype=1, file=chrpath+"Set00_6823", type=0, category=1, }; //死は……等しく訪れる
+//st[614] = { volumetype=1, file=chrpath+"Set00_6824", type=0, category=1, }; //滅びゆ行く者は滅びよ……
+
+st[615] = { volumetype=1, file=chrpath+"Set00_6830", type=0, category=1, }; //これが……俺から（相手を倒した場合）
+st[616] = { volumetype=1, file=chrpath+"Set00_6831", type=0, category=1, }; //まだこの世に未練が（相手が生きてる場合）
+

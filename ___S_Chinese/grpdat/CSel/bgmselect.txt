@@ -1,0 +1,233 @@
+[00]
+num = 1
+name = Scraper Sky High（ハイド）
+
+[01]
+num = 2
+name = Night Walker（リンネ）
+
+[02]
+num = 3
+name = Maximize Power!（ワレンシュタイン）
+
+[03]
+num = 4
+name = Bad Surface（カーマイン）
+
+[04]
+num = 5
+name = Purity & Strictly（オリエ）
+
+[05]
+num = 6
+name = Rushing Heart（ゴルドー）
+
+[06]
+num = 7
+name = Unseen Entities（メルカヴァ）
+
+[07]
+num = 8
+name = Snow Sisters（バティスタ）
+
+[08]
+num = 9
+name = Monochrome Memory（セト）
+
+[09]
+num = 10
+name = 歩く姿は百合の花♪（ユズリハ）
+
+
+[10]
+num = 11
+name = Overwhelm Despair（ヒルダ）
+
+
+[11]
+num = 16
+name = Erudite Eyes（ケイアス）
+
+
+[12]
+num = 91
+name = Cross Thought（ゴルドーvsケイアス）
+
+
+[13]
+num = 13
+name = Gallant Girl "Sora yori Nagare, Hasiru Kaze"（ナナセ）
+
+
+[14]
+num = 14
+name = Beat Eat Nest（ビャクヤ）
+
+
+[15]
+num = 24
+name = Sound of Night Wind（フォノン）
+
+
+[16]
+num = 92
+name = Mutual Situation（ハイドvsセト）
+
+
+[17]
+num = 21
+name = Forceful Step（ミカ）
+
+
+[18]
+num = 17
+name = Flame & Destiny（ワーグナー）
+
+
+[19]
+num = 18
+name = Extreme Stream（エンキドゥ）
+
+
+[20]
+num = 19
+name = Icefield White Knight（ロンドレキア）
+DLC = 0
+
+
+[21]
+num = 93
+name = Incompatible Relation（ワーグナーｖｓロンドレキア）
+DLC = 0
+
+
+[22]
+num = 12
+name = Blood Drain -Again-（エルトナム）
+
+
+[24]
+num = 15
+name = 開戰 -Again-（アカツキ）
+
+[25]
+num = 199
+name = 1000 Years of Red and Black (UNDER NIGHT IN-BIRTH)
+
+[26]
+num = 60
+name = Unknown Actor（Exe:Late[st] オープニングテーマ）
+
+[27]
+num = 61
+name = 偽りの無限並列（Exe:Late[cl-r] オープニングテーマ）
+
+//custom
+
+[23]
+num = 96
+name = Blood Drain -Again-（エルトナム） feat. 長尾玲奈
+
+[28]
+num = 90
+name = Reach Out to the Truth (Narukami)
+
+[29]
+num = 85
+name = Seeker of the Truth (Naoto)
+
+[30]
+num = 86
+name = Secret Base (Shadow Naoto)
+
+[31]
+num = 87
+name = Shadow (Persona 3)
+
+[32]
+num = 88
+name = Heartful Cry (Aegis)
+
+[33]
+num = 89
+name = Missions for the Brilliant Executor (Mitsuru)
+
+[34]
+num = 97
+name = Princess Amagi (Yukiko)
+
+[35]
+num = 152
+name = Wandering Wolf (Akihiko)
+
+[36]
+num = 159
+name = KDD-0063
+
+[51]
+num = 160
+name = Purity Soldiers
+
+[52]
+num = 154
+name = Kyokugen Training! Mountain Seclusion
+
+[53]
+num = 155
+name = Tame a Bad Boy
+
+[54]
+num = 156
+name = Arashi no Saxophone 2
+
+[55]
+num = 157
+name = Stormy Saxophone 5
+
+[56]
+num = 158
+name = Who is Queen
+
+[60]
+num = 161
+name = Theme of Asuka (Raito remix)
+
+[82]
+num = 76
+name = The theme of Arcueid (MBAACC)
+
+[83]
+num = 80
+name = Darling... Kiss (GOF2)
+
+[84]
+num = 77
+name = cs_story_115
+
+[85]
+num = 78
+name = Halcyon (xi)
+
+[86]
+num = 79
+name = Snow Mountain (Virtua Fighter 5)
+
+[87]
+num = 93
+name = Scraper Sky Homiez High (rave.dj)
+
+[89]
+num = 94
+name = Snow Doo Sisters (rave.dj)
+
+[90]
+num = 95
+name = UNSEEN UCHIHAS (Futamaster Cav)
+
+[91]
+num = 165
+name = Crank White Knight
+
+[95]
+num = 170
+name = Hyde (Beta) MMC5 REMAKE - MARKTHERENCE

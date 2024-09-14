@@ -1,0 +1,595 @@
+print("\n>>_se_list");
+
+__dofile__("./script/btl_SEDefine.txt"); //ＳＥ定数
+
+local path = "./se/normal_se/"; // ファイルパス、登録しやすいように
+local btlpath = "./se/battle_se/";
+local chrpath = btlpath + "Gor/";
+
+SeList_Table <-
+{
+	TableNum = 2, // SEセレクトとかでのプログラム側参照用、テーブル最大値を入れておく
+	UseTable = 0, // 何番目のテーブルを使うか
+	Status = [],
+};
+
+// 
+// SeFunc.GetParam( 0-31 );
+// param[0] ---> ランダム値
+// param[29] ---> ステージ、VSだと-1
+// param[30] ---> 相手キャラ番号
+// param[31] ---> 固定要求テーブル、-1だったら抽選
+
+local tblnum = SeFunc.GetParam(31);
+if( tblnum == -1 )
+{
+	// 抽選要求
+	local enemy = SeFunc.GetParam(30);
+	
+	// 対ワーグナーの時だけ変える
+	if( enemy == 16 )
+	{
+		// print("ゴルドー【対ワーグナーセット】");
+		SeList_Table.UseTable = 1;
+	}
+	else
+	{
+		SeList_Table.UseTable = 0;
+	}
+}
+else
+{
+	// SE TESTでの指定再生時の処理
+    // 一応 SeList_Table.TableNum の上限チェックもする
+	//print("\n SE TEST★★★:"+tblnum);
+    if( tblnum >= 0  &&  SeList_Table.TableNum > tblnum )
+    {
+        SeList_Table.UseTable = tblnum;
+    }
+}
+
+local GetTableFileName = function( nametbl ) //>name -- テーブル
+{
+	local retname = 0;
+	local usetable = SeList_Table.UseTable;
+
+	if( usetable < 0 ) usetable = 0;
+
+	if( type( nametbl )=="array" )
+	{
+		// テーブルだった
+		if( nametbl.len() > 0 )
+		{
+			if( nametbl.len() <= usetable )  usetable = 0; // はみ出ていた
+			retname = nametbl[ usetable ];
+		}
+	}
+	else
+	{
+		retname = nametbl;
+	}
+	if( type( retname )!="string" )  retname = ""; // 文字列じゃない
+
+	return retname;
+}
+
+SeList_Table.Status.resize(720); // てきとう
+local st = SeList_Table.Status; // 登録しやすいように
+
+st[5] = { volumetype=0, file=btlpath+"SE_Bomb", type=1, category=-1, }; //IWとどめ
+st[6] = { volumetype=0, file=btlpath+"SE_BigBomb", type=1, category=-1, }; //IW とどめヒット
+
+st[50] = { volumetype=0, file=path+"SE073_GroundBreak", type=1, category=-1, }; //IWX 吸収
+st[51] = { volumetype=0, file=btlpath+"SE_BigBomb", type=1, category=-1, }; //IWX 大鎌の一閃
+st[52] = { volumetype=0, file=btlpath+"SE_EarthQuake", type=1, category=-1, }; //IWX地震
+
+st[53] = { volumetype=0, file=btlpath+"SE_ChargeUpEXLoop", type=1, category=-1, }; //IWX力タメループ
+//st[54] = { volumetype=0, file=btlpath+"SE_DrainPowerLoop", type=1, category=-1, }; //IWXすいこみループ
+st[54] = { volumetype=0, file=btlpath+"SE_Drain", type=1, category=-1, }; //IWXすいこみループ
+
+st[55] = { volumetype=0, file=btlpath+"SE_ChargeUpEXEndEcho", type=1, category=-1, }; //IWX力タメループ抜け
+//st[56] = { volumetype=0, file=btlpath+"SE_DrainPowerEndEcho", type=1, category=-1, }; //IWXすいこみループ抜け
+st[56] = { volumetype=0, file=btlpath+"SE_Drain", type=1, category=-1, }; //IWXすいこみループ抜け
+
+st[57] = { volumetype=0, file=path+"SE060_BoundMetal", type=1, category=-1, }; //IWXどっこいしょもつとこ
+
+
+//登場
+st[100] = { volumetype=1, file=chrpath+"Gor00_2000", type=0, category=1, }; //風が騒がしいな
+st[101] = { volumetype=1, file=chrpath+"Gor00_2001", type=0, category=1, }; //ようやくお出ましかい
+//st[102] = { volumetype=1, file=chrpath+"Gor00_2002", type=0, category=1, }; //これも縁だ。相手になってやる
+st[103] = { volumetype=1, file=chrpath+"Gor00_2003", type=0, category=1, }; //手短に終わらせようか
+//st[104] = { volumetype=1, file=chrpath+"Gor00_2004", type=0, category=1, }; //相手にとって不足なし、か。
+st[105] = { volumetype=1, file=chrpath+"Gor00_2005", type=0, category=1, }; //退屈しないで済みそうだ
+//st[106] = { volumetype=1, file=chrpath+"Gor00_2006", type=0, category=1, }; //いい面構えだ
+
+st[107] = { volumetype=1, file=chrpath+"Gor10_2006", type=0, category=1, }; //ついに出会えたな……
+st[108] = { volumetype=1, file=chrpath+"Gor10_2007", type=0, category=1, }; //許さねぇ……
+st[109] = { volumetype=1, file=chrpath+"Gor10_2008", type=0, category=1, }; //決着を、つけるぜ……
+
+//勝利
+//st[110] = { volumetype=1, file=chrpath+"Gor00_2101", type=0, category=1, }; //…キマったな。
+//st[111] = { volumetype=1, file=chrpath+"Gor00_2102", type=0, category=1, }; //これで…いいのかい？
+st[112] = { volumetype=1, file=chrpath+"Gor00_2103", type=0, category=1, }; //アマちゃんだな。
+st[113] = { volumetype=1, file=chrpath+"Gor00_2104", type=0, category=1, }; //相手が悪かったな。
+st[114] = { volumetype=1, file=chrpath+"Gor00_2105", type=0, category=1, }; //運が悪いのはお互い様だ
+//st[115] = { volumetype=1, file=chrpath+"Gor00_2106", type=0, category=1, }; //あぁ、悪い悪い。加減はしたつもりなんだがなぁ
+st[116] = { volumetype=1, file=chrpath+"Gor00_2107", type=0, category=1, }; //強すぎるってのも考えもんだな
+
+st[115] = { volumetype=1, file=chrpath+"Gor10_2108", type=0, category=1, }; //拍子抜けだ……
+st[117] = { volumetype=1, file=chrpath+"Gor10_2109", type=0, category=1, }; //なにも……、変わらないがな　
+st[118] = { volumetype=1, file=chrpath+"Gor10_2110", type=0, category=1, }; //おい、立てよ……。　　　　　
+st[119] = { volumetype=1, file=chrpath+"Gor10_2111", type=0, category=1, }; //これが赤騎士か……？
+
+//敗北
+st[120] = { volumetype=1, file=chrpath+"Gor00_2200", type=0, category=1, }; //ちょこまかと…
+st[120].file = GetTableFileName( [ chrpath+"Gor00_2200", chrpath+"Gor10_2201" ] );
+//st[121] = { volumetype=1, file=chrpath+"Gor00_2201", type=0, category=1, }; //チッ…手ぇ抜きすぎたか
+st[122] = { volumetype=1, file=chrpath+"Gor00_2202", type=0, category=1, }; //ちーっと甘く見すぎたなぁ
+st[122].file = GetTableFileName( [ chrpath+"Gor00_2202", chrpath+"Gor10_2202" ] );
+//st[123] = { volumetype=1, file=chrpath+"Gor00_2203", type=0, category=1, }; //逃げ切られたか…
+
+//弱攻撃
+st[130] = { volumetype=1, file=chrpath+"Gor00_2300", type=0, category=1, }; //はっ
+st[131] = { volumetype=1, file=chrpath+"Gor00_2301", type=0, category=1, }; //ふっ
+//st[132] = { volumetype=1, file=chrpath+"Gor00_2302", type=0, category=1, }; //ほっ
+st[133] = { volumetype=1, file=chrpath+"Gor00_2303", type=0, category=1, }; //しゅっ
+st[134] = { volumetype=1, file=chrpath+"Gor00_2304", type=0, category=1, }; //しっ
+st[135] = { volumetype=1, file=chrpath+"Gor00_2305", type=0, category=1, }; //ほれ
+st[135].file = GetTableFileName( [ chrpath+"Gor00_2305", chrpath+"Gor10_2305" ] );
+//st[136] = { volumetype=1, file=chrpath+"Gor00_2306", type=0, category=1, }; //ほいっ
+
+//中攻撃
+st[140] = { volumetype=1, file=chrpath+"Gor00_2400", type=0, category=1, }; //どうだ
+st[141] = { volumetype=1, file=chrpath+"Gor00_2401", type=0, category=1, }; //せいっ
+st[142] = { volumetype=1, file=chrpath+"Gor00_2402", type=0, category=1, }; //はっ！
+st[143] = { volumetype=1, file=chrpath+"Gor00_2403", type=0, category=1, }; //ふん！
+
+//強攻撃
+st[150] = { volumetype=1, file=chrpath+"Gor00_2500", type=0, category=1, }; //オラッ！
+//st[151] = { volumetype=1, file=chrpath+"Gor00_2501", type=0, category=1, }; //おーぅらっ！
+st[152] = { volumetype=1, file=chrpath+"Gor00_2502", type=0, category=1, }; //ほらよっ！
+st[152].file = GetTableFileName( [ chrpath+"Gor00_2502", chrpath+"Gor10_2502" ] );
+st[153] = { volumetype=1, file=chrpath+"Gor00_2503", type=0, category=1, }; //そこだ！
+st[153].file = GetTableFileName( [ chrpath+"Gor00_2503", chrpath+"Gor10_2503" ] );
+st[154] = { volumetype=1, file=chrpath+"Gor00_2504", type=0, category=1, }; //ぜぇい！
+st[154].file = GetTableFileName( [ chrpath+"Gor00_2504", chrpath+"Gor10_2504" ] );
+st[155] = { volumetype=1, file=chrpath+"Gor00_2505", type=0, category=1, }; //食らいな
+st[155].file = GetTableFileName( [ chrpath+"Gor00_2505", chrpath+"Gor10_2505" ] );
+//st[156] = { volumetype=1, file=chrpath+"Gor00_2506", type=0, category=1, }; //良いサンドバッグだ
+//st[157] = { volumetype=1, file=chrpath+"Gor00_2507", type=0, category=1, }; //どーっせぇ！
+st[158] = { volumetype=1, file=chrpath+"Gor00_2508", type=0, category=1, }; //でぇぇぇーやぁ！
+st[159] = { volumetype=1, file=chrpath+"Gor00_2509", type=0, category=1, }; //おぅりゃぁぁぁ！
+
+//特殊攻撃
+st[160] = { volumetype=1, file=chrpath+"Gor00_2600", type=0, category=1, }; //沈め！
+//st[161] = { volumetype=1, file=chrpath+"Gor00_2601", type=0, category=1, }; //刈り取る！
+//st[162] = { volumetype=1, file=chrpath+"Gor00_2602", type=0, category=1, }; //ホアッチャァ！
+st[163] = { volumetype=1, file=chrpath+"Gor00_2603", type=0, category=1, }; //切り崩す！
+//st[164] = { volumetype=1, file=chrpath+"Gor00_2604", type=0, category=1, }; //突き刺す！
+//st[165] = { volumetype=1, file=chrpath+"Gor00_2605", type=0, category=1, }; //上だ
+st[166] = { volumetype=1, file=chrpath+"Gor00_2606", type=0, category=1, }; //足元がお留守だぜ？
+st[166].file = GetTableFileName( [ chrpath+"Gor00_2606", chrpath+"Gor10_6303" ] );
+st[167] = { volumetype=1, file=chrpath+"Gor00_2607", type=0, category=1, }; //おっとぉ…ごめんよ？
+//st[168] = { volumetype=1, file=chrpath+"Gor00_2608", type=0, category=1, }; //ちょーっと痛いぜ？
+
+//投げ成功
+//st[170] = { volumetype=1, file=chrpath+"Gor00_2700", type=0, category=1, }; //いいザマだ……飛べ！！
+st[171] = { volumetype=1, file=chrpath+"Gor00_2701", type=0, category=1, }; //おら……、よっとォ！
+//st[172] = { volumetype=1, file=chrpath+"Gor00_2702", type=0, category=1, }; //おとなしく……しときな！
+//st[173] = { volumetype=1, file=chrpath+"Gor00_2703", type=0, category=1, }; //逃げんなよぉ
+//st[174] = { volumetype=1, file=chrpath+"Gor00_2704", type=0, category=1, }; //捕まえたぜぇ
+//st[175] = { volumetype=1, file=chrpath+"Gor00_2705", type=0, category=1, }; //手こずらせるねぇ
+
+//投げ失敗
+st[180] = { volumetype=1, file=chrpath+"Gor00_2800", type=0, category=1, }; //なにぃ？
+st[180].file = GetTableFileName( [ chrpath+"Gor00_2800", chrpath+"Gor10_2803" ] );
+//st[181] = { volumetype=1, file=chrpath+"Gor00_2801", type=0, category=1, }; //んおっ？
+st[182] = { volumetype=1, file=chrpath+"Gor00_2802", type=0, category=1, }; //避けんなよオイ
+st[182].file = GetTableFileName( [ chrpath+"Gor00_2802", chrpath+"Gor10_2804" ] );
+
+//投げ抜け
+st[190] = { volumetype=1, file=chrpath+"Gor00_2900", type=0, category=1, prio=Def_SEP_ThrowTech, check=1 }; //甘い
+st[191] = { volumetype=1, file=chrpath+"Gor00_2901", type=0, category=1, prio=Def_SEP_ThrowTech, check=1 }; //遅い
+
+
+//振り向き
+st[200] = { volumetype=1, file=chrpath+"Gor00_3000", type=0, category=1, prio=Def_SEP_Furimuki }; //こっちか
+
+//挑発
+st[210] = { volumetype=1, file=chrpath+"Gor00_3100", type=0, category=1, }; //どぉしたぁ？　怖いのか？
+//st[211] = { volumetype=1, file=chrpath+"Gor00_3101", type=0, category=1, }; //楽しいもんだねぇ
+//st[212] = { volumetype=1, file=chrpath+"Gor00_3102", type=0, category=1, }; //期待してたんだがなぁ
+//st[213] = { volumetype=1, file=chrpath+"Gor00_3103", type=0, category=1, }; //にらみ合いってのも悪くない
+st[214] = { volumetype=1, file=chrpath+"Gor00_3104", type=0, category=1, }; //このまま終わる気かぁ？
+
+//ジャンプ
+st[220] = { volumetype=1, file=chrpath+"Gor00_3200", type=0, category=1, }; //ほっ
+st[221] = { volumetype=1, file=chrpath+"Gor00_3201", type=0, category=1, }; //たっ
+
+//ダッシュ
+st[230] = { volumetype=1, file=chrpath+"Gor00_3300", type=0, category=1, }; //ふん
+//st[231] = { volumetype=1, file=chrpath+"Gor00_3301", type=0, category=1, }; //こっちから行くぜ！
+//st[232] = { volumetype=1, file=chrpath+"Gor00_3302", type=0, category=1, }; //先手を打つ
+//st[233] = { volumetype=1, file=chrpath+"Gor00_3303", type=0, category=1, }; //一気に詰めるぜ！
+//st[234] = { volumetype=1, file=chrpath+"Gor00_3304", type=0, category=1, }; //そんなに離れるなよぉ
+
+//バックダッシュ
+st[240] = { volumetype=1, file=chrpath+"Gor00_3400", type=0, category=1, }; //こっちだ
+st[240].file = GetTableFileName( [ chrpath+"Gor00_3400", chrpath+"Gor10_3400" ] );
+
+//st[241] = { volumetype=1, file=chrpath+"Gor00_3401", type=0, category=1, }; //ひゅぅ
+
+//ガード小
+//st[250] = { volumetype=1, file=chrpath+"Gor00_3500", type=0, category=1, prio=Def_SEP_GuardLv1, check=1, }; //くっ
+st[251] = { volumetype=1, file=chrpath+"Gor00_3501", type=0, category=1, prio=Def_SEP_GuardLv1, check=1, }; //ふん
+st[251].file = GetTableFileName( [ chrpath+"Gor00_2202", chrpath+"Gor10_2202" ] );
+//st[252] = { volumetype=1, file=chrpath+"Gor00_3502", type=0, category=1, prio=Def_SEP_GuardLv1, check=1, }; //ハっ　　※なんだそりゃ？的な
+st[253] = { volumetype=1, file=chrpath+"Gor00_3503", type=0, category=1, prio=Def_SEP_GuardLv1, check=1, }; //ん～？
+st[253].file = GetTableFileName( [ chrpath+"Gor00_2202", chrpath+"Gor10_2202" ] );
+//st[254] = { volumetype=1, file=chrpath+"Gor00_3504", type=0, category=1, prio=Def_SEP_GuardLv1, check=1, }; //軽いな
+
+//ガード中
+//st[260] = { volumetype=1, file=chrpath+"Gor00_3600", type=0, category=1, prio=Def_SEP_GuardLv2, check=1, }; //中々…
+//st[261] = { volumetype=1, file=chrpath+"Gor00_3601", type=0, category=1, prio=Def_SEP_GuardLv2, check=1, }; //しみるねぇ
+st[262] = { volumetype=1, file=chrpath+"Gor00_3602", type=0, category=1, prio=Def_SEP_GuardLv2, check=1, }; //おいおい…
+st[262].file = GetTableFileName( [ chrpath+"Gor00_3602", chrpath+"Gor10_3602" ] );
+st[263] = { volumetype=1, file=chrpath+"Gor00_3603", type=0, category=1, prio=Def_SEP_GuardLv2, check=1, }; //どうしたどうしたぁ
+st[263].file = GetTableFileName( [ chrpath+"Gor00_3603", chrpath+"Gor10_3603" ] );
+//st[264] = { volumetype=1, file=chrpath+"Gor00_3604", type=0, category=1, prio=Def_SEP_GuardLv2, check=1, }; //それじゃ届かないぜ？
+
+//ガード大
+st[270] = { volumetype=1, file=chrpath+"Gor00_3700", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; //ほう！
+st[270].file = GetTableFileName( [ chrpath+"Gor00_3700", chrpath+"Gor10_3702" ] );
+st[271] = { volumetype=1, file=chrpath+"Gor00_3701", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; //やるな
+st[271].file = GetTableFileName( [ chrpath+"Gor00_3701", chrpath+"Gor10_3703" ] );
+
+//st[272] = { volumetype=1, file=chrpath+"Gor00_3702", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; //チイっ
+//st[273] = { volumetype=1, file=chrpath+"Gor00_3703", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; //なかなかの勢いだ
+//st[274] = { volumetype=1, file=chrpath+"Gor00_3704", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; //悪くはねぇんだがなあ
+//st[275] = { volumetype=1, file=chrpath+"Gor00_3705", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; //なんてぇ猛打だ
+//st[276] = { volumetype=1, file=chrpath+"Gor00_3706", type=0, category=1, prio=Def_SEP_GuardLv3, check=1, }; //ラチがあかねぇな
+
+//余裕ガード
+//st[280] = { volumetype=1, file=chrpath+"Gor00_3800", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //甘すぎるな
+//st[281] = { volumetype=1, file=chrpath+"Gor00_3801", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //それで終わりか？
+//st[282] = { volumetype=1, file=chrpath+"Gor00_3802", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //あと一歩ってとこか
+//st[283] = { volumetype=1, file=chrpath+"Gor00_3803", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //いいねいいねぇ
+//st[284] = { volumetype=1, file=chrpath+"Gor00_3804", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //おーおー頑張るねぇ
+st[285] = { volumetype=1, file=chrpath+"Gor00_3805", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //見え見えだな
+st[285].file = GetTableFileName( [ chrpath+"Gor00_3805", chrpath+"Gor10_3805" ] );
+st[286] = { volumetype=1, file=chrpath+"Gor00_3806", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //わかりやすいぜ
+st[286].file = GetTableFileName( [ chrpath+"Gor00_3806", chrpath+"Gor10_3806" ] );
+//st[287] = { volumetype=1, file=chrpath+"Gor00_3807", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //こうすると防げる
+//st[288] = { volumetype=1, file=chrpath+"Gor00_3808", type=0, category=1, prio=Def_SEP_NiceGuard, check=1, }; //残念だったな
+
+//ガード失敗
+st[290] = { volumetype=1, file=chrpath+"Gor00_3900", type=0, category=1, prio=Def_SEP_GuardMiss, check=1, }; //何！？
+st[291] = { volumetype=1, file=chrpath+"Gor00_3901", type=0, category=1, prio=Def_SEP_GuardMiss, check=1, }; //見誤った！
+//st[292] = { volumetype=1, file=chrpath+"Gor00_3902", type=0, category=1, prio=Def_SEP_GuardMiss, check=1, }; //抜けた…だと！
+
+//受け身
+//st[300] = { volumetype=1, file=chrpath+"Gor00_4000", type=0, category=1, prio=Def_SEP_Recover, }; //遅いぞ
+st[301] = { volumetype=1, file=chrpath+"Gor00_4001", type=0, category=1, prio=Def_SEP_Recover, }; //それで終わりか
+st[301].file = GetTableFileName( [ chrpath+"Gor00_4001", chrpath+"Gor10_4001" ] );
+
+//st[302] = { volumetype=1, file=chrpath+"Gor00_4002", type=0, category=1, prio=Def_SEP_Recover, }; //こっちだ
+//st[303] = { volumetype=1, file=chrpath+"Gor00_4003", type=0, category=1, prio=Def_SEP_Recover, }; //貸しだ
+//st[304] = { volumetype=1, file=chrpath+"Gor00_4004", type=0, category=1, prio=Def_SEP_Recover, }; //よっ
+st[305] = { volumetype=1, file=chrpath+"Gor00_4005", type=0, category=1, prio=Def_SEP_Recover, }; //まくし立てるな
+st[305].file = GetTableFileName( [ chrpath+"Gor00_4005", chrpath+"Gor10_4008" ] );
+
+//st[306] = { volumetype=1, file=chrpath+"Gor00_4006", type=0, category=1, prio=Def_SEP_Recover, }; //あぶねぇあぶねぇ
+//st[307] = { volumetype=1, file=chrpath+"Gor00_4007", type=0, category=1, prio=Def_SEP_Recover, }; //そうきたか
+st[308] = { volumetype=1, file=chrpath+"Gor00_4008", type=0, category=1, prio=Def_SEP_Recover, }; //今のは惜しかったな
+st[308].file = GetTableFileName( [ chrpath+"Gor00_4008", chrpath+"Gor10_4009" ] );
+
+//シールド発動
+st[310] = { volumetype=1, file=chrpath+"Gor00_4100", type=0, category=1, }; //来いよ
+st[310].file = GetTableFileName( [ chrpath+"Gor00_4100", chrpath+"Gor10_4100" ] );
+
+//st[311] = { volumetype=1, file=chrpath+"Gor00_4101", type=0, category=1, }; //来るかぁ？
+st[312] = { volumetype=1, file=chrpath+"Gor00_4102", type=0, category=1, }; //そこだ
+st[312].file = GetTableFileName( [ chrpath+"Gor00_4102", chrpath+"Gor10_4102" ] );
+st[313] = { volumetype=1, file=chrpath+"Gor00_4103", type=0, category=1, }; //ここだ
+st[313].file = GetTableFileName( [ chrpath+"Gor00_4103", chrpath+"Gor10_4103" ] );
+//st[314] = { volumetype=1, file=chrpath+"Gor00_4104", type=0, category=1, }; //このへんだろ？
+//st[315] = { volumetype=1, file=chrpath+"Gor00_4105", type=0, category=1, }; //ふん
+//st[316] = { volumetype=1, file=chrpath+"Gor00_4106", type=0, category=1, }; //仕込んどくか
+//st[317] = { volumetype=1, file=chrpath+"Gor00_4107", type=0, category=1, }; //一応備えとくか
+//st[318] = { volumetype=1, file=chrpath+"Gor00_4108", type=0, category=1, }; //不穏だなぁオイ
+//st[319] = { volumetype=1, file=chrpath+"Gor00_4109", type=0, category=1, }; //なにか企んでそうだなぁ
+//st[320] = { volumetype=1, file=chrpath+"Gor00_4110", type=0, category=1, }; //ここはケンだな
+//st[321] = { volumetype=1, file=chrpath+"Gor00_4111", type=0, category=1, }; //防御に集中…ってな
+
+//シールド成功
+st[330] = { volumetype=1, file=chrpath+"Gor00_4200", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //力みすぎだ
+st[330].file = GetTableFileName( [ chrpath+"Gor00_4200", chrpath+"Gor10_4202" ] );
+st[331] = { volumetype=1, file=chrpath+"Gor00_4201", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //焦りが出てるぜ
+//st[332] = { volumetype=1, file=chrpath+"Gor00_4202", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //お堅いねぇ
+st[333] = { volumetype=1, file=chrpath+"Gor00_4203", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //おっとぉ…
+//st[334] = { volumetype=1, file=chrpath+"Gor00_4204", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //予想通り
+//st[335] = { volumetype=1, file=chrpath+"Gor00_4205", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //想定内だ
+//st[336] = { volumetype=1, file=chrpath+"Gor00_4206", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //同じ手はくわねぇぜ
+//st[337] = { volumetype=1, file=chrpath+"Gor00_4207", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //だめだってそれじゃ
+//st[338] = { volumetype=1, file=chrpath+"Gor00_4208", type=0, category=1, prio=Def_SEP_ShieldSuccess, check=1 }; //わかりやすいな
+
+//やられ弱
+st[340] = { volumetype=1, file=chrpath+"Gor00_4300", type=0, category=1, prio=Def_SEP_DamageLv1 }; //くっ
+st[341] = { volumetype=1, file=chrpath+"Gor00_4301", type=0, category=1, prio=Def_SEP_DamageLv1 }; //ちっ
+//st[342] = { volumetype=1, file=chrpath+"Gor00_4302", type=0, category=1, prio=Def_SEP_DamageLv1 }; //てっ　　※いて
+
+//やられ中
+st[343] = { volumetype=1, file=chrpath+"Gor00_4400", type=0, category=1, prio=Def_SEP_DamageLv2, check=1 }; //ぐっ！
+st[344] = { volumetype=1, file=chrpath+"Gor00_4401", type=0, category=1, prio=Def_SEP_DamageLv2, check=1 }; //かはっ
+//st[345] = { volumetype=1, file=chrpath+"Gor00_4402", type=0, category=1, prio=Def_SEP_DamageLv2, check=1 }; //つっ
+
+//やられ強
+//st[350] = { volumetype=1, file=chrpath+"Gor00_4500", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; //かはっ
+st[351] = { volumetype=1, file=chrpath+"Gor00_4501", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; //てめぇ！
+//st[352] = { volumetype=1, file=chrpath+"Gor00_4502", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; //まさか！
+st[353] = { volumetype=1, file=chrpath+"Gor00_4503", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; //ぶはァッ！
+//st[354] = { volumetype=1, file=chrpath+"Gor00_4504", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; //どふゥッ！
+//st[355] = { volumetype=1, file=chrpath+"Gor00_4505", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; //ぐほォッ！
+st[356] = { volumetype=1, file=chrpath+"Gor00_4506", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; //強烈だぜ！
+st[356].file = GetTableFileName( [ chrpath+"Gor00_4506", chrpath+"Gor10_4507" ] );
+//st[357] = { volumetype=1, file=chrpath+"Gor00_4507", type=0, category=1, prio=Def_SEP_DamageLv3, check=1 }; //ぐっ…ハ…！
+
+//ＫＯ１
+//st[361] = { volumetype=1, file=chrpath+"Gor00_4600", type=0, category=1, prio=Def_SEP_KO }; //ぐはあっ！
+st[362] = { volumetype=1, file=chrpath+"Gor00_4600_a", type=0, category=1, prio=Def_SEP_KO }; //ぐはあっ！
+st[362].file = GetTableFileName( [ chrpath+"Gor00_4600_a", chrpath+"Gor10_4604" ] );
+//st[363] = { volumetype=1, file=chrpath+"Gor00_4601", type=0, category=1, prio=Def_SEP_KO }; //くっ、遊びすぎたか
+st[364] = { volumetype=1, file=chrpath+"Gor00_4602", type=0, category=1, prio=Def_SEP_KO }; //ぐっ…思ったよりやるじゃねぇか
+st[364].file = GetTableFileName( [ chrpath+"Gor00_4602", chrpath+"Gor10_4605" ] );
+st[365] = { volumetype=1, file=chrpath+"Gor00_4603", type=0, category=1, prio=Def_SEP_KO }; //上等だぜ…！
+st[365].file = GetTableFileName( [ chrpath+"Gor00_4603", chrpath+"Gor10_4606" ] );
+
+//ＫＯ２
+st[370] = { volumetype=1, file=chrpath+"Gor00_4700", type=0, category=1, prio=Def_SEP_KO }; //なんだとーーー！　　　※３秒程度の絶叫でお願いします
+st[370].file = GetTableFileName( [ chrpath+"Gor00_4700", chrpath+"Gor10_4700" ] );
+st[371] = { volumetype=1, file=chrpath+"Gor00_4701", type=0, category=1, prio=Def_SEP_KO }; //うおおおおおおおおおっ！　※３秒程度の絶叫でお願いします
+st[371].file = GetTableFileName( [ chrpath+"Gor00_4701", chrpath+"Gor10_4701" ] );
+//st[372] = { volumetype=1, file=chrpath+"Gor00_4702", type=0, category=1, prio=Def_SEP_KO }; //ぐわぁぁぁぁぁぁーーーーー　
+st[373] = { volumetype=1, file=chrpath+"Gor00_4703", type=0, category=1, prio=Def_SEP_KO }; //じょ、冗談じゃねぇ…ぜ…
+st[374] = { volumetype=1, file=chrpath+"Gor00_4704", type=0, category=1, prio=Def_SEP_KO }; //こいつぁ…ぬかったぜ…
+//st[375] = { volumetype=1, file=chrpath+"Gor00_4705", type=0, category=1, prio=Def_SEP_KO }; //甘く…みすぎたか…
+//st[376] = { volumetype=1, file=chrpath+"Gor00_4706", type=0, category=1, prio=Def_SEP_KO }; //こ、こんなヤツが…居る…とは…な…
+
+//起き上がり
+//st[380] = { volumetype=1, file=chrpath+"Gor00_4800", type=0, category=1, }; //効いたぞ
+st[381] = { volumetype=1, file=chrpath+"Gor00_4801", type=0, category=1, }; //面白くなってきた
+st[381].file = GetTableFileName( [ chrpath+"Gor00_4801", chrpath+"Gor10_4801" ] );
+st[382] = { volumetype=1, file=chrpath+"Gor00_4802", type=0, category=1, }; //はっはっはー
+st[382].file = GetTableFileName( [ chrpath+"Gor00_4802", chrpath+"Gor10_4802" ] );
+//st[383] = { volumetype=1, file=chrpath+"Gor00_4803", type=0, category=1, }; //やるなら極めろ
+//st[384] = { volumetype=1, file=chrpath+"Gor00_4804", type=0, category=1, }; //やれやれだ
+//st[385] = { volumetype=1, file=chrpath+"Gor00_4805", type=0, category=1, }; //ぃよっとぉ！
+//st[386] = { volumetype=1, file=chrpath+"Gor00_4806", type=0, category=1, }; //ほっと！
+//st[387] = { volumetype=1, file=chrpath+"Gor00_4807", type=0, category=1, }; //いまのは効いたぜ！
+//st[388] = { volumetype=1, file=chrpath+"Gor00_4808", type=0, category=1, }; //その力…潰すには惜しいな
+
+
+//重傷起き上がり
+st[390] = { volumetype=1, file=chrpath+"Gor00_4900", type=0, category=1, }; //かーっ効いたぜ
+st[390].file = GetTableFileName( [ chrpath+"Gor00_4900", chrpath+"Gor10_4900" ] );
+//st[391] = { volumetype=1, file=chrpath+"Gor00_4901", type=0, category=1, }; //荒いねぇ…
+st[392] = { volumetype=1, file=chrpath+"Gor00_4902", type=0, category=1, }; //グッ…オオオッ！
+//st[393] = { volumetype=1, file=chrpath+"Gor00_4903", type=0, category=1, }; //チッ…一体どうなってやがる
+//st[394] = { volumetype=1, file=chrpath+"Gor00_4904", type=0, category=1, }; //なんなんだ、こいつの強さは…
+//st[395] = { volumetype=1, file=chrpath+"Gor00_4905", type=0, category=1, }; //オレが押されてる…だと…？
+//st[396] = { volumetype=1, file=chrpath+"Gor00_4906", type=0, category=1, }; //このオレが…恐怖する…だと？
+st[397] = { volumetype=1, file=chrpath+"Gor00_4907", type=0, category=1, }; //まだまだだぜ…！
+st[397].file = GetTableFileName( [ chrpath+"Gor00_4907", chrpath+"Gor10_4907" ] );
+//st[398] = { volumetype=1, file=chrpath+"Gor00_4908", type=0, category=1, }; //何度でも起きあがるぜぇ
+
+
+//ヴェールオフ
+st[400] = { volumetype=1, file=chrpath+"Gor00_5000", type=0, category=1, }; //本気にさせたな！
+st[400].file = GetTableFileName( [ chrpath+"Gor00_5000", chrpath+"Gor10_5101" ] );
+//st[401] = { volumetype=1, file=chrpath+"Gor00_5001", type=0, category=1, }; //全開でいくぜぇ！
+st[402] = { volumetype=1, file=chrpath+"Gor00_5002", type=0, category=1, }; //手加減なしだ！
+st[402].file = GetTableFileName( [ chrpath+"Gor00_5002", chrpath+"Gor10_5102" ] );
+//st[403] = { volumetype=1, file=chrpath+"Gor00_5003", type=0, category=1, }; //こっからは加減なしだ！
+//st[404] = { volumetype=1, file=chrpath+"Gor00_5004", type=0, category=1, }; //マジにさせんなよオイ
+//st[405] = { volumetype=1, file=chrpath+"Gor00_5005", type=0, category=1, }; //大人げないがなぁ！
+
+//チェインシフト
+st[410] = { volumetype=1, file=chrpath+"Gor00_5100", type=0, category=1, }; //い、く、ぜぇ！
+//st[411] = { volumetype=1, file=chrpath+"Gor00_5101", type=0, category=1, }; //いくぞ！
+//st[412] = { volumetype=1, file=chrpath+"Gor00_5102", type=0, category=1, }; //ここだ！
+//st[413] = { volumetype=1, file=chrpath+"Gor00_5103", type=0, category=1, }; //おっしゃあ！
+//st[414] = { volumetype=1, file=chrpath+"Gor00_5104", type=0, category=1, }; //おっし！行くぜ！
+//st[415] = { volumetype=1, file=chrpath+"Gor00_5105", type=0, category=1, }; //来たぜぇッ！
+st[416] = { volumetype=1, file=chrpath+"Gor00_5106", type=0, category=1, }; //おわらねぇ！
+st[417] = { volumetype=1, file=chrpath+"Gor00_5107", type=0, category=1, }; //つづくぜぇ
+
+//コンセントレーション
+//st[420] = { volumetype=1, file=chrpath+"Gor00_5200", type=0, category=1, }; //ッシャオラー！
+st[421] = { volumetype=1, file=chrpath+"Gor00_5201", type=0, category=1, }; //ふんぬっ…
+st[422] = { volumetype=1, file=chrpath+"Gor00_5202", type=0, category=1, }; //ハァァァアアアアーーーーッ
+//st[423] = { volumetype=1, file=chrpath+"Gor00_5203", type=0, category=1, }; //ぬーーーーーーーーーーん　　唸るようなニュアンスです
+
+//バースト
+//st[430] = { volumetype=1, file=chrpath+"Gor00_5300", type=0, category=1, }; //終わりだぁ！
+//st[431] = { volumetype=1, file=chrpath+"Gor00_5301", type=0, category=1, }; //弾けろ！
+//st[432] = { volumetype=1, file=chrpath+"Gor00_5302", type=0, category=1, }; //エクスプロージョン！
+//st[433] = { volumetype=1, file=chrpath+"Gor00_5303", type=0, category=1, }; //させねぇぜ！
+//st[434] = { volumetype=1, file=chrpath+"Gor00_5304", type=0, category=1, }; //邪魔すんじゃねぇ！
+//st[435] = { volumetype=1, file=chrpath+"Gor00_5305", type=0, category=1, }; //やりすぎじゃねーかぁ？
+//st[436] = { volumetype=1, file=chrpath+"Gor00_5306", type=0, category=1, }; //こっからは俺のターンだ！
+
+
+//２３６
+st[440] = { volumetype=1, file=chrpath+"Gor00_6000", type=0, category=1, }; //薙ぎ払う！
+//st[441] = { volumetype=1, file=chrpath+"Gor00_6001", type=0, category=1, }; //そこだ！
+//st[442] = { volumetype=1, file=chrpath+"Gor00_6002", type=0, category=1, }; //行かせてもらう！
+st[443] = { volumetype=1, file=chrpath+"Gor00_6003", type=0, category=1, }; //モータル スライド！
+st[444] = { volumetype=1, file=chrpath+"Gor00_6004", type=0, category=1, }; //死線滑走！(しせんかっそう)
+//st[445] = { volumetype=1, file=chrpath+"Gor00_6005", type=0, category=1, }; //そぉら…よっと！
+//st[446] = { volumetype=1, file=chrpath+"Gor00_6006", type=0, category=1, }; //断ち斬れ！
+st[447] = { volumetype=1, file=chrpath+"Gor00_6007", type=0, category=1, }; //かわせるかい？
+st[447].file = GetTableFileName( [ chrpath+"Gor00_6007", chrpath+"Gor10_6007" ] );
+
+//236追加攻撃　鎌で引き寄せる
+//st[450] = { volumetype=1, file=chrpath+"Gor00_6100", type=0, category=1, }; //ぜえっ！
+//st[451] = { volumetype=1, file=chrpath+"Gor00_6101", type=0, category=1, }; //逃がすかよ！
+//st[452] = { volumetype=1, file=chrpath+"Gor00_6102", type=0, category=1, }; //テイクアウッ！
+st[453] = { volumetype=1, file=chrpath+"Gor00_6103", type=0, category=1, }; //刈り取るっ！
+st[454] = { volumetype=1, file=chrpath+"Gor00_6104", type=0, category=1, }; //オマケだっ！
+st[454].file = GetTableFileName( [ chrpath+"Gor00_6104", chrpath+"Gor10_6104" ] );
+//st[455] = { volumetype=1, file=chrpath+"Gor00_6105", type=0, category=1, }; //っしゃ！
+st[456] = { volumetype=1, file=chrpath+"Gor00_6106", type=0, category=1, }; //刈り入れ時だ！
+//st[457] = { volumetype=1, file=chrpath+"Gor00_6107", type=0, category=1, }; //収穫ありだ！
+//st[458] = { volumetype=1, file=chrpath+"Gor00_6108", type=0, category=1, }; //ハーベスト！
+//st[459] = { volumetype=1, file=chrpath+"Gor00_6109", type=0, category=1, }; //シェイドハーベスト！
+//st[460] = { volumetype=1, file=chrpath+"Gor00_6110", type=0, category=1, }; //こっち来いって！
+
+//623　鎌を振り上げる
+//st[470] = { volumetype=1, file=chrpath+"Gor00_6200", type=0, category=1, }; //飛べ！
+//st[471] = { volumetype=1, file=chrpath+"Gor00_6201", type=0, category=1, }; //邪魔だ！
+//st[472] = { volumetype=1, file=chrpath+"Gor00_6202", type=0, category=1, }; //危ないぜ
+//st[473] = { volumetype=1, file=chrpath+"Gor00_6203", type=0, category=1, }; //行くゼェ！グリムリーパー！
+//st[474] = { volumetype=1, file=chrpath+"Gor00_6204", type=0, category=1, }; //どらどらぁっ！
+st[475] = { volumetype=1, file=chrpath+"Gor00_6205", type=0, category=1, }; //裁断分離！　　(さいだんぶんり)
+//st[476] = { volumetype=1, file=chrpath+"Gor00_6206", type=0, category=1, }; //死相がでてるぜ？
+st[477] = { volumetype=1, file=chrpath+"Gor00_6207", type=0, category=1, }; //切り裂け！
+st[478] = { volumetype=1, file=chrpath+"Gor00_6203_s2", type=0, category=1, }; //グリムリーパー！
+
+
+//214　手を伸ばして引き寄せて爪をさして吸収
+// st[480] = { volumetype=1, file=chrpath+"Gor00_6300", type=0, category=1, }; //よっ！
+st[481] = { volumetype=1, file=chrpath+"Gor00_6301", type=0, category=1, }; //ちょいと失礼！
+//st[482] = { volumetype=1, file=chrpath+"Gor00_6302", type=0, category=1, }; //文句は後でな！
+//st[483] = { volumetype=1, file=chrpath+"Gor00_6303", type=0, category=1, }; //炉解融合！（？）　
+//st[484] = { volumetype=1, file=chrpath+"Gor00_6304", type=0, category=1, }; //うっ…しゃあ！
+//st[485] = { volumetype=1, file=chrpath+"Gor00_6305", type=0, category=1, }; //そーら、捕まえたぜ…
+st[486] = { volumetype=1, file=chrpath+"Gor00_6306", type=0, category=1, }; //アシミレーション！
+st[487] = { volumetype=1, file=chrpath+"Gor00_6307", type=0, category=1, }; //待ってたぜ…この瞬間をよ！
+st[488] = { volumetype=1, file=chrpath+"Gor00_6308", type=0, category=1, }; //覚悟しな！
+//st[489] = { volumetype=1, file=chrpath+"Gor00_6309", type=0, category=1, }; //いただきだ！
+//st[490] = { volumetype=1, file=chrpath+"Gor00_6310", type=0, category=1, }; //オレと同化しな
+st[491] = { volumetype=1, file=chrpath+"Gor00_6311", type=0, category=1, }; //オレの一部となれ
+//st[492] = { volumetype=1, file=chrpath+"Gor00_6312", type=0, category=1, }; //んん～、なじむねぇ
+
+//214　手を伸ばすも、相手をつかめなかった
+//st[500] = { volumetype=1, file=chrpath+"Gor00_6350", type=0, category=1, }; //ふんっ
+//st[501] = { volumetype=1, file=chrpath+"Gor00_6351", type=0, category=1, }; //ちぃ
+//st[502] = { volumetype=1, file=chrpath+"Gor00_6352", type=0, category=1, }; //くっ！
+//st[503] = { volumetype=1, file=chrpath+"Gor00_6353", type=0, category=1, }; //ハンッ！
+//st[504] = { volumetype=1, file=chrpath+"Gor00_6354", type=0, category=1, }; //よっとお！
+//st[505] = { volumetype=1, file=chrpath+"Gor00_6355", type=0, category=1, }; //チッ、とどかねぇか
+st[506] = { volumetype=1, file=chrpath+"Gor00_6356", type=0, category=1, }; //おっと、残念
+st[506].file = GetTableFileName( [ chrpath+"Gor00_6356", chrpath+"Gor10_6358" ] );
+st[507] = { volumetype=1, file=chrpath+"Gor00_6357", type=0, category=1, }; //つかみ損ねたか
+st[507].file = GetTableFileName( [ chrpath+"Gor00_6357", chrpath+"Gor10_6357" ] );
+
+
+//22 鎌を地面に突き立てて鎌を高速回転して空を飛ぶ
+//st[510] = { volumetype=1, file=chrpath+"Gor00_6400", type=0, category=1, }; //どや！
+st[511] = { volumetype=1, file=chrpath+"Gor00_6401", type=0, category=1, }; //そらそらそら！
+st[511].file = GetTableFileName( [ chrpath+"Gor00_6401", chrpath+"Gor10_6401" ] );
+st[512] = { volumetype=1, file=chrpath+"Gor00_6402", type=0, category=1, }; //そいや！
+//st[513] = { volumetype=1, file=chrpath+"Gor00_6403", type=0, category=1, }; //回していくぜ！
+st[514] = { volumetype=1, file=chrpath+"Gor00_6404", type=0, category=1, }; //千々に乱れな！
+st[515] = { volumetype=1, file=chrpath+"Gor00_6405", type=0, category=1, }; //空裂割狭！　　(くうれつかっさ)
+//st[516] = { volumetype=1, file=chrpath+"Gor00_6406", type=0, category=1, }; //ざっくりいくぜ！
+//st[517] = { volumetype=1, file=chrpath+"Gor00_6407", type=0, category=1, }; //真っ二つに割れちまいな！
+st[518] = { volumetype=1, file=chrpath+"Gor00_6408", type=0, category=1, }; //エイミング！
+st[519] = { volumetype=1, file=chrpath+"Gor00_6409", type=0, category=1, }; //エイムオーペニング！
+
+//超技（鎌で乱舞）
+st[520] = { volumetype=1, file=chrpath+"Gor00_6500", type=0, category=1, }; //格の違いだ！
+st[521] = { volumetype=1, file=chrpath+"Gor00_6501", type=0, category=1, }; //夢路を辿れ、
+st[521].file = GetTableFileName( [ chrpath+"Gor00_6501", chrpath+"Gor00_6501" ] );
+st[522] = { volumetype=1, file=chrpath+"Gor00_6502", type=0, category=1, }; //タービュランス！
+st[522].file = GetTableFileName( [ chrpath+"Gor00_6502", chrpath+"Gor10_6502" ] );
+//st[523] = { volumetype=1, file=chrpath+"Gor00_6503", type=0, category=1, }; //天葬鎌陣！　　てんそうれんじん
+//st[524] = { volumetype=1, file=chrpath+"Gor00_6503_a", type=0, category=1, }; //天葬鎌陣！　　てんそうれんじん
+//st[525] = { volumetype=1, file=chrpath+"Gor00_6504", type=0, category=1, }; //ここらでしまいにするか
+st[526] = { volumetype=1, file=chrpath+"Gor00_6505", type=0, category=1, }; //そろそろ終わりにするか
+//st[527] = { volumetype=1, file=chrpath+"Gor00_6506", type=0, category=1, }; //吹き荒れろ！タービュランス！
+//st[528] = { volumetype=1, file=chrpath+"Gor00_6507", type=0, category=1, }; //閉落しなよ…ダウンクローズ！
+
+//インフィニイグジス　台詞部分、台本なかったので耳コピ。後で修正をよろしくお願いします。
+//st[530] = { volumetype=1, file=chrpath+"Gor00_6600", type=0, category=1, }; //さぁて、そろそろ終わらせるかねぇ
+//st[531] = { volumetype=1, file=chrpath+"Gor00_6601", type=0, category=1, }; //俺からこの力を引っ張り出すとはなぁ……。
+st[532] = { volumetype=1, file=chrpath+"Gor00_6602", type=0, category=1, }; //こっからは遊びじゃなくなるぜ！
+st[532].file = GetTableFileName( [ chrpath+"Gor00_6602", chrpath+"Gor10_6650" ] );
+
+//st[533] = { volumetype=1, file=chrpath+"Gor00_6610", type=0, category=1, }; //この強欲の真なる力、収穫者たる二つ名の印。今から思い知るだろうぜ
+//st[534] = { volumetype=1, file=chrpath+"Gor00_6611", type=0, category=1, }; //貪れ！魔鎌！その底なしの食欲、決して満たされること無く！
+//st[535] = { volumetype=1, file=chrpath+"Gor00_6612", type=0, category=1, }; //欲するは、この手に伝わる鼓動。顕現の根源たる命脈、刈り取らせてもらう。
+//st[536] = { volumetype=1, file=chrpath+"Gor00_6613", type=0, category=1, }; //おれよりの一振りを持ち、アイツを浄土へと導いてやりな！
+st[537] = { volumetype=1, file=chrpath+"Gor00_6614", type=0, category=1, }; //リヴァウアー！ソウルバニッシュ！その魂ごと飲み込んで、消し飛ばしちまえー！
+st[537].file = GetTableFileName( [ chrpath+"Gor00_6614", chrpath+"Gor10_6614" ] );
+//st[538] = { volumetype=1, file=chrpath+"Gor00_6615", type=0, category=1, }; //俺が欲するのは顕現の力でも、お前さんのたましいでもない……この戦いの勝利だ。
+//st[539] = { volumetype=1, file=chrpath+"Gor00_6616", type=0, category=1, }; //収穫完了ってトコか…おつかれさん。
+//st[540] = { volumetype=1, file=chrpath+"Gor00_6617", type=0, category=1, }; //くッ、今ので心が折れないかよ……若いねぇ、
+
+//対キャラ別
+//st[700] = { volumetype=1, file=chrpath+"Gor00_7100", type=0, category=1, }; //（対女性汎用）お嬢さん！
+//st[701] = { volumetype=1, file=chrpath+"Gor00_7101", type=0, category=1, }; //（対ハイド、セト）少年！
+//st[702] = { volumetype=1, file=chrpath+"Gor00_7102", type=0, category=1, }; //（対リンネ）お姫様！
+//st[703] = { volumetype=1, file=chrpath+"Gor00_7103", type=0, category=1, }; //（対ワレン）ご老体！
+//st[704] = { volumetype=1, file=chrpath+"Gor00_7104", type=0, category=1, }; //（対カーマイン）若者！
+//st[705] = { volumetype=1, file=chrpath+"Gor00_7105", type=0, category=1, }; //（対メルカヴァ）化け物！
+//st[706] = { volumetype=1, file=chrpath+"Gor00_7106", type=0, category=1, }; //（対メルカヴァ）虚無ヤロウ！
+//st[707] = { volumetype=1, file=chrpath+"Gor00_7107", type=0, category=1, }; //（対メルカヴァ、ワレン）でかいの！
+//st[708] = { volumetype=1, file=chrpath+"Gor00_7108", type=0, category=1, }; //（対バティスタ、ナナセ）お嬢ちゃん！
+//st[709] = { volumetype=1, file=chrpath+"Gor00_7109", type=0, category=1, }; //（対ヒルダ）ヒルダ！
+//st[710] = { volumetype=1, file=chrpath+"Gor00_7110", type=0, category=1, }; //（対ケイアス）ケイアス！
+
+//対ケイアス用戦闘中セリフ
+//対ケイアス登場
+// st[600] = { volumetype=1, file=chrpath+"Gor01_2000", type=0, category=1, }; // ついにお出ましというわけか
+// st[601] = { volumetype=1, file=chrpath+"Gor01_2001", type=0, category=1, }; // 手加減の必要はない……な
+// st[602] = { volumetype=1, file=chrpath+"Gor01_2002", type=0, category=1, }; // 存分に楽しもうか、ブラッディケイアス……
+st[603] = { volumetype=1, file=chrpath+"Gor01_2003", type=0, category=1, }; // なにが目的なのか、教えて貰おう　（嘲笑的に、ふっ……から入って下さい）
+// st[604] = { volumetype=1, file=chrpath+"Gor01_2004", type=0, category=1, }; // お前さんが表に出てくるなんて、珍しいこともあるもんだ
+st[605] = { volumetype=1, file=chrpath+"Gor01_2005", type=0, category=1, }; // おいおい、どういう風の吹き回しなんだ？
+
+// //対ケイアス勝利
+st[610] = { volumetype=1, file=chrpath+"Gor01_2101", type=0, category=1, }; // 随分と勘が鈍ってるみたいだな
+st[611] = { volumetype=1, file=chrpath+"Gor01_2102", type=0, category=1, }; // おいおい、手加減で勝たせて貰っても嬉しくないぜぇ？
+// st[612] = { volumetype=1, file=chrpath+"Gor01_2103", type=0, category=1, }; // 言わんこっちゃない。大人しくひっこんでることだ
+st[613] = { volumetype=1, file=chrpath+"Gor01_2104", type=0, category=1, }; // さすがは我が友、そして最大の強敵。見事だったぜ
+st[614] = { volumetype=1, file=chrpath+"Gor01_2105", type=0, category=1, }; // たのしいねぇ。これだからお前さんの相手は やめられないんだ
+// st[615] = { volumetype=1, file=chrpath+"Gor01_2106", type=0, category=1, }; // いくらお前さんでも、それ以上は無理ってもんだ
+// st[616] = { volumetype=1, file=chrpath+"Gor01_2107", type=0, category=1, }; // そうこなくちゃな。もっと俺を楽しませてくれ……
+
+// //対ケイアス敗北（判定負け）
+// st[620] = { volumetype=1, file=chrpath+"Gor01_2200", type=0, category=1, }; // いやいや、冗談だろこれ……
+// st[621] = { volumetype=1, file=chrpath+"Gor01_2201", type=0, category=1, }; // 室内トレーニングでもしてたか……？
+st[622] = { volumetype=1, file=chrpath+"Gor01_2202", type=0, category=1, }; // 相変わらず手厳しいな
+// st[623] = { volumetype=1, file=chrpath+"Gor01_2203", type=0, category=1, }; // 計算ずく、ってわけか
+st[624] = { volumetype=1, file=chrpath+"Gor01_2204", type=0, category=1, }; // ったく、やりにくいねぇ……
+
+// //対ケイアス（とヒルダ）戦闘汎用
+// st[630] = { volumetype=1, file=chrpath+"Gor01_2300", type=0, category=1, }; // はしゃぎすぎだ
+// st[631] = { volumetype=1, file=chrpath+"Gor01_2301", type=0, category=1, }; // 楽しそうだな
+// st[632] = { volumetype=1, file=chrpath+"Gor01_2302", type=0, category=1, }; // いい顔だ
+// st[633] = { volumetype=1, file=chrpath+"Gor01_2303", type=0, category=1, }; // その目だ
+// st[634] = { volumetype=1, file=chrpath+"Gor01_2304", type=0, category=1, }; // 伝わってくるぜ
+// st[635] = { volumetype=1, file=chrpath+"Gor01_2305", type=0, category=1, }; // 熱いな
+// st[636] = { volumetype=1, file=chrpath+"Gor01_2306", type=0, category=1, }; // たぎってくるぜ
+// st[637] = { volumetype=1, file=chrpath+"Gor01_2307", type=0, category=1, }; // わかってるよなぁ？
+// st[638] = { volumetype=1, file=chrpath+"Gor01_2308", type=0, category=1, }; // まだ終わらせない！
+// st[639] = { volumetype=1, file=chrpath+"Gor01_2309", type=0, category=1, }; // いかせてもらう！
+// st[640] = { volumetype=1, file=chrpath+"Gor01_2310", type=0, category=1, }; // もう限界か？
+// st[641] = { volumetype=1, file=chrpath+"Gor01_2311", type=0, category=1, }; // 我慢するんだな
+// st[642] = { volumetype=1, file=chrpath+"Gor01_2312", type=0, category=1, }; // クチだけは達者のようだな
+// st[643] = { volumetype=1, file=chrpath+"Gor01_2313", type=0, category=1, }; // まぁ、長い付き合いだしな
+// st[644] = { volumetype=1, file=chrpath+"Gor01_2314", type=0, category=1, }; // お互い様ってやつだ
+// st[645] = { volumetype=1, file=chrpath+"Gor01_2315", type=0, category=1, }; // 心の友よ、ってな
+// st[646] = { volumetype=1, file=chrpath+"Gor01_2316", type=0, category=1, }; // 愛しいぜ
+// st[647] = { volumetype=1, file=chrpath+"Gor01_2317", type=0, category=1, }; // 感じるか？
+// st[648] = { volumetype=1, file=chrpath+"Gor01_2318", type=0, category=1, }; // 気持ちいいよなぁ
+// st[649] = { volumetype=1, file=chrpath+"Gor01_2319", type=0, category=1, }; // おまえ、いつのまに！？　（いつの間にそんなに腕を上げたんだ？　という意味）
+// st[650] = { volumetype=1, file=chrpath+"Gor01_2320", type=0, category=1, }; // なるほどな
+// st[651] = { volumetype=1, file=chrpath+"Gor01_2321", type=0, category=1, }; // わかったぜ
+// st[652] = { volumetype=1, file=chrpath+"Gor01_2322", type=0, category=1, }; // またやろうな　（再び戦おうな）
+// st[653] = { volumetype=1, file=chrpath+"Gor01_2323", type=0, category=1, }; // 帰ってこいよ、こっちに
+// st[654] = { volumetype=1, file=chrpath+"Gor01_2324", type=0, category=1, }; // こうしてると思い出すねぇ
+// st[655] = { volumetype=1, file=chrpath+"Gor01_2324", type=0, category=1, }; // なぁ、ケイアス　　※こうしてると思い出すねぇ。なぁケイアス、と続く感じです
+// st[656] = { volumetype=1, file=chrpath+"Gor01_2324", type=0, category=1, }; // なぁ、ヒルダ

@@ -1,0 +1,2275 @@
+// 行動リストテーブル
+
+//GOR_MoveTable <- {};
+
+local t = {};
+
+local chr_col = BMvTbl.GetSelectColor();
+
+//-----------------------------------------------------------------------------
+// 共通関数
+//-----------------------------------------------------------------------------
+
+//吸収時の相手へのエフェクト
+local power_drain = {};
+
+power_drain.start <- function()
+{
+	//敵設定
+	local enemy = BMvCore.GetNearEnemyCharaData();
+	if( enemy.push() )
+	{
+		BMvEff.SetCharaColor( { color=0x5555FF, intime=20, time=999, type=4 } );
+		
+		enemy.pop();
+	}
+}
+
+power_drain.end <- function()
+{
+	//敵設定
+	local enemy = BMvCore.GetNearEnemyCharaData();
+	if( enemy.push() )
+	{
+		BMvEff.SetCharaColor( { color=0x5555FF, intime=60, time=60, type=0} );
+		
+		enemy.pop();
+	}
+}
+
+power_drain.clear <- function()
+{
+}
+
+if( Def_Sys_ChrAttackImpactParticle )
+{
+	t.AttackImpact <- function( info )
+	{
+		Battle_Std.AttackImpact_StdFunc(info);
+		
+		if( info.atk_throw ) return; //投げの時はおわり(0と1か本当に？とりあえず0以外だったら抜ける)
+
+		//特殊判定５が出ている攻撃だと散らすよ
+		local rc = BMvEff.GetHanteiRect ( { check=[ _Hantei_Etc, 4 ], flags=0 } );
+		if( rc.sx == _Hantei_Error ) return; //無かったら終わり
+
+		local pow = 0.9;
+		local pos = BMvEff.GetAttackHitPos();
+		//print("座標:x"+pos.x+" y:"+pos.y);
+		for(local i=0; i<6; i++)
+		{
+			local eff = BMvEff.CreateObject( { x=0, y=0, mvname="", datatype=0, start_pat=105, flags=0 } );
+			if( eff.push() )
+			{
+				BMvEff.SetObjectFlags( { flags=_ObjFlags_NoGround|_ObjFlags_MoveTimeStopAll } );
+				BMvEff.SetExist( { level = _Exist_NoHantei } );
+				
+				local e_grp_FrameID = 10+BMvEff.Random_Limit(5)*10; // 10 20 30...
+				local e_pos = BMvEff.Random_PointRad( { radx=256, rady=256 } );
+				BMvTbl.SetPosition( { x=pos.x+e_pos.x, y=pos.y+e_pos.y } );
+				
+				local frame = 20+BMvEff.Random_Limit(10);
+				local e_ang = 0.1+(BMvEff.Random_F()*0.8);
+				local e_spd = (2400+BMvEff.Random_Limit(700))*pow;//-sa*6000;
+				if( e_grp_FrameID >= 40 ) e_spd*=0.4;
+				local v = BMvEff.GetVector_FromAngle( { angle = e_ang, speed = e_spd } );
+				BMvTbl.SetAngle( {angle_float=e_ang} );
+				BMvTbl.SetVector( { x=v.x, y=v.y, addx=-v.x/frame, addy=-v.y/frame, flags=_Vector_Div } );
+				BMvTbl.JumpFrameID(e_grp_FrameID);
+				BMvEff.SetObjectFlags( { flags=_ObjFlags_MoveTimeStopAll } );
+				
+				eff.pop();
+			}
+		}	
+	}
+}
+
+
+//-----------------------------------------------------------------------------
+// フォースファンクション
+//-----------------------------------------------------------------------------
+
+t.Mv_Atk_StdBandC <-
+{
+	function Init_After()
+	{
+		local isVorpal = Battle_Std.SetVorpalPattern( "V_B+C" ); // 0, 1
+		BMvTbl.SetLP(0,isVorpal);
+		
+		Battle_Std.MoveCodeEx.AddFlag( 1, def_MC1_ChainShiftOK ); // ツールでCS可なら空振りCS可能
+	}
+	function FrameUpdate_After()
+	{
+		switch( Battle_Std.GetUpdateFrameID() )
+		{
+		case 100:
+			// エフェクト呼び出し
+			local usepat = (BMvTbl.GetLP(0)==1)? "V_B+CTama" : "B+CTama";
+			local eff = Battle_Std.CreateFireBall( { mv="Mv_FireBall_BandC", pat=usepat, x=300, y=-250 } )
+			break;
+		}
+		Battle_Std.SetHitMuteki( 1, 8, _HitCheckFlag_Head ); // Param1 & 8 の時、_HitCheckFlag_Head 頭無敵
+	}	
+}
+
+t.Mv_FireBall_BandC <-
+{
+	function Init_After()
+	{
+		// 
+		BMvTbl.SetLP(0,0); // 吸ったかどうか
+		BMvTbl.SetLP(1,0); // 引き寄せるかどうか
+	}
+	function HitInterrupt_After() : (power_drain)
+	{
+		// 181211 空中ヒット時のみ引き寄せるようにした
+		// 多段ヒットなので何回も入ってくる
+		// 空中のやられＸベクトルは無効になっているので注意
+		if( BMvTbl.GetLP(1)==1 )
+		{
+			local player = BMvCore.GetPlayerCharaData();
+			if( player.push() )
+			{
+				local enemy = BMvCore.GetNearEnemyCharaData();
+				if( enemy.isdone() )
+				{
+					local posst = BMvEff.GetPointStatus( { target=enemy } ); // 位置情報取得
+					local muki = BMvTbl.GetMuki();
+					local suikomipoint = posst.pos_x*muki - 100*128; // ちょっと手前まで引き寄せる
+					if( suikomipoint < 0 ) suikomipoint = 0; // 近すぎたら引き寄せない
+					local vx = suikomipoint/50; //　離れてるほどベクトルが強い
+					// _dp("\n vx:"+vx);
+					if( enemy.push() )
+					{
+						local isAir = BCMDTbl.CheckPosState( _PosState_Air );
+						if( isAir )
+						{
+							BMvTbl.SetVector( { x=vx, addx=0, flags=_Vector_Bound  } ); // ベクトル上書き　同一フレームに別の攻撃が当たるとそちらのベクトルで上書きされるので注意
+						}
+						enemy.pop();
+					}
+				}
+				player.pop();
+			}
+			BMvTbl.SetLP(1,0); // 引き寄せた
+		}
+		if( Battle_Std.CheckDamageTiming_FrameID(100) )
+		{
+			// ここでベクトル入れてものけぞりベクトルで上書きされてしまうのでフラグだけ立てて次のフレームで処理する
+			//空中ヒット時のみ
+			local hs = BMvTbl.GetMvHitStatus();
+			if( hs.PosState & _PosState_Air )
+			{
+				BMvTbl.SetLP(1,1); // 引き寄せる
+			}
+		}
+		
+		if( BMvTbl.GetLP(0)==0 )
+		{
+			if( Battle_Std.CheckGuardTiming_FrameID( 100 ) )
+			{
+				print("\n GRD吸収");
+				power_drain.start();
+				
+				//相手のGRDを奪う
+				Battle_Std.EnemyGRD_Drain( 10000, 1 ); // 相手のGRDを吸収する
+				
+				power_drain.end();
+				
+				BMvTbl.SetLP(0,1); // もう吸わない
+				
+				BMvTbl.CalcHitValue(-100);
+				
+			}
+			else if( Battle_Std.CheckDamageTiming_FrameID( 100 ) )
+			{
+				print("\n GRD吸収");
+				power_drain.start();
+				
+				//相手のGRDを奪う
+				Battle_Std.EnemyGRD_Drain( 10000, 1 ); // 相手のGRDを吸収する
+				
+				power_drain.end();
+				
+				BMvTbl.SetLP(0,1); // もう吸わない
+			}
+		}
+	}
+
+};
+
+t.Mv_FireBall_BandC_Blocked <-
+{
+	function Init_After()
+	{
+		BMvTbl.JumpFrameID( 900 );
+	}
+}
+
+//-----------------------------------------------------------------------------
+// 共通動作
+//-----------------------------------------------------------------------------
+
+t.Mv_Null_ColFlash <-
+{
+	function Init_After()
+	{
+		BMvEff.SetObjectFlags( { flags=_ObjFlags_MoveTimeStopAll } );
+	}
+	function FrameUpdate_After()
+	{
+		local s = BMvTbl.GetMvStatus();
+		if( s.CallCount==0 )
+		{
+			local player = BMvCore.GetPlayerCharaData();
+			if( player.push() )
+			{
+				if( s.MvCount%2==0 )
+				{
+					BMvEff.SetPaletteSlot( 0 ); 
+					
+					//Battle_Std.DrawDebugAttackInfo("flip "+s.MvCount);
+				}
+				else
+				{
+					BMvEff.SetPaletteSlot( 1 ); 
+					
+					//Battle_Std.DrawDebugAttackInfo("flop"+s.MvCount);
+				}
+			
+				player.pop();
+			}
+		}
+	}
+}
+
+t.Mv_Standby <-
+{
+	function Init_After() : (chr_col)
+	{
+		if(chr_col == 41) BMvEff.CreateObject( { mvname="Mv_Null_ColFlash" } );
+	}
+}
+t.Mv_Startup <-
+{
+	function Init_After() : (chr_col)
+	{
+		if(chr_col == 41) BMvEff.CreateObject( { mvname="Mv_Null_ColFlash" } );
+	}
+}
+
+//-----------------------------------------------------------------------------
+// 通常技
+//-----------------------------------------------------------------------------
+
+
+t.Mv_Obj_TestObj <- 
+{
+	function Init_After()
+	{
+		BMvEff.EraseObjectFlags( { flags=_ObjFlags_NoGround } );
+	}
+};
+
+t.Mv_Atk_StdA <-
+{
+	function Init_After()
+	{
+		//BMvTbl.SetPattern(0xc0);
+		
+		//BMvEff.CreateObject( { mvname="Mv_Obj_TestObj", start_pat=0x199, x=350, y=0, flags=_Position_ToolShift } );
+		
+		BMvTbl.SetHitCheckFlag( { type=1, val=_HitCheckFlag_Legs|Def_HitCheckFlag_LightLegs, time=255, flag=_ClearFlag_ChangeMv } );
+		
+	}
+}
+
+t.Mv_Atk_StdB <-
+{
+	function FrameUpdate_After()
+	{
+	}
+}
+
+t.Mv_Atk_StdC <-
+{
+	function FrameUpdate_After()
+	{
+		Battle_Std.JumpFrameID_NotHoldButton({ mask=(1<<2), checkid=[100,200], jumpid=[101,201], endid=250 }); //ボタンホールドしてなかったらIDジャンプ
+	}
+}
+
+t.Mv_Atk_CroB <-
+{
+	function Init_After()
+	{
+		BMvTbl.SetHitCheckFlag( { type=1, val=_HitCheckFlag_Legs, time=255, flag=_ClearFlag_ChangeMv } ); // 足無敵にスカる
+	}
+}
+
+t.Mv_Atk_CroC <-
+{
+	function FrameUpdate_After()
+	{
+		Battle_Std.SetHitMuteki( 1, 8, _HitCheckFlag_Head ); // Param1 & 8 の時、_HitCheckFlag_Head 頭無敵
+		
+		// 足属性と足無敵ごっちゃにしないでね
+		Battle_Std.SetHitCheckFlag( 1, 32, _HitCheckFlag_Legs ); // Param1 & 32 の時足属性
+	}
+}
+
+t.Mv_Atk_AirB <-
+{
+	function Init_After()
+	{
+		BMvTbl.SetLP(0,0); // 攻撃が触れたかどうか＋ヒット回数
+	}
+	function FrameUpdate_After()
+	{
+		// 1hit 1hitだから普通にやるとダメ
+		local hitnum = BMvTbl.CalcHitValue(0);  // ヒット数出現の残り取得
+		if( hitnum>0 && BMvTbl.GetLP(0) != 0 ) // 初段以外
+		{
+			// 屈ガード＋空ガード可能に（空ガードは全段シールド取らないでいいように追加）
+			BMvTbl.SetAtkGuardFlag( { guard=_GuardFlag_GuardCrouch|_GuardFlag_GuardAir, time=64, flag=_ClearFlag_ChangeMv } );
+		}
+	}
+	function HitInterrupt_After()
+	{
+		if( Battle_Std.CheckHitTiming() )
+		{
+			BMvTbl.AddLP(0,1); // あたったら
+		}
+	}
+}
+
+t.Mv_Atk_AirC <-
+{
+	function FrameUpdate_After()
+	{
+		Battle_Std.JumpFrameID_NotHoldButton({ mask=(1<<2), checkid=100, jumpid=101, endid=150 }); //ボタンホールドしてなかったらIDジャンプ		
+	}
+}
+
+t.Mv_Atk_Cro3C <-
+{
+	function Init_After()
+	{
+		BMvTbl.SetHitCheckFlag( { type=1, val=_HitCheckFlag_Legs, time=255, flag=_ClearFlag_ChangeMv } ); // 足無敵にスカる
+		
+		Battle_Std.MoveCodeEx.AddFlag( 1, def_MC1_GuardChainShiftOK ); // ガード時もCS可能
+		
+		// ゴルドー重いしHintではなくキャッシュ予約を入れる
+		Battle_Std.CallSkillSoonCaches( [51,8], [52,9] );
+	}
+	function FrameUpdate_After()
+	{
+		Battle_Std.JumpFrameID_NotHoldButton({ mask=(1<<2), checkid=50, jumpid=51, endid=60 }); //ボタンホールドしてなかったらIDジャンプ		
+	}
+}
+
+t.Mv_Atk_DashStdC <-
+{
+	function HitInterrupt_After()
+	{
+		if( Battle_Std.CheckDamageTiming() )
+		{
+			//ヒットＳＥ再生
+			BSound.SE_Play( { type=_SeType_Normal, num=220 } );
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------
+// 6B
+//-----------------------------------------------------------------------------
+
+t.Mv_Atk_Std6B <-
+{
+	function Init_After()
+	{
+		BMvTbl.SetLP(0,0);
+	}
+	function FrameUpdate_After()
+	{
+		switch( Battle_Std.GetUpdateFrameID() )
+		{
+		case 100:
+			if( Battle_Std.CheckEnemyisDamage() ) 
+			{
+				BMvTbl.Frame_Proc( 1, _ValAdd );
+				BMvTbl.SetLP(0,1);
+				
+				//speed up 6b during combos
+			}
+			break;
+		case 101:
+			//incase of cheeky resets
+			if( BMvTbl.GetLP(0) ) BMvTbl.SetAtkGuardFlag( { guard=_GuardFlag_GuardCrouch, time=5, flag=_ClearFlag_ChangeFrame } );
+			break;
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------
+// 通常投げ
+//-----------------------------------------------------------------------------
+
+t.Mv_Throw_F_Hit <-
+{
+	function Init_After()
+	{
+		local enemy = BMvCore.GetNearEnemyCharaData();
+		if( enemy.push() )
+		{
+			BMvCore.CallEntryBCCachePreTransfer( { pat=330, frame=1, rest=10 } ); // もちあげのところ予約
+			
+			enemy.pop();
+		}	
+	}
+	function FrameUpdate_After()
+	{
+		switch( Battle_Std.GetUpdateFrameID() )
+		{
+		case 1000:
+			BMvEff.ThrowParam( { pat=320, x=250, y=-50 } );
+			BMvEff.ThrowRelease( { type="追撃ダウン", airrecover=0, flags=0 } ); // 開放のみ
+			break;
+		}
+		
+		Battle_Std.CaptureChara_Positioning(); // つかみ中の相手が地面に埋まってたら補正をかける
+	}
+}
+
+t.Mv_Throw_F_Hit_Add2 <-
+{
+	function Init()
+	{
+		BMvTbl.SetPattern("Throw_F_Hit_Add2"); //下おとし
+		// 座標が端背負い＋端を向いているだったらズラす ※TODO:この処理は全キャラにやってもいい気がする
+		// そうしないと端背負いで振り向き投げをやったとき軸が重なる
+		local xlen = Battle_Std.GetStageHajiDistance();
+		// _dp("\n xlen:"+xlen);
+		if( xlen == 0 )
+		{
+			BMvTbl.SetPosition( { x=-128, flags=_Position_ChangeMuki|_Position_Add } );
+		}
+		BMvTbl.SetMvAction( def_MVA_Throw );
+	}
+	function FrameUpdate()
+	{
+		Battle_Std.TypeSE_Play({ type="投げ成功" });		
+		//開放のposを指定すると、高さが変化してキャラによって有利フレームに差がでる
+		Battle_Std.ThrowRelease({ id=1000, pat=313, x=150, y=-50, type="しりもち落下", airrecover=0 });
+		Battle_Std.CaptureChara_Positioning();
+	}
+	function Finalize()
+	{
+		BMvTbl.SetNextMoveTable( "Mv_Neutral" );		
+	}
+}
+
+//-----------------------------------------------------------------------------
+// 623攻
+//-----------------------------------------------------------------------------
+
+local maketmpl_SkillDoubleRollingSlash = function( param={} )
+{
+	local ret_tmpl = {};
+	
+	local mvparam =
+	{
+		csAntenHosei = 0,
+		cvoCancel = 0,
+		enable_add = 0,
+		nohosei = 0,
+	}
+	
+	switch( param.type )
+	{
+	case "A":
+		mvparam.cvoCancel = 1;
+		mvparam.enable_add = 1;
+		break;
+	case "B":
+		mvparam.cvoCancel = 1;
+		mvparam.enable_add = 1;
+		break;
+	case "EX":
+		mvparam.csAntenHosei = 1;
+		mvparam.nohosei = 1;
+		break;
+	}
+
+	ret_tmpl.Init_After <- function() : (mvparam)
+	{
+		// 各種補正は最初の１ヒットのみ
+		if(mvparam.nohosei) BMvTbl.SetNoHoseiFlag( {  val=1, time=254, flag=_ClearFlag_ChangePattern|_ClearFlag_ChangeMv } );	
+		
+		if( mvparam.cvoCancel )
+		{
+			Battle_Std.MoveCodeEx.AddFlag( 2, def_MC2_EnableCVO_OnlyCS );
+		}
+		
+		if( mvparam.enable_add )
+		{
+			Battle_Std.MoveCodeEx.AddFlag( 6, def_MC6_EnableCansel_AddCommand );
+		}
+	}
+
+	ret_tmpl.FrameUpdate_After <- function() : (mvparam)
+	{
+		Battle_Std.SetHitMuteki2_Param1( { [8]=_HitCheckFlag_Head, [64]=Def_HitCheckFlag_AirDive, [4]=_HitCheckFlag_FireBall } );
+	}	
+	
+	ret_tmpl.HitInterrupt_After <- function()
+	{
+		if( Battle_Std.CheckDamageTiming() )
+		{
+			Battle_Std.SetPosition_DamageHanteiRect( { power=50 } );
+		}
+	}
+	
+	ret_tmpl.LastUpdate_After <- function() : (mvparam)
+	{
+		if( mvparam.csAntenHosei )
+		{
+			Battle_Std.CSAntenGaesi_DamageHosei(); // CSからの暗転返しで出したら補正をかける
+		}
+	}
+	
+	return ret_tmpl;
+}
+
+t.Mv_Skill_623A <- maketmpl_SkillDoubleRollingSlash( { type="A" } );
+t.Mv_Skill_623B <- maketmpl_SkillDoubleRollingSlash( { type="B" } );
+t.Mv_Skill_623EX <- maketmpl_SkillDoubleRollingSlash( { type="EX" } );
+
+t.Mv_Skill_623A_Add <- {
+	
+	function Init_After()
+	{
+		local eff = BMvEff.CreateObject( { mvname="Mv_Obj_623Add_RollEff" } );
+	}
+};
+
+t.Mv_Skill_623B_Add <- t.Mv_Skill_623A_Add;
+
+t.Mv_Obj_623Add_RollEff <-
+{
+	function Init_After()
+	{
+		BMvEff.SetObjectFlags( { flags=_ObjFlags_EraseParentDamage|_ObjFlags_NoGround|_ObjFlags_EraseParentPatChange|_ObjFlags_ToParentHitStatus } );
+		BMvTbl.SetLP(0,0); // 消滅させたか
+	}
+	function FrameUpdate_After()
+	{
+		//親の特殊判定の位置にくっつける
+		local player = BMvCore.GetPlayerCharaData();
+		if( player.push() )
+		{
+			local rc = BMvEff.GetHanteiRect( { check=[ _Hantei_Etc, 0 ], flags=0 } );
+			local xpos = ( BMvTbl.GetMuki()==1 )? rc.sx : rc.ex; //右向きならsx、左向きならex
+			
+			player.pop();
+			
+			if( rc.sx != _Hantei_Error ) // 存在するか
+			{
+				BMvTbl.SetPosition( { x=xpos, y=rc.sy } );
+			}
+			else
+			{
+				//特殊判定がないなら消えます
+				if( BMvTbl.GetLP(0)==0 )
+				{
+					BMvTbl.SetLP(0,1); // 消滅させたか
+					BMvTbl.JumpFrameID(110);
+				}
+			}
+		}
+	}
+	function HitInterrupt_After()
+	{
+		if( Battle_Std.CheckDamageTiming() )
+		{
+			Battle_Std.SetPosition_DamageHanteiRect( { power=50 } );
+		}
+	}
+}
+
+
+//-----------------------------------------------------------------------------
+// インフィニットワース
+//-----------------------------------------------------------------------------
+
+t.Mv_Null_SetIWCamera <-
+{
+	function Init_After()
+	{
+		BMvEff.SetObjectFlags( { flags=_ObjFlags_EraseParentDamage|_ObjFlags_NoGround|_ObjFlags_ParentMove|_ObjFlags_EraseParentPatChange|_ObjFlags_MoveTimeStopAll } );	
+		
+		BMvTbl.SetLP(0,0);
+		
+	}
+	function FrameUpdate_After()
+	{
+		local was_mv = BMvTbl.GetLP(0);
+		local s = BMvTbl.GetMvStatus();
+		if( s.CallCount==0 )
+		{
+			local player = BMvCore.GetPlayerCharaData();
+			if( player.push() )
+			{
+				local is_early_hit = BMvTbl.GetLP(0);
+				local p_s = BMvTbl.GetMvStatus();
+				player.pop();
+				
+				if( !is_early_hit ) return;
+				
+				if( is_early_hit && BMvTbl.GetLP(0)==0 )
+				{
+					Battle_Std.DrawDebugAttackInfo("flip");
+					
+					local pos = BMvTbl.GetPosition(0);
+					local shiftx = 200*128*BMvTbl.GetMuki();
+					
+					local cam_pos = pos.x+shiftx;
+					
+					BMvEff.SetCamera_Focus( { num=0, charapos=1, zoom=1.25, time=[0,999,30], type_in=3, type_out=0 } );
+					BMvEff.SetCamera_Focus( { num=1, x=cam_pos, y=-150*128, zoom=1, time=[30,30,1], type_in=3, type_out=0 } );
+					
+					BMvTbl.SetLP(0,cam_pos);
+				}
+				
+				if( p_s.FrameID==0x28 && p_s.isFrameUpdate )
+				{
+					local pos = BMvTbl.GetPosition(0);
+					local shiftx = 200*128*BMvTbl.GetMuki();
+					
+					BMvEff.SetCamera_Focus( { num=1 } );
+					BMvEff.SetCamera_Focus( { num=0, x=pos.x+shiftx, y=-150*128, zoom=1, time=[0,999,100], type_in=3, type_out=2 } );
+					BMvEff.SetCamera_Focus( { num=1, x=pos.x+shiftx*1.5, y=0, zoom=1, time=[30,999,0], type_in=1, type_out=2 } );
+					
+					local cam_pos = pos.x+shiftx*1.5;
+					
+					BMvTbl.SetLP(0,cam_pos);
+					
+					//BMvTbl.SetFinalize(0);
+				}
+				
+				if( p_s.FrameID==0x46 )
+				{
+					local cam_pos = BMvTbl.GetLP(0);
+					
+					local pos = BMvTbl.GetPosition(0);
+					local shiftx = 200*128*BMvTbl.GetMuki();
+					
+					BMvEff.SetCamera_Focus( { num=0 } );
+					BMvEff.SetCamera_Focus( { num=1 } );
+					BMvEff.SetCamera_Focus( { num=0, x=cam_pos, y=0, zoom=1, time=[0,0,10], type_out=2 } );
+					
+					BMvTbl.SetFinalize(0);
+				}
+			}
+		}
+	}
+}
+
+t.Mv_Skill_41236SP <-
+{
+	function Init_After()
+	{
+		//BMvEff.SetCamera_Focus( { charapos=1, zoom=1.25, time=[0,0,0], type_in=3, type_out=2 } );
+		//BMvEff.SetCamera_Focus( { charapos=1, zoom=1.25, time=[20,def_FL_SPCutinStopTime-40,10], type_in=3, type_out=1 } );
+		BMvTbl.SetLP(0,0);
+		
+		BMvEff.CreateObject( { mvname="Mv_Null_SetIWCamera", flags=_Position_ToolShift } );
+	}
+	function FrameUpdate_After()
+	{
+		switch( Battle_Std.GetUpdateFrameID() )
+		{
+		case 10: //開幕
+			BMvEff.CreateObject( { x=0, y=0, mvname="Mv_Obj_41236SP_FirstEff", flags=_Position_ToolShift } );	
+			break;
+		case 30: //くるくるをつかんだ
+			break;
+		case 40: //１回目攻撃
+			break;
+		case 100: //くるくるをまた出す
+			BMvEff.CreateObject( { x=0, y=0, mvname="Mv_Obj_41236SP_RollEff", flags=_Position_ToolShift } );	
+			break;
+		case 110: //くるくるを消す
+			break;
+		}
+	}
+	function HitInterrupt_After()
+	{
+		local s = BMvTbl.GetMvStatus(); // ステータス取得
+		
+		local hs = BMvTbl.GetMvHitStatus();
+		local isDamage = (hs.Type & _HitType_Damage && hs.isCatchFlag == 0);
+
+		Battle_Std.SetDamageMutekiFrame( 60 ); // ダメージ中無敵時間を上書き
+		
+		switch( s.FrameID )
+		{
+		case 20:
+			if( Battle_Std.CheckDamageTiming() ) Battle_Std.SetPosition_DamageHanteiRect({ power=25 });
+			break;
+		case 40: //１回目攻撃
+		case 50: //攻撃
+		case 60: //攻撃
+		case 70: //攻撃
+			//ヒットしてたら相手の座標をワープさせる半ロックに
+			if( isDamage )
+			{
+				Battle_Std.SetPosition_DamageHanteiRect();
+			}
+			break;
+		case 150: //とどめ
+			if( Battle_Std.CheckDamageTiming() )
+			{
+				//ヒットＳＥ再生
+				BSound.SE_Play( { type=_SeType_Player, num=6 } ); //ボカーンＳＥ
+				BMvEff.SetCamera_Quake( { time=20, type=2, clear=0, } ); //揺らし
+				BMvEff.Slowmotion_Set( { time=4, power=5000 } ); //スロー
+			}
+			break;
+		}
+		
+		//BMvEff.SetStopTime( { time=0, stopme=0 } );
+		if( Battle_Std.CheckDamageTiming() && BMvEff.IsMyStopTime() && BMvTbl.GetLP(0)==0 ) 
+		{
+			BMvTbl.SetLP(0,1);
+			
+			local pos = BMvTbl.GetPosition(0);
+			local epos = Battle_Std.GetEnemyPosition();
+			
+			local shiftx = 200*128*BMvTbl.GetMuki();
+			//local shifty = -200*128*BMvTbl.GetMuki();
+			//BMvEff.SetCamera_Focus( { num=0, charapos=1, zoom=1.25, time=[0,999,30], type_in=3, type_out=0 } );
+			
+			
+			//BMvEff.SetCamera_Focus( { num=1, x=pos.x+shiftx, y=-150*128, zoom=1, time=[30,10,30], type_in=3, type_out=2 } );
+			//BMvEff.SetCamera_Focus( { num=2, time=[700,700,700], type_in=3, type_out=2 } );
+			
+			//BMvEff.SetCamera_Focus( { num=0, x=pos.x+shiftx, y=-150*128, time=[300,10,30], type_in=3, type_out=2	 } );
+			
+			//BMvEff.CameraShift_Set( { x=150*128, flags=_Position_ChangeMuki } );
+			
+			BMvEff.SetStopTime( { time=0, stopme=0 } );
+			
+		}
+	}
+	function LastUpdate_After()
+	{
+		BMvEff.SetPlayerTimer( { muteki_nage=0, muteki_dage=0 } ); //無敵状態を解除
+	}
+}
+
+t.Mv_Obj_41236SP_FirstEff <-
+{
+	function Init_After()
+	{
+		BMvEff.SetObjectFlags( { flags=_ObjFlags_EraseParentDamage|_ObjFlags_NoGround|_ObjFlags_ParentMove|_ObjFlags_EraseParentPatChange } );	
+	}
+	function FrameUpdate_After()
+	{
+		local s = BMvTbl.GetMvStatus(); // ステータス取得
+		local oya_s = Battle_Std.GetPlayerMvStatus();
+		
+		switch( oya_s.FrameID )
+		{
+		case 30: //抜け
+			if( s.isFrameUpdate )
+			{
+				BMvTbl.JumpFrameID(30);
+			}		
+			break;
+		case 20: //開幕
+			break;
+		case 30: //開幕
+			break;
+		}
+	}
+}
+
+t.Mv_Obj_41236SP_RollEff <-
+{
+	function Init_After()
+	{
+		BMvEff.SetObjectFlags( { flags=_ObjFlags_EraseParentDamage|_ObjFlags_NoGround|_ObjFlags_EraseParentPatChange } );	
+	}
+	function FrameUpdate_After()
+	{
+		local s = BMvTbl.GetMvStatus(); // ステータス取得
+		local oya_s = Battle_Std.GetPlayerMvStatus();
+
+		//親の特殊判定の位置にくっつける
+		local player = BMvCore.GetPlayerCharaData();
+		if( player.push() )
+		{
+			local rc = BMvEff.GetHanteiRect( { check=[ _Hantei_Etc, 0 ], flags=0 } );
+			local xpos = ( BMvTbl.GetMuki()==1 )? rc.sx : rc.ex; //右向きならsx、左向きならex
+			
+			player.pop();
+			
+			if( rc.sx != _Hantei_Error ) // 存在するか
+			{
+				BMvTbl.SetPosition( { x=xpos, y=rc.sy } );
+			}
+		}
+		
+		switch( s.FrameID )
+		{
+		case 100: //回転
+			if( oya_s.FrameID==110) BMvTbl.JumpFrameID(110);			
+			break;
+		case 110: //終了
+			break;
+		}		
+	}
+}
+
+//-----------------------------------------------------------------------------
+// 214攻
+//-----------------------------------------------------------------------------
+
+if( chr_col == 41 )
+{
+	t.Mv_Skill_214A <-
+	{
+		function Init_After()
+		{
+			Battle_Std.ThrowTech.SetThrowMvFlag_AutoDel(14); //指定フレームだけ投げ属性（投げ抜けを受け付ける）
+			Battle_Std.CreateTechObject(0); //コマンドではなくでかかりを投げ抜けにするためにここ
+			Battle_Std.MoveCodeEx.AddFlag( 2, def_MC2_SkillThrow );
+			
+			BMvTbl.SetPattern("214A_EL");
+		}
+		function HitInterrupt_After()
+		{
+			Battle_Std.SetThrowHitFinalize(256,512,256); // 投げorリジェクトヒット,　強引投げヒット, コンボ投げ
+		}
+		function Finalize()
+		{
+			Battle_Std.SwitchNextMoveTable("Mv_Neutral",[256,"Mv_Skill_214A_Hit"],[512,"Mv_Skill_214A_TechWait"]);
+		}
+	}
+	
+	t.Mv_Skill_214A_TechWait <- Battle_Std.MakeMv.TechWait(
+	{
+		FrameID=512,
+		ThrowParam={ pattern=17, x=280, y=0 },
+		NextMv="Mv_Skill_214A_Hit",
+	});
+	
+	t.Mv_Skill_214A_Hit <-
+	{
+		flags = def_TmplFlags_NoAddComboRate, // コンボレートを加算しない
+		function Init_After()
+		{
+			BMvTbl.SetPattern("214A_Hit_EL");
+		}
+		function FrameUpdate_After() : (power_drain) // フレーム更新処理
+		{
+			local s = BMvTbl.GetMvStatus(); // ステータス取得
+			if(s.isFrameUpdate )
+			{
+				local rc = BMvEff.GetHanteiRect ( { check=[ _Hantei_Etc, 0 ], flags=_HanteiFlag_NoMukiChange | _HanteiFlag_Tool  } );
+				if( rc.sx != _Hantei_Error ) // 存在するか
+				{
+					BMvEff.ThrowParam( { pattern=320, x=rc.sx, y=rc.sy, hantei_rect=[ _Hantei_Etc, 9 ] } );
+				}
+				if( s.FrameID==155 )
+				{
+					power_drain.start(); //吸収色変え開始			
+				}
+				if( s.FrameID==512 )
+				{
+					power_drain.end(); //吸収色変え終了
+					BMvEff.ThrowParam( { x=220, y=0, } );
+					BMvEff.ThrowRelease( { type="崩れ落ちダウン", airrecover=0, flags=_ThrowRelease_NoGroundRecover } );
+					
+					//相手のGRDを奪う
+					Battle_Std.EnemyGRD_Drain( 10000 ); // 相手のGRDを吸収する
+				}
+			}
+		}
+		function LastUpdate_After() : (power_drain)
+		{
+			power_drain.clear(); //念のため　吸収色変え初期化
+			Battle_Std.NoCansel_NoAttackHit(); //何かでキャンセルしなかった場合追撃不能にする
+		}
+	}
+}
+else
+{
+	t.Mv_Skill_214A <-
+	{
+		function Init_After()
+		{
+			Battle_Std.ThrowTech.SetThrowMvFlag_AutoDel(14); //指定フレームだけ投げ属性（投げ抜けを受け付ける）
+			Battle_Std.CreateTechObject(0); //コマンドではなくでかかりを投げ抜けにするためにここ
+			Battle_Std.MoveCodeEx.AddFlag( 2, def_MC2_SkillThrow );
+		}
+		function HitInterrupt_After()
+		{
+			Battle_Std.SetThrowHitFinalize(256,512,256); // 投げorリジェクトヒット,　強引投げヒット, コンボ投げ
+		}
+		function Finalize()
+		{
+			Battle_Std.SwitchNextMoveTable("Mv_Neutral",[256,"Mv_Skill_214A_Hit"],[512,"Mv_Skill_214A_TechWait"]);
+		}
+	}
+	
+	t.Mv_Skill_214A_TechWait <- Battle_Std.MakeMv.TechWait(
+	{
+		FrameID=512,
+		ThrowParam={ pattern=17, x=150, y=0 },
+		NextMv="Mv_Skill_214A_Hit",
+	});
+	
+	t.Mv_Skill_214A_Hit <-
+	{
+		flags = def_TmplFlags_NoAddComboRate, // コンボレートを加算しない
+		function Init_After()
+		{
+		}
+		function FrameUpdate_After() : (power_drain) // フレーム更新処理
+		{
+			local s = BMvTbl.GetMvStatus(); // ステータス取得
+			if(s.isFrameUpdate )
+			{
+				local rc = BMvEff.GetHanteiRect ( { check=[ _Hantei_Etc, 0 ], flags=_HanteiFlag_NoMukiChange | _HanteiFlag_Tool  } );
+				if( rc.sx != _Hantei_Error ) // 存在するか
+				{
+					BMvEff.ThrowParam( { pattern=320, x=rc.sx, y=rc.sy, hantei_rect=[ _Hantei_Etc, 9 ] } );
+				}
+				if( s.FrameID==155 )
+				{
+					power_drain.start(); //吸収色変え開始			
+				}
+				if( s.FrameID==512 )
+				{
+					power_drain.end(); //吸収色変え終了
+					BMvEff.ThrowParam( { x=220, y=0, } );
+					BMvEff.ThrowRelease( { type="崩れ落ちダウン", airrecover=0, flags=_ThrowRelease_NoGroundRecover } );
+					
+					//相手のGRDを奪う
+					Battle_Std.EnemyGRD_Drain( 10000 ); // 相手のGRDを吸収する
+				}
+			}
+		}
+		function LastUpdate_After() : (power_drain)
+		{
+			power_drain.clear(); //念のため　吸収色変え初期化
+			Battle_Std.NoCansel_NoAttackHit(); //何かでキャンセルしなかった場合追撃不能にする
+		}
+	}
+}
+
+t.Mv_Skill_214B <-
+{
+	function Init_After()
+	{
+		// 対空投げ流石に投げ抜け属性不要だと思うので削除
+		Battle_Std.MoveCodeEx.AddFlag( 2, def_MC2_SkillThrow );
+		
+		BMvTbl.SetLP(3,0); //play se
+	}
+	function FrameUpdate_After()
+	{
+		Battle_Std.SetHitMuteki2_Param1( { [8]=_HitCheckFlag_Head, [64]=Def_HitCheckFlag_AirDive } );
+		// Battle_Std.SetHitMuteki( 1, 8, _HitCheckFlag_Head ); // Param1 & 8 の時、_HitCheckFlag_Head 頭無敵
+		
+		local enemy = BMvEff.CheckHantei( { src=[ _Hantei_Etc, 0, -1 ], dst=[ _Hantei_Kurai, 0, -1 ], flags=_HC_EnemyPc  } );
+		if(enemy.push())
+		{
+			local e_mvn = BMvTbl.GetMvName();
+			local e_vo_mode = BMvTbl.GetLP(0);
+			
+			enemy.pop();
+			
+			if(e_mvn == "Mv_Liberate")
+			{
+				if(e_vo_mode < 4) BMvTbl.SetFinalize(1024);
+			}
+		}
+	}
+	function HitInterrupt_After()
+	{
+		local enemy = BMvCore.GetNearEnemyCharaData();
+		if( enemy.push() )
+		{
+			local e_mvn = BMvTbl.GetMvName();
+			enemy.pop();
+			
+			local fin_code = ( e_mvn == "Mv_Liberate" )? 512 : 256;
+			
+			BMvTbl.SetLP(3,1); //play se
+			Battle_Std.SetThrowHitFinalize(fin_code); // コマ投げヒット分岐ファイナライズ
+			
+		}
+	}
+	function Finalize()
+	{
+		Battle_Std.SwitchNextMoveTable("Mv_Neutral",[256,"Mv_Skill_214B_Hit"],[512,"Mv_Skill_214B_VO_Hit"],[1024,"Mv_Skill_VO_214B_EX"]);
+	}	
+}
+
+t.Mv_Skill_214EX <-
+{
+	function Init_After()
+	{
+		Battle_Std.ThrowTech.SetThrowMvFlag_AutoDel(14); //指定フレームだけ投げ属性（投げ抜けを受け付ける）
+		Battle_Std.CreateTechObject(0); //コマンドではなくでかかりを投げ抜けにするためにここ
+		Battle_Std.MoveCodeEx.AddFlag( 2, def_MC2_SkillThrow );
+	}
+	function HitInterrupt_After()
+	{
+		Battle_Std.SetThrowHitFinalize(256,512,256); // 投げorリジェクトヒット,　強引投げヒット, コンボ投げ
+	}
+	function Finalize()
+	{
+		Battle_Std.SwitchNextMoveTable("Mv_Neutral",[256,"Mv_Skill_214EX_Hit"],[512,"Mv_Skill_214EX_TechWait"]);
+	}
+}
+
+//投げ抜け待機Mv作成
+t.Mv_Skill_214EX_TechWait <- Battle_Std.MakeMv.TechWait(
+{
+	FrameID=512,
+	ThrowParam={ pattern=17, x=280, y=0 },
+//	TechFrame = def_FL_BoundTech,
+	NextMv="Mv_Skill_214EX_Hit",
+});
+
+t.Mv_Skill_214B_Hit <- 
+{
+	flags = def_TmplFlags_NoAddComboRate, // コンボレートを加算しない
+	function Init_After()
+	{
+		Battle_Std.MoveCodeEx.AddFlag( 2, def_MC2_EnableCVO_OnlyCS );
+	}
+	function FrameUpdate_After() : (power_drain) // フレーム更新処理
+	{
+		local s = BMvTbl.GetMvStatus(); // ステータス取得
+		if(s.isFrameUpdate )
+		{
+			if( s.FrameID==256 )
+			{
+				power_drain.start(); //吸収色変え開始			
+			}		
+			if(s.FrameID==1024)
+			{
+				power_drain.end(); //吸収色変え終了
+				BMvEff.ThrowParam( { x=220, y=-150, } );
+				BMvEff.ThrowRelease( { type="きりもみ転倒", airrecover=0, flags=_ThrowRelease_NoGroundRecover } );
+
+				Battle_Std.EnemyGRD_Drain( 10000 ); // 相手のGRDを吸収する
+			}
+		}
+	}
+	function LastUpdate_After() : (power_drain)
+	{
+		power_drain.clear(); //念のため　吸収色変え初期化
+		Battle_Std.NoCansel_NoAttackHit(); //何かでキャンセルしなかった場合追撃不能にする
+	}	
+}
+
+t.Mv_Skill_VO_214B_EX <-
+{
+	function Init_After()
+	{
+		// 対空投げ流石に投げ抜け属性不要だと思うので削除
+		Battle_Std.MoveCodeEx.AddFlag( 2, def_MC2_SkillThrow );
+		
+		//BMvEff.SetPlayerTimer( { muteki_nage=2540, muteki_dage=2540, muteki_nageX=2540, muteki_dageX=2540 } );
+		BMvEff.SetStopTime( { time=45, stopme=0 } );
+	}
+	function FrameUpdate_After()
+	{
+		Battle_Std.SetHitMuteki2_Param1( { [8]=_HitCheckFlag_Head, [64]=Def_HitCheckFlag_AirDive } );
+		// Battle_Std.SetHitMuteki( 1, 8, _HitCheckFlag_Head ); // Param1 & 8 の時、_HitCheckFlag_Head 頭無敵
+	}
+	function HitInterrupt_After()
+	{
+		Battle_Std.SetThrowHitFinalize(512);
+	}
+	function Finalize()
+	{
+		Battle_Std.SwitchNextMoveTable("Mv_Neutral",[256,"Mv_Skill_214B_Hit"],[512,"Mv_Skill_214B_VO_Hit"]);
+	}	
+}
+
+t.Mv_Skill_214B_VO_Hit <- 
+{
+	flags = def_TmplFlags_NoAddComboRate, // コンボレートを加算しない
+	function Init_After()
+	{
+		Battle_Std.MoveCodeEx.AddFlag( 2, def_MC2_EnableCVO_OnlyCS );
+		
+		BMvTbl.SetLP(0,0);
+	}
+	function FrameUpdate_After() : (power_drain) // フレーム更新処理
+	{
+		if( Battle_Std.GetUpdateFrameID()==200 && BMvTbl.GetLP(3)==0 ) BMvTbl.JumpFrameID( 201 );
+		
+		
+		if( BMvTbl.GetLP(3)==1 ) Battle_Std.TypeSE_Play({ type="Mv_Skill_214B_VO_Hit_Special" });
+		
+		local s = BMvTbl.GetMvStatus(); // ステータス取得
+		if(s.isFrameUpdate )
+		{
+			if( s.FrameID==256 )
+			{
+				power_drain.start(); //吸収色変え開始			
+			}		
+			if(s.FrameID==1024)
+			{
+				power_drain.end(); //吸収色変え終了
+				BMvEff.ThrowParam( { x=120, y=-280, } );
+				BMvEff.ThrowRelease( { type="きりもみ転倒", airrecover=0, flags=_ThrowRelease_NoGroundRecover } );
+				
+				//BMvEff.ThrowRelease( { type=0x28, airrecover=0, flags=_ThrowRelease_NoGroundRecover } );
+
+				Battle_Std.EnemyGRD_Drain( 10000 ); // 相手のGRDを吸収する
+				
+
+			}
+		}
+		
+		/*
+		if( s.FrameID==1024 && BMvTbl.GetLP(0)==0 )
+		{							
+			local enemy = BMvCore.GetNearEnemyCharaData();
+			if( enemy.push() )
+			{
+				BMvTbl.SetMuki( _Direction_Reverse );
+				BMvEff.GRD_SetBreak( 0, 1000, 1000 );
+				
+				enemy.pop();
+				
+				//Battle_Std.DrawDebugAttackInfo("flip");
+			}
+			
+			BMvTbl.SetLP(0,1);
+		}
+		*/
+	}
+	function HitInterrupt_After()
+	{
+	}
+	function LastUpdate_After() : (power_drain)
+	{
+		power_drain.clear(); //念のため　吸収色変え初期化
+		//Battle_Std.NoCansel_NoAttackHit(); //何かでキャンセルしなかった場合追撃不能にする
+	}	
+}
+
+t.Mv_Skill_214EX_Hit <-
+{
+	flags = def_TmplFlags_NoAddComboRate, // コンボレートを加算しない
+	function Init_After()
+	{
+		BMvTbl.SetPattern("214EX_Hit");
+		//BMvTbl.JumpFrameID( 256 );	
+	}
+	function FrameUpdate_After() : (power_drain)// フレーム更新処理
+	{
+		local s = BMvTbl.GetMvStatus(); // ステータス取得
+		if(s.isFrameUpdate )
+		{
+			local rc = BMvEff.GetHanteiRect ( { check=[ _Hantei_Etc, 0 ], flags=_HanteiFlag_NoMukiChange | _HanteiFlag_Tool  } );
+			if( rc.sx != _Hantei_Error ) // 存在するか
+			{
+				BMvEff.ThrowParam( { pattern=320, x=rc.sx, y=rc.sy, hantei_rect=[ _Hantei_Etc, 9 ] } );
+				if( s.FrameID==300 || s.FrameID==256 ) Battle_Std.CaptureChara_Positioning();
+			}
+			if( s.FrameID==155 )
+			{
+				power_drain.start(); //吸収色変え開始			
+			}			
+			if(s.FrameID==512)
+			{
+				power_drain.end(); //吸収色変え終了
+				BMvEff.ThrowParam( { x=220, y=0, } );
+				BMvEff.ThrowRelease( { type="崩れ落ちダウン", airrecover=0, flags=_ThrowRelease_NoGroundRecover } );
+				
+				//相手のGRDを奪う
+				Battle_Std.EnemyGRD_Drain( 10000 ); // 相手のGRDを吸収する
+			}
+		}
+	}
+	function LastUpdate_After() : (power_drain)
+	{
+		power_drain.clear(); //念のため　吸収色変え初期化
+		Battle_Std.NoCansel_NoAttackHit(); //何かでキャンセルしなかった場合追撃不能にする
+		Battle_Std.CSAntenGaesi_DamageHosei(); // CSからの暗転返しで出したら補正をかける
+	}
+}
+
+//-----------------------------------------------------------------------------
+// 236攻
+//-----------------------------------------------------------------------------
+
+local maketmpl_SkillLongSlideSwing = function( param={} )
+{
+	local ret_tmpl = {};
+	
+	local mvparam =
+	{
+		feint_button = 0,
+	}
+	
+	switch( param.type )
+	{
+	case "A":
+		break;
+	case "B":
+		mvparam.feint_button = 1;
+		break;
+	}
+
+	ret_tmpl.Init_After <- function()
+	{
+		Battle_Std.MoveCodeEx.AddFlag( 6, def_MC6_EnableCansel_AddCommand );
+		
+		BMvTbl.SetLP(0,0);
+	}
+	
+	ret_tmpl.FrameUpdate_After <- function() : (mvparam)
+	{
+		local s = BMvTbl.GetMvStatus();
+		
+		//if(s.Param3 > 0 && s.isFrameUpdate) Battle_Std.AddToolShift_NoSurinuke( s.Param3, (1<<1) );
+		Battle_Std.AddToolShift_NoSurinuke_FU( 3, (1<<1) );
+		
+		switch( Battle_Std.GetUpdateFrameID() )
+		{
+			case 101:
+				if ( BMvTbl.CheckButtonHold( (1<<mvparam.feint_button) ) && BMvTbl.GetLP(0) )
+				{
+					BMvTbl.SetPattern("Mortal_Feint");
+				}
+				break;
+			case 200:
+				local eff = BMvEff.CreateObject( { start_pat=77, y=120*128, x=550*128 } );
+				if( eff.push() )
+				{
+					BMvTbl.SetAngle( { angle = 100 } );
+					BMvEff.SetObjectFlags( { flags=_ObjFlags_NoGround } );
+					
+					//BMvEff.ObjProcFlags_Set( { flags=_ObjProcFlags_EraseChangeParentMv } );
+					
+					eff.pop();
+				}
+				break;
+		}
+	}
+	
+	ret_tmpl.HitInterrupt_After <- function()
+	{
+		if( Battle_Std.CheckHitTiming() ) BMvTbl.SetLP(0,1);
+	}
+	
+	return ret_tmpl;
+}
+
+t.Mv_Skill_236A <- maketmpl_SkillLongSlideSwing( { type="A" } );
+t.Mv_Skill_236B <- maketmpl_SkillLongSlideSwing( { type="B" } );
+
+t.Mv_Skill_236_236 <- 
+{
+	flags = def_TmplFlags_NoAddComboRate, // コンボレートを加算しない
+	function Init_After()
+	{
+		Battle_Std.MoveCodeEx.AddFlag( 6, def_MC6_EnableCansel_AddCommand );
+	}
+	function HitInterrupt_After()
+	{
+		local s = BMvTbl.GetMvStatus();
+		local hs = BMvTbl.GetMvHitStatus();
+		//ヒット中何となく寄せる
+		//やられＸベクトルは無効になっているので注意
+		if( s.FrameID==100 && hs.Type & _HitType_Damage && hs.isCatchFlag == 0 ) //当身とられた時は除外
+		{
+			local enemy = BMvCore.GetNearEnemyCharaData();
+			if( enemy.isdone() )
+			{
+				local posst = BMvEff.GetPointStatus( { target=enemy } ); // 位置情報取得
+				local vx = posst.distance_x/20;
+				
+				if( enemy.push() )
+				{
+					local vec = BMvTbl.GetVector( { flags=_Vector_Bound } );
+					BMvTbl.SetVector( { x=vx, addx=0, flags=_Vector_Normal  } );
+					
+					enemy.pop();
+				}
+			}
+		}
+	}
+}
+
+t.Mv_Skill_236_236_236 <- 
+{
+	function Init_After()
+	{
+		Battle_Std.MoveCodeEx.AddFlag( 2, def_MC2_SkillThrow );
+	}
+	function HitInterrupt()
+	{
+		Battle_Std.SetThrowHitFinalize(256,512,256); // 投げorリジェクトヒット,　強引投げヒット, コンボ投げ
+		
+		BMvTbl.ClearHitStatus();
+	}
+	function Finalize()
+	{
+		Battle_Std.SwitchNextMoveTable("Mv_Neutral",[256,"Mv_Skill_236_236_236_Hit"],[512,"Mv_Skill_236_236_236_TechWait"]);
+	}	
+}
+
+t.Mv_Skill_236_236_214 <- 
+{
+	function Init_After()
+	{
+		Battle_Std.MoveCodeEx.AddFlag( 2, def_MC2_SkillThrow );
+	}
+	function FrameUpdate_After()
+	{
+		Battle_Std.SetHitMuteki2_Param1( { [8]=_HitCheckFlag_Head, [64]=Def_HitCheckFlag_AirDive } );
+	}
+	function HitInterrupt()
+	{
+		Battle_Std.SetThrowHitFinalize(256); // 投げorリジェクトヒット,　強引投げヒット, コンボ投げ
+		
+		BMvTbl.ClearHitStatus();
+	}
+	function Finalize()
+	{
+		Battle_Std.SwitchNextMoveTable("Mv_Neutral",[256,"Mv_Skill_236_236_214_Hit"],[512,"Mv_Skill_236_236_236_TechWait"]);
+	}	
+}
+
+t.Mv_Skill_236_236_214_Hit <- 
+{
+	flags = def_TmplFlags_NoAddComboRate, // コンボレートを加算しない
+	function Init_After()
+	{
+		//同一パターン内ヒット分岐
+		//BMvTbl.JumpFrameID( 256 );	
+	}
+	function FrameUpdate_After() : (power_drain) // フレーム更新処理
+	{
+		local s = BMvTbl.GetMvStatus(); // ステータス取得
+		if(s.isFrameUpdate )
+		{
+			if( s.FrameID==256 )
+			{
+				power_drain.start(); //吸収色変え開始			
+			}		
+			if(s.FrameID==1024)
+			{
+				power_drain.end(); //吸収色変え終了
+				BMvEff.ThrowParam( { x=220, y=-150, } );
+				BMvEff.ThrowRelease( { type="きりもみ転倒", airrecover=0, flags=_ThrowRelease_NoGroundRecover } );
+
+				Battle_Std.EnemyGRD_Drain( 5000, 2 ); // 相手のGRDを吸収する
+			}
+		}
+	}
+	function LastUpdate_After() : (power_drain)
+	{
+		power_drain.clear(); //念のため　吸収色変え初期化
+		Battle_Std.NoCansel_NoAttackHit(); //何かでキャンセルしなかった場合追撃不能にする
+	}	
+}
+
+t.Mv_Skill_236_236_236_TechWait <- Battle_Std.MakeMv.TechWait(
+{
+	FrameID=512,
+	ThrowParam={ pattern=17, x=200, y=0 },
+//	TechFrame = def_FL_BoundTech,
+	NextMv="Mv_Skill_236_236_236_Hit",
+});
+
+t.Mv_Skill_236_236_236_Hit <- 
+{
+	flags = def_TmplFlags_NoAddComboRate, // コンボレートを加算しない
+	function Init_After()
+	{
+		//同一パターン内ヒット分岐
+		//BMvTbl.JumpFrameID( 256 );	
+	}
+	function FrameUpdate_After() : (power_drain) // フレーム更新処理
+	{
+		local s = BMvTbl.GetMvStatus(); // ステータス取得
+		if(s.isFrameUpdate )
+		{
+			if( s.FrameID==256 )
+			{
+				power_drain.start(); //吸収色変え開始			
+			}		
+			if(s.FrameID==1024)
+			{
+				power_drain.end(); //吸収色変え終了
+				BMvEff.ThrowParam( { x=220, y=0, } );
+				BMvEff.ThrowRelease( { type="崩れ落ちダウン", airrecover=0, flags=_ThrowRelease_NoGroundRecover } );
+
+				Battle_Std.EnemyGRD_Drain( 5000, 2 ); // 相手のGRDを吸収する
+			}
+		}
+	}
+	function LastUpdate_After() : (power_drain)
+	{
+		power_drain.clear(); //念のため　吸収色変え初期化
+		Battle_Std.NoCansel_NoAttackHit(); //何かでキャンセルしなかった場合追撃不能にする
+	}	
+}
+
+t.Mv_Skill_236EX <- 
+{
+	function FrameUpdate_After()
+	{
+		switch( Battle_Std.GetUpdateFrameID() )
+		{
+		case 40:
+			Battle_Std.AddToolShift_NoSurinuke( 64 );
+			break;
+		case 45:
+			Battle_Std.AddToolShift_NoSurinuke( 110 );
+			break;
+		}
+	}
+	function HitInterrupt_After()
+	{
+		//ヒット分岐
+		local s = BMvTbl.GetMvStatus(); // ステータス取得
+		local hs = BMvTbl.GetMvHitStatus();
+		//ヒット中何となく寄せる
+		//やられＸベクトルは無効になっているので注意
+		if( s.FrameID==200 && hs.Type & _HitType_Damage && hs.isCatchFlag == 0 ) //当身とられた時は除外
+		{
+			local enemy = BMvCore.GetNearEnemyCharaData();
+			if( enemy.isdone() )
+			{
+				local e_ypos = Battle_Std.GetEnemyPosition().y/128;
+				
+				local posst = BMvEff.GetPointStatus( { target=enemy } ); // 位置情報取得
+				local vx = posst.distance_x/30;
+				local addyv = ( e_ypos / 8 )*-1;
+				
+				//Battle_Std.DrawDebugAttackInfo("addyvec "+addyv);
+				
+				if( enemy.push() )
+				{
+					local vec = BMvTbl.GetVector( { flags=_Vector_Bound } );
+					BMvTbl.SetVector( { x=vx, addx=0, flags=_Vector_Normal  } );
+					
+					enemy.pop();
+				}
+			}
+		}
+		
+		if( s.FrameID==100 ) Battle_Std.SetThrowHitFinalize(256);
+	}
+	function Finalize()
+	{
+		Battle_Std.SwitchNextMoveTable("Mv_Neutral",[256,"Mv_Skill_236EX_Hit"]); //デフォ,[code,mv]...	
+	}
+}
+
+t.Mv_Skill_236EX_Hit <- 
+{
+	flags = def_TmplFlags_NoAddComboRate // コンボレートを加算しない
+	function FrameUpdate_After() : (power_drain)
+	{
+		local s = BMvTbl.GetMvStatus(); // ステータス取得
+		switch( s.FrameID )
+		{
+		case 1: //開幕
+			if( s.isFrameUpdate ) BMvEff.ThrowParam( { pattern=304, x=500, y=0, } );
+			//Battle_Std.ThrowParam_WithHanteiEtc(300);
+			break;		
+		case 2: //引き寄せ開始
+			//つかみ中の相手を解放する
+			if( s.isFrameUpdate ) BMvEff.ThrowRelease( { type="腹やられ強" } );
+			break;
+		case 5: //引き寄せヒットマークを出す
+			break;
+		case 100: //上昇開始
+			if( s.isFrameUpdate )
+			{
+				//print("！？");
+				BMvEff.CameraShift_Set( { x=0, y=-256*128, flags=_Position_ChangeMuki } );		
+			}
+			break;
+		case 555: //つめでさす
+			if( s.isFrameUpdate )
+			{
+				power_drain.start(); //すいとり色かえ
+			}
+			local enemy = BMvCore.GetNearEnemyCharaData();
+			if( enemy.push() )
+			{
+				BMvCore.CallEntryBCCachePreTransfer( { pat=320, frame=1, rest=6 } ); // やられ予約
+				
+				enemy.pop();
+			}	
+			break;
+		case 512: //つめできゅうしゅうしてつかみ開放
+			if( s.isFrameUpdate )
+			{
+				//相手のGRDを奪う
+				Battle_Std.EnemyGRD_Drain( 5000, 2 ); // 相手のGRDを吸収する
+				
+				//つかみ開放
+				BMvEff.ThrowParam( { x=200, y=-75, } );
+				BMvEff.ThrowRelease( { type="きりもみ転倒", airrecover=0, } );
+
+				power_drain.end(); //すいとり色かえ
+			}
+			break;
+		case 666: //終了
+			if( s.isFrameUpdate )
+			{
+				
+				BMvEff.CameraShift_Clear();
+			}
+			break;
+		}
+	}
+	function HitInterrupt_After()
+	{
+		local enemy = BMvCore.GetNearEnemyCharaData();
+		
+		if( Battle_Std.GetUpdateFrameID()==200 )
+		{
+			if( enemy.isdone() )
+			{
+				if( enemy.push() )
+				{
+					BMvEff.SetBoundSt( { settime = 14 } );
+					enemy.pop();
+				}
+			}
+		}
+	}
+	function LastUpdate_After() : (power_drain)
+	{
+		power_drain.clear(); //すいとり色かえ
+		BMvEff.CameraShift_Clear();
+	}
+}
+
+
+//-----------------------------------------------------------------------------
+// ２２攻
+//-----------------------------------------------------------------------------
+
+t.Mv_Skill_0202B <-
+{
+	function FrameUpdate_After()
+	{
+		Battle_Std.SetHitMuteki( 1, 32, _HitCheckFlag_Legs ); // Param1 & 32 の時、足無敵
+		
+		switch( Battle_Std.GetUpdateFrameID() )
+		{
+		case 100:
+			Battle_Std.CreateObjectEX( { mvname="Mv_Obj_0202B_Tama", x=34*128, y=-492*128,
+			objectflags=_ObjFlags_EraseParentPatChange|_ObjFlags_ParentMove|_ObjFlags_NoGround } );
+			break;
+		}
+	}
+}
+
+t.Mv_Obj_0202B_Tama <- {};
+
+t.Mv_Skill_0202EX <-
+{
+	function Init_After()
+	{
+	}
+	function FrameUpdate_After()
+	{
+		switch( Battle_Std.GetUpdateFrameID() )
+		{
+		case 100:
+			Battle_Std.CreateObjectEX( { x=34, y=-492, flags=_Position_ToolShift, mvname="Mv_Obj_0202EX_Tama",
+			objectflags=_ObjFlags_EraseParentPatChange|_ObjFlags_ParentMove|_ObjFlags_NoGround|_ObjFlags_FromParentStop|_ObjFlags_ToParentStop } );
+			break;
+		}
+	}
+	function LastUpdate_After()
+	{
+		Battle_Std.CSAntenGaesi_DamageHosei(); // CSからの暗転返しで出したら補正をかける
+	}
+}
+t.Mv_Obj_0202EX_Tama <-
+{
+}
+//-----------------------------------------------------------------------------
+// J214攻
+//-----------------------------------------------------------------------------
+
+local maketmpl_Skill_AirKamaSpinMove = function( param={} )
+{
+	local ret_tmpl = {};
+	
+	local mvparam = {
+		csAntenHosei = 0,
+		atkRollMv = "Mv_Obj_J214A_AtkRoll",
+	};
+	
+	switch( param.type )
+	{
+	case "A":
+		mvparam.atkRollMv = "Mv_Obj_J214A_AtkRoll";
+		break;
+	case "B":
+		mvparam.atkRollMv = "Mv_Obj_J214B_AtkRoll";
+		break;
+	case "EX":
+		mvparam.csAntenHosei = 1;
+		mvparam.atkRollMv = "Mv_Obj_J214EX_AtkRoll";
+		break;
+	}
+	
+	// ret_tmpl.usepat <- "J214A";
+	
+	ret_tmpl.Init_After <- function() : (mvparam)
+	{
+		BMvTbl.SetHitCheckFlag( { type=1, val=Def_HitCheckFlag_AirDive, time=255, flag=_ClearFlag_ChangeMv } ); // 空突無敵にスカる
+	}	
+	
+	ret_tmpl.FrameUpdate_After <- function() : ( mvparam )
+	{
+		switch( Battle_Std.GetUpdateFrameID() )
+		{
+		case 100:
+			// プロペラ呼び出し
+			local eff = BMvEff.CreateObject( { mvname=mvparam.atkRollMv, x=0, y=-420, flags=_Position_ToolShift  } );
+			if( eff.push() )
+			{
+				BMvEff.SetObjectFlags( { flags=_ObjFlags_EraseParentDamage|_ObjFlags_NoGround|_ObjFlags_ParentMove|_ObjFlags_EraseParentPatChange|_ObjFlags_ToParentHitStatus } );
+				
+				BMvEff.ObjProcFlags_Set( { flags=_ObjProcFlags_EraseChangeParentMv } );
+				
+				eff.pop();
+			}
+			break;
+		}
+	}
+	
+	ret_tmpl.LastUpdate_After <- function() : (mvparam)
+	{
+		if( mvparam.csAntenHosei )
+		{
+			Battle_Std.CSAntenGaesi_DamageHosei(); // CSからの暗転返しで出したら補正をかける
+		}
+	}
+	
+	return ret_tmpl;
+
+}
+
+t.Mv_Skill_J214A <- maketmpl_Skill_AirKamaSpinMove( { type="A" } );
+t.Mv_Skill_J214B <- maketmpl_Skill_AirKamaSpinMove( { type="B" } );
+t.Mv_Skill_J214EX <- maketmpl_Skill_AirKamaSpinMove( { type="EX" } );
+
+local maketmpl_J214_AtkRoll = function()
+{
+	local ret_tmpl = {};
+	
+	ret_tmpl.Init_After <- function()
+	{
+	}
+
+	ret_tmpl.FrameUpdate_After <- function()
+	{
+		local player = BMvCore.GetPlayerCharaData();
+		if( player.push() )
+		{
+			local p_mvs = BMvTbl.GetMvStatus();
+			
+			player.pop();
+			
+			// param3 & 4 の間は表示される
+			if( p_mvs.Param3 & 4 )
+			{
+			}
+			else
+			{
+				BMvTbl.SetFinalize(0);
+				return;
+			}
+		}
+	}
+	
+	return ret_tmpl;
+}
+
+t.Mv_Obj_J214A_AtkRoll <- maketmpl_J214_AtkRoll();
+t.Mv_Obj_J214B_AtkRoll <- maketmpl_J214_AtkRoll();
+t.Mv_Obj_J214EX_AtkRoll <- maketmpl_J214_AtkRoll();
+
+//-----------------------------------------------------------------------------
+// J236攻
+//-----------------------------------------------------------------------------
+
+local maketmpl_Skill_AirKamaSlash = function( param={} )
+{
+	local ret_tmpl = {};
+	
+	local mvparam = {
+		ball_mv = "Mv_FireBall_J236A",
+		ball_pat = "J236A_Tama",
+		ball_oncepat = 0,
+		csAntenHosei = 0,
+	};
+	
+	switch( param.type )
+	{
+	case "A":
+		mvparam.ball_mv = "Mv_FireBall_J236A";
+		mvparam.ball_pat = "J236A_Tama";
+		break;
+	case "B":
+		mvparam.ball_mv = "Mv_FireBall_J236B";
+		mvparam.ball_pat = "J236B_Tama";
+		break;
+	case "EX":
+		mvparam.ball_mv = "Mv_FireBall_J236EX";
+		mvparam.ball_pat = "J236EX_Tama";
+		mvparam.ball_oncepat = "J236EX_Tama2nd"
+		mvparam.csAntenHosei = 1;
+		break;
+	}
+	
+	ret_tmpl.Init_After <- function() : (mvparam)
+	{
+	}	
+	
+	ret_tmpl.FrameUpdate_After <- function() : ( mvparam )
+	{
+		switch( Battle_Std.GetUpdateFrameID() )
+		{
+		case 100:
+			local usepat = mvparam.ball_pat;
+			
+			if( mvparam.ball_oncepat )
+			{
+				// 同技の時
+				local once = Battle_Std.EnemyDamageFlag_Check( def_DF_CharaFlag1 ); // ヒット記憶用
+				
+				if( once )
+				{
+					usepat = mvparam.ball_oncepat;
+				}
+			}
+		
+			local eff = Battle_Std.CreateFireBall( { mv=mvparam.ball_mv, pat=usepat, x=0, y=0, flags=def_BallFlags_NoAddHitComboRate, } )
+			break;		
+		}
+	}
+	
+	ret_tmpl.LastUpdate_After <- function() : (mvparam)
+	{
+		if( mvparam.csAntenHosei )
+		{
+			Battle_Std.CSAntenGaesi_DamageHosei(); // CSからの暗転返しで出したら補正をかける
+		}
+	}
+	
+	return ret_tmpl;
+
+}
+
+t.Mv_Skill_J236A <- maketmpl_Skill_AirKamaSlash( { type="A" } );
+t.Mv_Skill_J236B <- maketmpl_Skill_AirKamaSlash( { type="B" } );
+t.Mv_Skill_J236EX <- maketmpl_Skill_AirKamaSlash( { type="EX" } );
+
+t.Mv_FireBall_J236A <- 
+{
+	function Init_After()
+	{
+		BMvEff.ChangeStartCorrectTiming();
+		
+		BMvEff.SetObjectFlags( { flags=_ObjFlags_ToParentStop } );
+	}
+}
+
+t.Mv_FireBall_J236A_Blocked <-
+{
+	function Init_After()
+	{
+		BMvTbl.JumpFrameID( 900 ); // 消滅へ
+	}
+}
+
+t.Mv_FireBall_J236B <- t.Mv_FireBall_J236A;
+t.Mv_FireBall_J236B_Blocked <- t.Mv_FireBall_J236A_Blocked;
+t.Mv_FireBall_J236EX <- 
+{
+	flags = def_FBTmplFlags_NoEXSLimit, // EX技っぽい弾のヒットorガード時にかかるEXS制限を解除する
+	function Init_After()
+	{
+		BMvEff.ChangeStartCorrectTiming();
+	}
+	function HitInterrupt_After()
+	{
+		if( Battle_Std.CheckDamageTiming() )
+		{
+			Battle_Std.EnemyDamageFlag_Add( def_DF_CharaFlag1 ); // ヒット記憶用
+		}
+	}
+}
+
+t.Mv_FireBall_J236EX_Blocked <- t.Mv_FireBall_J236A_Blocked;
+
+//-----------------------------------------------------------------------------
+// インフィニットワースＥＸＳ
+//-----------------------------------------------------------------------------
+
+t.Mv_Skill_IWEXIST <- 
+{
+	flags = def_TmplFlags_NoAddComboRate // コンボレートを加算しない
+	function HitInterrupt_After()
+	{
+		Battle_Std.SetThrowHitFinalize(256); // ヒット分岐ファイナライズ
+	}
+	function Finalize() // 
+	{
+		Battle_Std.SwitchNextMoveTable("Mv_Neutral",[256,"Mv_Skill_IWEXIST_Hit"]); //デフォ,[code,mv]...
+	}	
+}
+
+local aniset_HaraFukitobi = 
+[
+	{ Data = [331,0,3], },
+	{ Data = [331,1,3], },
+	{ Data = [331,2,3], },
+	{ Data = [331,3,3], RelJump = -1 },
+];
+
+local aniset_KabeBound = 
+[
+	{ Data = [340,0,6], Vector={ x=0,y=0,addx=0,addy=0, flags=_Vector_Normal } },
+	{ Data = [340,1,1], Vector={ x=450, y=-1200, addx=0, addy=20, flags=_Vector_Normal } },
+	{ Data = [340,1,30], },
+	{ Data = [340,2,30], },
+	{ Data = [340,3,25], },
+	{ Data = [340,4,25], },
+	{ Data = [340,5,20], },
+	{ Data = [340,6,10], },
+	{ Data = [340,7,10], RelJump = -1 },
+];
+
+//腹吹き飛び部分
+t.Mv_AniSet_HaraFukitobi <- Battle_Std.MakeMv.SetCaptureCharaAnime( { animation = aniset_HaraFukitobi } );
+
+//壁バウンド部分
+t.Mv_AniSet_KabeBound <- Battle_Std.MakeMv.SetCaptureCharaAnime( { animation = aniset_KabeBound } );
+
+//フィニッシュヒット部分
+t.Mv_AniSet_FinishBound <- Battle_Std.MakeMv.SetCaptureCharaAnime( { animation = 
+[
+	{ Data = [331,0,6], Vector={ x=0,y=0,addx=0,addy=0, flags=_Vector_Normal } },
+	{ Data = [331,1,6], },
+	{ Data = [331,2,6], },
+	{ Data = [331,3,6], RelJump = -1 },
+]
+} );
+
+
+t.Mv_Skill_IWEXIST_Hit <-
+{
+	flags = def_TmplFlags_NoAddComboRate // コンボレートを加算しない
+	function StepPhase( set=-1 )
+	{
+		if( set==-1 )
+		{
+			BMvTbl.AddLP(0,1); //加算
+		}
+		else
+		{
+			BMvTbl.SetLP(0,set); //セット			
+		}
+		BMvTbl.SetLP(1,0); //カウンタリセット
+		BMvTbl.SetLP(2,0); //フラグ消す
+	}
+	function SetVector_CaptureChara( vec )
+	{
+		local p = BMvCore.GetCaptureCharaData();
+		if( p.push() )
+		{
+			BMvTbl.SetVector( { x=vec.x, y=vec.y, flags=_Vector_Div } );
+			
+			p.pop();
+		}
+	}
+	function Init_After()
+	{
+		//Battle_Std.IWEXIST_CallOnePunch(); // 相手をMvBoundにする
+
+		BSound.SE_Play( { type=_SeType_Player, num=532 } );
+		
+		Battle_Std.InitIWExistSkill();
+		
+		BMvEff.ThrowChara_SetJoint( 0 ); //掴みをくっつけない
+		BMvEff.ThrowParam( { x=600, y=0, pattern=327 } ); //やられ
+
+		//変数初期化
+		BMvTbl.SetLP(0,0);
+		BMvTbl.SetLP(1,0);
+		BMvTbl.SetLP(2,0);
+		BMvTbl.SetLP(8,0);
+		
+		
+		//BSound.SE_Play( {type = _SeType_Player, num = 533} );
+		
+	}
+	function FrameUpdate_After()
+	{
+		//LP0 : フェイズ
+		//LP1 : カウンタ
+		local phase = BMvTbl.GetLP(0);
+		local phasecount = BMvTbl.GetLP(1);
+		BMvTbl.AddLP(1,1);
+		local s = BMvTbl.GetMvStatus();
+		
+		//print("\n phase:"+phase+" count:"+phasecount);
+		
+		//音声は別扱い
+		local sound_time = BMvTbl.GetLP(8);
+		BMvTbl.AddLP(8,1);
+		if( sound_time==0 )
+		{
+			//BSound.SE_Play( { type=_SeType_Player, num=532 } );
+		}
+		else if( sound_time==180-60 )
+		{
+			BSound.SE_Play( { type=_SeType_Player, num=537 } );		
+		}
+		
+		
+		switch( phase )
+		{
+		case 0:
+			if( phasecount>900 )
+			{
+				StepPhase(99);
+			}
+			break;
+		case 5: //つめでさす
+			local phaseframe = 30;
+			if( phasecount==0 && BMvTbl.GetLP(2)==0 )
+			{
+				Battle_Std.ScreenEffect_LimitMv( { pat="IE_BG" } ); //背景
+			
+				BSound.SE_Play( { type=_SeType_Player, num=50 } ); //吸収
+				
+				//段々色を変える
+				BMvEff.SetCharaColor( { color=0xFFAAFF, time=phaseframe, type=4 } );
+				
+				local p = BMvCore.GetCaptureCharaData();
+				if( p.push() )
+				{
+					BMvEff.SetCharaColor( { color=0x555555, time=phaseframe, type=4} );
+					
+					p.pop();
+				}
+				
+				//_dm("★よぶ");
+				BMvEff.CreateObject( { mvname="Mv_Obj_IE_drain_yarare" } );
+				//Battle_Std.CreateObjectEX( { pat="IE_drain_yarare", } )
+				
+				BMvTbl.SetLP(2,1); //もうやらね
+			}
+			if( phasecount>phaseframe )
+			{
+				BMvEff.SetCharaColor( { color=0xFFAAFF, time=999, type=3 } );
+
+				local p = BMvCore.GetCaptureCharaData();
+				if( p.push() )
+				{
+					BMvEff.SetCharaColor( { color=0x885555, time=999, type=3} );
+					
+					p.pop();
+				}
+
+				StepPhase();
+			}
+			break;
+		case 10: //蹴りから
+			//カメラ固定
+			//BMvEff.SetCamera_Focus( { num=0, x=300*128, y=0, zoom=1.0, time=[0,999,30] } );
+			
+			
+			BMvEff.SetCamera_Focus( {time=[ 0, 2000, 0] } );
+			local phaseframe = 20;
+			if( phasecount==0 && BMvTbl.GetLP(2)==0 )
+			{
+				BMvTbl.SetLP(2,1); //もうやらね
+				
+				//壁までの距離を計算
+				local screen_pos = BMvEff.GetCameraRect( { flags=_GetPos_DispCamera } );
+				
+				local pos = BMvTbl.CCharaPosition(); // 位置情報型の生成
+				pos.x = (BMvTbl.GetMuki()==1)? screen_pos.ex-(50*128) : screen_pos.sx+(50*128);
+				pos.y = screen_pos.sy+(350*128);
+				
+				//_dm("座標： x:"+pos.x+" y:"+pos.y );
+				
+				//Battle_Std.CreateObjectEX( { pat="PosCheck", setx=pos.x, sety=pos.y } );
+				
+				BMvEff.CreateObject( { mvname="Mv_AniSet_HaraFukitobi" } );
+
+				local p = BMvCore.GetCaptureCharaData();
+				if( p.push() )
+				{
+					local posst = BMvEff.GetPointStatus( { position=pos } ); // 位置情報取得
+					
+					local speed = posst.distance/phaseframe;
+					local v = BMvEff.GetVector_FromAngle( { angle = posst.angle, speed = speed, } );
+
+					BMvTbl.SetVector( { x=v.x, y=v.y, flags=_Vector_Normal|_VecFlag_NoMuki } );
+					
+					p.pop();
+				}
+				
+				//けった自分は所定の位置までズザーっとスベル
+				pos.x = (BMvTbl.GetMuki()==1)? screen_pos.sx+(250*128) : screen_pos.ex-(250*128);
+				pos.y = 0;
+				local posst = BMvEff.GetPointStatus( { position=pos } ); // 位置情報取得
+				
+				local frame=30;
+				local speed = (posst.distance/frame)*2;
+				local v = BMvEff.GetVector_FromAngle( { angle = posst.angle, speed = speed, } );
+
+				BMvTbl.SetVector( { x=v.x, y=v.y, addx=-v.x/frame, addy=-v.y/frame, flags=_Vector_DivKeep|_VecFlag_NoMuki } );
+			}
+			else if( phasecount>phaseframe )
+			{
+				StepPhase();
+			}
+			break;
+		case 11: //壁バウンド
+			//スローとか？
+			local phaseframe = 30;
+			if( phasecount==0 && BMvTbl.GetLP(2)==0 )
+			{
+				BMvTbl.SetLP(2,1); //もうやらね
+				BMvEff.SetCamera_Quake( { time=30, type=0, clear=0, } ); //揺らし
+				BMvEff.Slowmotion_Set( { time=30, power=5000 } ); //スロー						
+				
+				BMvEff.CreateObject( { mvname="Mv_AniSet_KabeBound" } );
+				local p = BMvCore.GetCaptureCharaData();
+				if( p.push() )
+				{
+					Battle_Std.InitVector();
+				
+					p.pop();
+				}
+			}
+			else if( phasecount>phaseframe )
+			{
+				StepPhase();
+			}
+			break;
+		case 12: //落下開始
+			if( phasecount==0 && s.isUpdate )
+			{
+			
+				
+			}
+			else if( phasecount>10 )
+			{
+				StepPhase();
+			}
+			break;
+		case 13: //落下ループ
+			if( phasecount>255 )
+			{
+				StepPhase();
+			}
+			break;			
+		case 99:
+			BMvTbl.SetFinalize(0);
+			break;
+		}
+		
+		if( s.isFrameUpdate )
+		{
+			switch( s.FrameID )
+			{
+			case 100: //つめで初段・九州開始
+				//BSound.SE_Play( {type = _SeType_Player, num = 533} );
+				BMvEff.ThrowParam( { x=125, y=0, pattern=320 } );
+				BMvEff.SetCamera_Quake( { time=60, type=0, clear=0, } ); //揺らし
+				StepPhase(5);
+				break;
+			case 200: //ボディ
+				BMvEff.ThrowParam( { x=150, y=-20, pattern=320 } );
+				BMvEff.SetCamera_Quake( { time=30, type=0, clear=0, } ); //揺らし
+				SetVector_CaptureChara( { x=-256, y=-512 } );
+				break;
+			case 210: //持ち上げ
+				BMvEff.ThrowParam( { x=160, y=-150, pattern=320 } );
+				BMvEff.SetCamera_Quake( { time=30, type=0, clear=0, } ); //揺らし
+				SetVector_CaptureChara( { x=-256, y=-512 } );
+				break;
+			case 220: //けり
+				BMvEff.ThrowParam( { x=140, y=-200, pattern=331, frame=0 } );
+				BMvEff.SetCamera_Quake( { time=30, type=0, clear=0, } ); //揺らし
+				StepPhase(10);
+				break;
+			case 400: //かまよいしょ　生成開始
+				BSound.SE_Play( { type=_SeType_Player, num=52 } ); //地震ＳＥ
+				//BSound.SE_Play( {type = _SeType_Player, num = 536} );
+				local pos = BMvTbl.GetPosition(0);
+				local shiftx = 0*128*BMvTbl.GetMuki();
+				BMvEff.SetCamera_Focus( { num=0, time=[0,999,30] } );
+				BMvEff.SetCamera_Focus( { num=1, x=pos.x+shiftx, y=-200*128, zoom=1.0, time=[30,999,30] } );
+				BMvEff.SetCamera_Quake( { time=120, type=2, clear=0, } ); //揺らし
+				break;
+			case 450: //どっこいしょ
+				local pos = BMvTbl.GetPosition(0);
+				local shiftx = 300*128*BMvTbl.GetMuki();
+				BMvEff.SetCamera_Focus( { num=0, time=[0,999,30] } );
+				BMvEff.SetCamera_Focus( { num=1, x=pos.x+shiftx, y=0, zoom=1.0, time=[10,999,30] } );
+				BMvEff.SetCamera_Quake( { time=20, type=2, clear=0, } ); //揺らし
+				break;
+			case 650: //きるまえ
+				//BSound.SE_Play( {type = _SeType_Player, num = 537} );
+				break;
+			case 700: //きる
+				BSound.SE_Play( { type=_SeType_Player, num=51 } ); //きりＳＥ
+			
+				BMvEff.SetCharaColor( { color=0xFFAAFF, time=10, type=0 } );
+				Battle_Std.IWExistSkill_FinishEffect(); //KOと同じような揺れやスローを呼ぶ
+				BMvEff.CreateObject( { mvname="Mv_AniSet_FinishBound" } );
+				break;
+			case 750: //きって少し
+				//Battle_Std.ScreenEffect_LimitMv( { pat="IE_BladeX" } );
+				BMvEff.FadeProc_Set({type=0, time=[15,999,40] color=0xFFFFFF});
+				break;
+			}
+		}
+	}
+	function Finalize()
+	{
+		BMvTbl.SetNextMoveTable( "Mv_Skill_IWEXIST_End" );
+	}	
+	function LastUpdate_After()
+	{
+		//ホワイトイン
+		BMvEff.FadeProc_Set({type=0, time=[0,0,1] color=0xFFFFFF});
+		
+		BMvEff.FadeProc_SetRenderFlag(1); // 0:カットインBG描画なし
+
+		//カメラ初期化
+		BMvEff.SetCamera_Focus( { time=[0,0,0] } );
+		BMvEff.ResetViewCamera();
+		
+		//つかみ開放
+		BMvEff.ThrowParam( { pattern=331, x=-300, y=-300, } );
+		BMvEff.ThrowRelease( { type="腹吹き飛び", airrecover=0, flags=_ThrowRelease_NoAttackHit|_ThrowRelease_NoGroundRecover|_ThrowRelease_NoWallRecover } );
+		//BMvEff.SetCamera_Quake( { time=30, type=2, clear=0, } ); //揺らし
+		BMvEff.Slowmotion_Set( { time=30, power=5000 } ); //スロー					
+		
+		//敵設定
+		local enemy = BMvCore.GetNearEnemyCharaData();
+		if( enemy.push() )
+		{
+			BMvEff.SetCharaColor( { color=0xFFFFFF, time=10, type=0} );
+			
+			enemy.pop();
+		}
+
+		//イグジストワース終了
+		Battle_Std.FinalizeIWExistSkill();	
+	}
+}
+
+t.Mv_Skill_IWEXIST_End <-
+{
+	function Init_After()
+	{
+		Battle_Std.ScreenEffect_LimitMv( { pat="IE_BGEnd" } ); //背景
+		//パーティクルとばす
+		for(local i=0; i<=20; i++) //特殊判定iの範囲内にエフェクトをまく
+		{
+			local rand_pos = BMvEff.Random_PointRect( { sx=-100, sy=-100, ex=100, ey=100 } );
+			local pos = 
+			{
+				x=(300*128) + rand_pos.x,
+				y=-(300*128) + rand_pos.y,
+			}
+			Battle_Std.CreateObjectEX({ setx=pos.x, sety=pos.y, pat="IE_BGEndPar", FrameID=[0,1,2],
+			angle = BMvEff.Random_Limit(10000),
+			objectflags = _ObjFlags_NoGround|_ObjFlags_MoveTimeStopAll,
+			initfunc = function()
+			{
+				if( BMvEff.Random_Limit(100)>50 ) BMvTbl.SetMuki( _Direction_Reverse );
+				local time = 30 + BMvEff.Random_Limit(20);
+				local v = BMvEff.GetVector_FromAngle( { angle = BMvEff.Random_F()*2.0, speed = 3000+BMvEff.Random_Limit(4000) } );
+				BMvTbl.SetVector( { x=v.x, y=v.y, addx=-v.x/time, addy=-v.y/time, flags=_Vector_Div } );
+				local scale = 8000 + BMvEff.Random_Limit(8000);
+				BMvTbl.SetScale( { x=scale, y=scale } );
+			} });
+		}		
+		
+	}
+}
+
+t.Mv_Obj_IE_drain_yarare <-
+{
+	function Init_After()
+	{
+		BMvEff.ObjProcFlags_Set( { flags=_ObjProcFlags_EraseChangeParentMv } );
+		//_dm("きたよ「");
+
+		//相手にくっつく
+		local p = BMvCore.GetCaptureCharaData();
+		if( p.push() )
+		{
+			local pos = BMvTbl.GetPosition(0);
+			
+			p.pop();
+
+			pos.y -= (200*128);
+			BMvTbl.SetPosition( pos );
+		}
+	}
+	function FrameUpdate_After()
+	{
+		local p = BMvCore.GetCaptureCharaData();
+		if( p.push() )
+		{
+			local pos = BMvTbl.GetPosition(0);
+			
+			p.pop();
+
+			pos.y -= (200*128);
+			BMvTbl.SetPosition( pos );	
+		}
+		else
+		{
+			BMvTbl.SetFinalize(0); //いないなら終わる
+		}
+	}
+	function Finalize()
+	{
+		BMvTbl.SetDeleteMoveTable();
+	}
+}
+
+//	
+
+
+GOR_MoveTable <- Battle_Std.MakeMoveTable( t, GOR_CommandTable, Def_ChrNo_Gor );
+__dofile__("./data/Gor_0/Gor_0_selist.txt"); //ＳＥ定義

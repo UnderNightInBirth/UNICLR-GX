@@ -1,0 +1,1507 @@
+//コマンドテーブル skillは格ゲーコマンド表記
+btl_debPrint2("\n[YUZ_CommandTable]");
+
+local BattouFunc = {};
+
+BattouFunc.Check <- {}; //発動できるかのチェック
+BattouFunc.Use <- {}; //入力受付後の処理
+
+
+//抜刀モードなのかチェック
+BattouFunc.Check.IsMode <- function()
+{
+	return( BMvTbl.GetPP( def_PP_Yuz_BattouMode ) == 1 ); //1なら抜刀モード
+}
+
+BattouFunc.Check.IsCoolTime <- function()
+{
+	return( BMvTbl.GetPP( def_PP_Yuz_BattouMode ) <= -1 && !BCMDTbl.CheckCancel(_SkillType_None) ); //<= -1ならクールタイム中
+}
+
+BattouFunc.Check.EnoughStockA <- function()
+{
+	return( IsMode() && BMvTbl.GetPP( def_PP_Yuz_BattouA ) >= 1 ); //モードでかつストックをチェック
+}
+
+BattouFunc.Check.EnoughStockB <- function()
+{
+	return( IsMode() && BMvTbl.GetPP( def_PP_Yuz_BattouB ) >= 1 ); //モードでかつストックをチェック
+}
+
+BattouFunc.Check.EnoughStockC <- function()
+{
+	return( IsMode() && BMvTbl.GetPP( def_PP_Yuz_BattouC ) >= 1 ); //モードでかつストックをチェック
+}
+
+
+//6Aとかその辺
+//抜刀モード時かつストックが無いと出せない
+BattouFunc.Check.LimitA <- function()
+{
+	if( !IsMode() || !EnoughStockA() ) return 0; //使えない
+	// if( IsCoolTime() ) return 0; //使えない
+	return 1; //使える
+}
+
+BattouFunc.Check.LimitB <- function()
+{
+	if( !IsMode() || !EnoughStockB() ) return 0; //使えない
+	// if( IsCoolTime() ) return 0; //使えない
+	return 1; //使える
+}
+
+BattouFunc.Check.LimitC <- function()
+{
+	if( !IsMode() || !EnoughStockC() ) return 0; //使えない
+	// if( IsCoolTime() ) return 0; //使えない
+	return 1; //使える
+}
+
+//クールタイム中に余計に動きすぎかどうか
+BattouFunc.Check.LimitCTOverAction <- function()
+{
+	if( IsCoolTime() && BMvTbl.GetPP(def_PP_Yuz_CoolTimeBattouCnt) > 2 )
+	{
+		return 1;
+	}
+	return 0;
+}
+
+//必殺技
+//抜刀モード時ならストックチェック
+//そうでなければいつでも出せる…が、クールタイム中にいろいろやりすぎるとNGに変更
+BattouFunc.Check.A <- function()
+{
+	if( IsMode() && !EnoughStockA() ) return 0; //使えない
+	if( LimitCTOverAction() ) return 0;
+	return 1; //使える
+}
+
+BattouFunc.Check.B <- function()
+{
+	if( IsMode() && !EnoughStockB() ) return 0; //使えない
+	if( LimitCTOverAction() ) return 0;
+	return 1; //使える
+}
+
+
+BattouFunc.Check.C <- function()
+{
+	if( IsMode() && !EnoughStockC() ) return 0; //使えない
+	if( LimitCTOverAction() ) return 0;
+	return 1; //使える
+}
+
+BattouFunc.Check.BorC <- function()
+{
+	local hold_isB = ( BMvTbl.GetPP( def_PP_Yuz_BattouB ) == -1 );
+	local hold_isC = ( BMvTbl.GetPP( def_PP_Yuz_BattouC ) == -1 );
+	// _dp("\n ここはいる？ hold_isB:"+hold_isB+" hold_isC:"+hold_isC );
+	local stock = 0; // チェックするストックボタンを決める
+
+	// 236B,236C
+	// 214B,214C
+	// J236B,J236C
+	// J214B,J214C
+	local spos = 0;
+	if( BMvTbl.IsCpu()==0 ) // プレイヤーの時
+	{
+		//0:Bでだしてる 1:Cで出してる
+		spos = BCMDTbl.GetSuccessButtonPos();
+		//_dp("\n spos:"+spos );
+	}
+	
+	if( spos == 0 && !hold_isB ) //Bを押してる？
+	{
+		stock = EnoughStockB();
+	}
+	else if( spos == 1 && !hold_isC ) //Cを押してる？
+	{
+		stock = EnoughStockC();
+	}
+	/*
+	else if( !BMvTbl.CheckButtonHold( (1<<1)|(1<<2) ) ) // BもCも押していない（先行入力で成立＆すぐにボタン離す、という状態だとここにくる）
+	{
+		_dp("\n ここにきてるよね？");
+		if( !hold_isB )
+		{
+			_dp(" -> B");
+			stock = EnoughStockB();
+		}
+		else if( !hold_isC )
+		{
+			_dp(" -> C");
+			stock = EnoughStockC();
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	*/
+	else
+	{
+		return 0;
+	}
+	if( IsMode() && !stock )
+	{
+		// _dp("\n はいだめー2:"+IsMode()+" "+!stock);
+		return 0;
+	}
+	if( LimitCTOverAction() ) return 0;
+	return 1; //使える
+}
+
+BattouFunc.Check.BandC <- function()
+{
+	if( IsMode() )
+	{
+		if( !EnoughStockB() && !EnoughStockC() ) return 0; //使えない
+	}
+	return 1; // 使える
+}
+
+BattouFunc.Check.EX <- function()
+{
+	if( IsMode() && !EnoughStockC() ) return 0; //使えない
+	// if( IsMode() && (!EnoughStockA() || !EnoughStockB() ) ) return 0; //使えない　この処理が正しいと思うけど、弱体化
+	// if( IsMode() && (!EnoughStockA() && !EnoughStockB() && !EnoughStockC() ) ) return 0; //使えない　AかBかCか、どれかのストックあれば出せるようにするｗ
+	// if( IsMode() && (!EnoughStockA() && !EnoughStockB() ) ) return 0; //使えない　AかB、どっちかのストックあれば出せるようにする
+	// if( IsMode() && !EnoughStockA() ) return 0; //使えない　とりあえず暫定でAのみ発動にする
+	return 1; //使える
+}
+
+
+//ストック消費処理
+//減らすとなんか怖いので0で上書きする
+
+BattouFunc.Use.A <- function()
+{
+	// BMvTbl.SetPP( def_PP_Yuz_BattouA, 0 );
+	BMvTbl.SetPP( def_PP_Yuz_BattouAutoButton, 1 ); //多分Aホールドになるだろう
+	// print("\n A消費");
+}
+
+BattouFunc.Use.B <- function()
+{
+	// BMvTbl.SetPP( def_PP_Yuz_BattouB, 0 );
+	BMvTbl.SetPP( def_PP_Yuz_BattouAutoButton, 2 ); //多分Bホールドになるだろう
+	// print("\n B消費");
+}
+
+BattouFunc.Use.C <- function()
+{
+	// BMvTbl.SetPP( def_PP_Yuz_BattouC, 0 );
+	BMvTbl.SetPP( def_PP_Yuz_BattouAutoButton, 3 ); //多分Cホールドになるだろう
+	// print("\n C消費");
+}
+
+BattouFunc.Use.BorC <- function()
+{
+	local hold_isB = ( BMvTbl.GetPP( def_PP_Yuz_BattouB ) == -1 );
+	local hold_isC = ( BMvTbl.GetPP( def_PP_Yuz_BattouC ) == -1 );
+	
+	local spos = 0;
+	if( BMvTbl.IsCpu()==0 ) // プレイヤーの時
+	{
+		//0:Bでだしてる 1:Cで出してる
+		spos = BCMDTbl.GetSuccessButtonPos();
+		//_dp("\n spos:"+spos );
+	}
+	
+	if( spos == 0 && !hold_isB ) //Bを押してる？
+	{
+		B(); // Use.B
+	}
+	else if( spos == 1 &&!hold_isC ) //Cを押してる？
+	{
+		C(); // Use.C
+	}
+}
+
+// 未使用なので気にしないでＯＫ
+BattouFunc.Use.AorB <- function()
+{
+	local hold_isA = ( BMvTbl.GetPP( def_PP_Yuz_BattouA ) == -1 );
+	local hold_isB = ( BMvTbl.GetPP( def_PP_Yuz_BattouB ) == -1 );
+	
+	if( BMvTbl.CheckButtonHold( (1<<0) ) && !hold_isA ) //Aを押してる？
+	{
+		A(); // Use.A
+	}
+	else if( BMvTbl.CheckButtonHold( (1<<1) ) &&!hold_isB ) //Bを押してる？
+	{
+		B(); // Use.B
+	}
+}
+
+BattouFunc.Use.BandC <- function()
+{
+	// BかCを使用済みにする予約だけする
+	// 他のUseと挙動が違う
+	// MvのInitでストックを使用してる
+	// なぜかというと出るまでの間にBとC両方消費してしまうため
+	
+	if( BMvTbl.GetPP( def_PP_Yuz_BattouB ) != 1 ) // Bが使用済みorホールド中
+	{
+		BMvTbl.SetPP( def_PP_Yuz_BattouAutoButton, 3 ); //多分Cホールドになるだろう
+	}
+	else if( BMvTbl.GetPP( def_PP_Yuz_BattouC ) != 1 ) // Cが使用済みorホールド中
+	{
+		BMvTbl.SetPP( def_PP_Yuz_BattouAutoButton, 2 ); //多分Bホールドになるだろう
+	}
+	else // BもCも生きてる
+	{
+		BMvTbl.SetPP( def_PP_Yuz_BattouAutoButton, 2 ); //多分Bホールドになるだろう
+	}
+}
+
+BattouFunc.Use.EX <- function()
+{
+	BMvTbl.SetPP( def_PP_Yuz_BattouC, 0 );
+	BMvTbl.SetPP( def_PP_Yuz_BattouAutoButton, 3 ); //多分Cホールドになるだろう
+
+	/*
+	if( BMvTbl.GetPP( def_PP_Yuz_BattouA ) != 1 ) // Aが使用済みorホールド中
+	{
+		// BMvTbl.SetPP( def_PP_Yuz_BattouB, 0 );
+		BMvTbl.SetPP( def_PP_Yuz_BattouAutoButton, 2 ); //多分Bホールドになるだろう
+	}
+	else if( BMvTbl.GetPP( def_PP_Yuz_BattouB ) != 1 ) // Bが使用済みorホールド中
+	{
+		// BMvTbl.SetPP( def_PP_Yuz_BattouA, 0 );
+		BMvTbl.SetPP( def_PP_Yuz_BattouAutoButton, 1 ); //多分Aホールドになるだろう
+	}
+	else // AもBも生きてる
+	{
+		// BMvTbl.SetPP( def_PP_Yuz_BattouB, 0 );
+		BMvTbl.SetPP( def_PP_Yuz_BattouAutoButton, 2 ); //多分Bホールドになるだろう
+	}
+	*/
+}
+
+
+
+
+
+
+
+
+local t =
+{
+	Skill_41236SP_ABC = {},
+	Skill_41236SP = {},
+
+	//Skill_63214SP = {},
+	
+	Skill_236EX = 
+	{
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.EX() ) return 0;
+			return 1;
+		},
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			BattouFunc.Use.EX();
+			return 1;
+		}
+	},	
+
+	Skill_236BorC = 
+	{
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.BorC() ) return 0;
+			return 1;
+		},
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			BattouFunc.Use.BorC();
+			return 1;
+		},
+	},
+	
+	Skill_236A =
+	{
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.A() ) return 0;
+			return 1;
+		},
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			BattouFunc.Use.A();
+			return 1;
+		},
+	},
+	
+	// 簡易追加入力仕様
+	Skill_236_AddBorC = 
+	{
+		num = def_CN_Skill_AddCommand6,
+		command = ["0+B","0+C"],
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			local cmdpos = BCMDTbl.GetSuccessButtonPos();
+			if( cmdpos==0 )
+			{
+				if( !BattouFunc.Check.LimitB() ) return 0;
+			}
+			else
+			{
+				if( !BattouFunc.Check.LimitC() ) return 0;
+			}
+			
+			if( !BattouFunc.Check.BorC() ) return 0;
+			return 1;
+		},
+		CmdCheck = 
+		{
+			SkillType = "Special",
+			MvCheck = { Only = ["Mv_Skill_236A","Mv_Skill_236EX","Mv_Skill_J236A","Mv_Skill_J236B","Mv_Skill_J236EX"] },
+		},
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			BattouFunc.Use.BorC();
+			return 1;
+		},
+		UpdateTable = { name = "Mv_Skill_236B", }
+	},	
+	
+	// 簡易追加入力仕様
+	Skill_236_AddA =
+	{
+		num = def_CN_Skill_AddCommand7,
+		command = ["0+A"],
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.LimitA() ) return 0;
+				
+			if( !BattouFunc.Check.A() ) return 0;
+			
+			if( BMvTbl.GetPP( def_PP_StdComboChain ) >= 5 ) // 決め打ち
+			{
+				// スマートステア中なので失敗
+				return 0;
+			}
+			return 1;
+		},
+		CmdCheck = 
+		{
+			SkillType = "Special",
+			MvCheck = { Only = ["Mv_Skill_236B","Mv_Skill_236EX","Mv_Skill_J236A","Mv_Skill_J236B","Mv_Skill_J236EX"] },
+		},		
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			BattouFunc.Use.A();
+			return 1;
+		},
+		UpdateTable = { name = "Mv_Skill_236A", }
+	},
+	
+	Skill_214EX = 
+	{
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.EX() ) return 0;
+			return 1;
+		},
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			BattouFunc.Use.EX();
+			return 1;
+		}
+	},	
+	
+	Skill_214BorC = 
+	{
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.BorC() ) return 0;
+			return 1;
+		},
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			BattouFunc.Use.BorC();
+			return 1;
+		},
+	},	
+	Skill_214A = 
+	{
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.A() ) return 0;
+			return 1;
+		},
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			BattouFunc.Use.A();
+			return 1;
+		},
+	},
+
+	Skill_421C = 
+	{
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.C() ) return 0;
+			return 1;
+		},
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			BattouFunc.Use.C();
+			return 1;
+		}
+	},		
+	Skill_421B = 
+	{
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.B() ) return 0;
+			return 1;
+		},
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			BattouFunc.Use.B();
+			return 1;
+		}
+	},	
+	Skill_421A =
+	{
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.A() ) return 0;
+			return 1;
+		},
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			BattouFunc.Use.A();
+			return 1;
+		},
+	},
+	
+	Skill_J236EX = 
+	{
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.EX() ) return 0;
+			return 1;
+		},
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			BattouFunc.Use.EX();
+			return 1;
+		}	
+	},		
+	
+	Skill_J236BorC = 
+	{
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.BorC() ) return 0;
+			return 1;
+		},
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			BattouFunc.Use.BorC();
+			return 1;
+		},
+	},		
+	Skill_J236A = 
+	{
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.A() ) return 0;
+			return 1;
+		},
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			BattouFunc.Use.A();
+			return 1;
+		},
+	},
+	
+	// 簡易追加入力仕様
+	Skill_J236_AddBorC = 
+	{
+		num = def_CN_Skill_AddCommand8,
+		posstatus = _PosState_Air,
+		command = ["0+B","0+C"],
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			local cmdpos = BCMDTbl.GetSuccessButtonPos();
+			if( cmdpos==0 )
+			{
+				if( !BattouFunc.Check.LimitB() ) return 0;
+			}
+			else
+			{
+				if( !BattouFunc.Check.LimitC() ) return 0;
+			}
+			
+			if( !BattouFunc.Check.BorC() ) return 0;
+			return 1;
+		},
+		CmdCheck = 
+		{
+			SkillType = "Special",
+			MvCheck = { Only = ["Mv_Skill_236A","Mv_Skill_236B","Mv_Skill_236EX","Mv_Skill_J236A","Mv_Skill_J236EX"] },
+		},
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			BattouFunc.Use.BorC();
+			return 1;
+		},
+		UpdateTable = { name = "Mv_Skill_J236B", }
+	},	
+	
+	// 簡易追加入力仕様
+	Skill_J236_AddA =
+	{
+		num = def_CN_Skill_AddCommand9,
+		posstatus = _PosState_Air,
+		command = ["0+A"],
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.LimitA() ) return 0;
+				
+			if( !BattouFunc.Check.A() ) return 0;
+			return 1;
+		},
+		CmdCheck = 
+		{
+			SkillType = "Special",
+			MvCheck = { Only = ["Mv_Skill_236A","Mv_Skill_236B","Mv_Skill_236EX","Mv_Skill_J236B","Mv_Skill_J236EX"] },
+		},		
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			BattouFunc.Use.A();
+			return 1;
+		},
+		UpdateTable = { name = "Mv_Skill_J236A", }
+	},	
+	
+	
+	Skill_J214EX = 
+	{
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.EX() ) return 0;
+			return 1;
+		},
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			BattouFunc.Use.EX();
+			return 1;
+		}	
+	},		
+	
+	Skill_J214BorC = 
+	{
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.BorC() ) return 0;
+			return 1;
+		},
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			BattouFunc.Use.BorC();
+			return 1;
+		},
+	},	
+	Skill_J214A = 
+	{
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.A() ) return 0;
+			return 1;
+		},
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			BattouFunc.Use.A();
+			return 1;
+		},
+	},
+	
+
+	Skill_J421C = 
+	{
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.C() ) return 0;
+			return 1;
+		},
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			BattouFunc.Use.C();
+			return 1;
+		}
+	},		
+	Skill_J421B = 
+	{
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.B() ) return 0;
+			return 1;
+		},
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			BattouFunc.Use.B();
+			return 1;
+		}
+	},	
+	Skill_J421A = 
+	{
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.A() ) return 0;
+			return 1;
+		},
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			BattouFunc.Use.A();
+			return 1;
+		},
+	},
+	
+	
+	
+	Atk_Std4B = {},
+	Atk_Std4C = {},
+	
+	//6C派生4B
+	Add_4C_4B =
+	{
+		num = def_CN_Skill_AddCommand10, name = "Cmd_Add_4C_4B", command = [ "4+B" ],
+		CmdCheck = 
+		{
+			SkillType = "AddCommand", ParamFlagCheck = { Only = { [2]=1 } },
+			HitStatus = "Hit",
+			MvCheck = { Only = ["Mv_Atk_Std4C"] },
+		},
+		UpdateTable = { name = "Mv_Atk_Std4B", }
+	}		
+
+	Atk_Std6Atk_Clear = {}, // ダッシュ6+攻の暴発を防ぐ
+	
+	Atk_Std6A = 
+	{
+		function CmdAfterFunc()
+		{
+			BMvTbl.SetPP( def_PP_Yuz_BattouAutoButton, 1 ); //自動ホールド予約
+			return 1;
+		},
+	},
+	Atk_Std6B = 
+	{
+		function CmdAfterFunc()
+		{
+			BMvTbl.SetPP( def_PP_Yuz_BattouAutoButton, 2 ); //自動ホールド予約
+			return 1;
+		},
+	},
+	Atk_Std6C = 
+	{
+		function CmdAfterFunc()
+		{
+			BMvTbl.SetPP( def_PP_Yuz_BattouAutoButton, 3 ); //自動ホールド予約
+			return 1;
+		},
+	},
+
+	Atk_Air6Atk_Clear = {}, // 低空6+攻の暴発を防ぐ
+
+	Atk_Air6A = 
+	{
+		function CmdAfterFunc()
+		{
+			BMvTbl.SetPP( def_PP_Yuz_BattouAutoButton, 1 ); //自動ホールド予約
+			return 1;
+		},
+	},
+	
+	Atk_Air6B = 
+	{
+		function CmdBeforeFunc()
+		{
+			// 着地後にダッシュ攻撃を出そうとしていたら失敗にする
+			if( BMvTbl.CheckCommandString( { command = "0606+B", lastdelay = 1 } ) )
+			{
+				local pos = BMvTbl.GetPosition();
+				local vec = BMvTbl.GetVector(0);
+				if( pos.y + (vec.y*3) >= 0 ) // *nは猶予nFというニュアンス
+				{
+					return 0; // 着地しそう
+				}
+			}
+			return 1;
+		}
+		function CmdAfterFunc()
+		{
+			BMvTbl.SetPP( def_PP_Yuz_BattouAutoButton, 2 ); //自動ホールド予約
+			return 1;
+		},
+	},	
+	Atk_Air6C = 
+	{
+		function CmdBeforeFunc()
+		{
+			// 着地後にダッシュ攻撃を出そうとしていたら失敗にする
+			if( BMvTbl.CheckCommandString( { command = "0606+C", lastdelay = 1 } ) )
+			{
+				local pos = BMvTbl.GetPosition();
+				local vec = BMvTbl.GetVector(0);
+				if( pos.y + (vec.y*3) >= 0 ) // *nは猶予nFというニュアンス
+				{
+					return 0; // 着地しそう
+				}
+			}
+			return 1;
+		}
+		function CmdAfterFunc()
+		{
+			BMvTbl.SetPP( def_PP_Yuz_BattouAutoButton, 3 ); //自動ホールド予約
+			return 1;
+		},
+	},	
+
+	Atk_Air2C = {},
+	
+	//抜刀モード中の技
+
+	//抜刀前ダッシュ
+	BS_Dash_F =
+	{
+		num = def_CN_Basic_AddMove10, name = "Cmd_BS_Dash_F", command = "0606",
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.IsMode() ) return 0;
+			return 1;
+		},
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = {Only = ["Mv_Skill_BStand","Mv_Skill_BS_WalkF"]},
+		},
+		UpdateTable = { name = "Mv_Skill_BS_Dash_F", }
+	},
+	//抜刀後ろダッシュ
+	BS_Dash_B =
+	{
+		num = def_CN_Basic_AddMove11, name = "Cmd_BS_Dash_B", command = "0404",
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.IsMode() ) return 0;
+			return 1;
+		},
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = {Only = ["Mv_Skill_BStand","Mv_Skill_BS_WalkB"]},
+		},
+		UpdateTable = { name = "Mv_Skill_BS_Dash_B", }
+	},	
+	
+	//抜刀空中前ダッシュ
+	BA_Dash_F =
+	{
+		num = def_CN_Basic_AddMove12, name = "Cmd_BA_JDashF", command = "0606", posstatus = _PosState_Air,
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.IsMode() ) return 0;
+			return 1;
+		},
+		CmdCheck = 
+		{
+			PosState = "Air",
+			SkillType = "AddCommand",
+			MvCheck = {Only = ["Mv_Skill_JBAir"]},
+		},
+		UpdateTable = { name = "Mv_Skill_JBA_JDashF", }
+	},
+	
+	//抜刀空中後ろダッシュ
+	BA_Dash_B =
+	{
+		num = def_CN_Basic_AddMove13, name = "Cmd_BA_JDashB", command = "0404", posstatus = _PosState_Air,
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.IsMode() ) return 0;
+			return 1;
+		},
+		CmdCheck = 
+		{
+			PosState = "Air",
+			SkillType = "AddCommand",
+			MvCheck = {Only = ["Mv_Skill_JBAir"]},
+		},
+		UpdateTable = { name = "Mv_Skill_JBA_JDashB", }
+	},	
+
+	//抜刀前歩き
+	BattouWalk_F =
+	{
+		num = def_CN_Atk_AddCommand3, name = "Cmd_BattouWalk_F", command = "6",
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.IsMode() ) return 0;
+			return 1;
+		},
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = {Only = "Mv_Skill_BStand"},
+		},
+		UpdateTable = { name = "Mv_Skill_BS_WalkF", }
+	},
+	
+	//抜刀後ろ歩き
+	BattouWalk_B =
+	{
+		num = def_CN_Atk_AddCommand4, name = "Cmd_BattouWalk_B", command = "4",
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.IsMode() ) return 0;
+			return 1;
+		},
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = {Only = "Mv_Skill_BStand"},
+		},
+		UpdateTable = { name = "Mv_Skill_BS_WalkB", }
+	},
+
+
+	//避けは追加コマンド
+	//他のアクションとは違い、避けだけだせるフレームが結構ある
+	BattouSake_Std =
+	{
+		num = def_CN_Atk_AddCommand1, name = "Cmd_BattouSake_Std", command = ["0202@N,255@"],
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.IsMode() ) return 0;
+			//しゅくちの硬直部分では自由に出せる
+			if( BCMDTbl.CheckMoveName( ["Mv_Skill_421A","Mv_Skill_421B","Mv_Skill_J421C"] ) )
+			{
+				//しゅくちのＭｖからの場合FrameIDが666のところでのみだせる
+				if( Battle_Std.GetPlayerFrameID()==666 )
+				{
+					return 1; //成功・抜ける
+				}
+				return 0; //失敗
+			}
+			
+			//通常は特定のMvからのみ出せるようにする
+			if( BCMDTbl.CheckMoveName( ["Mv_Skill_BStand","Mv_Skill_BS_WalkF","Mv_Skill_BS_WalkB"] ) == 0 ) return 0;
+			
+			return 1;
+		},
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			//MvCheck = { Only = ["Mv_Skill_BStand","Mv_Skill_BS_WalkF","Mv_Skill_BS_WalkB"] },
+		},
+		UpdateTable = { name = "Mv_Skill_BS_Sake", }
+	},
+
+	BattouSake_Air =
+	{
+		num = def_CN_Atk_AddCommand2, name = "Cmd_BattouSake_Air", command = ["0202@N,255@"], posstatus = _PosState_Air,
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.IsMode() ) return 0;
+			//しゅくちの硬直部分では自由に出せる
+			if( BCMDTbl.CheckMoveName( ["Mv_Skill_421C","Mv_Skill_J421A","Mv_Skill_J421B"] ) )
+			{
+				//しゅくちのＭｖからの場合FrameIDが666のところでのみだせる
+				if( Battle_Std.GetPlayerFrameID()==666 )
+				{
+					return 1; //成功・抜ける
+				}
+				return 0; //失敗
+			}			
+			
+			//通常は特定のMvからのみ出せるようにする
+			if( BCMDTbl.CheckMoveName( ["Mv_Skill_JBAir"] ) == 0 ) return 0;
+			
+			return 1;
+		},
+		CmdCheck =
+		{
+			PosState = "Air",
+			SkillType = "AddCommand",
+			//MvCheck = { Only = ["Mv_Skill_JBAir"] },
+		},
+		UpdateTable = { name = "Mv_Skill_JBA_JSake", }
+	},
+
+	Atk_BattouStd6A = 
+	{
+		num = def_CN_Atk6A_Add, name = "Cmd_Atk_BattouStd6A", command = "A",
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.LimitA() ) return 0;
+
+			if( BMvTbl.GetPP( def_PP_StdComboChain ) != 0 )
+			{
+				// スマートステア中なので失敗
+				return 0;
+			}
+			
+			return 1;
+		},
+		CmdCheck =
+		{
+			MvCheck = {Fail = "Mv_Atk_Std6A"},
+		},
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			BattouFunc.Use.A();
+			return 1;
+		},
+		UpdateTable = { name = "Mv_Atk_Std6A", }
+	},
+	
+	Atk_BattouStd6B = 
+	{
+		num = def_CN_Atk6B_Add, name = "Cmd_Atk_BattouStd6B", command = "B",
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.LimitB() ) return 0;
+			return 1;
+		},
+		CmdCheck =
+		{
+			MvCheck = {Fail = "Mv_Atk_Std6B"},
+		},
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			BattouFunc.Use.B();
+			return 1;
+		},
+		UpdateTable = { name = "Mv_Atk_Std6B", }
+	},
+
+	Atk_BattouStd6C = 
+	{
+		num = def_CN_Atk6C_Add, name = "Cmd_Atk_BattouStd6C", command = "C",
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.LimitC() ) return 0;
+			return 1;
+		},
+		CmdCheck =
+		{
+			MvCheck = {Fail = "Mv_Atk_Std6C"},
+		},
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			BattouFunc.Use.C();
+			return 1;
+		},
+		UpdateTable = { name = "Mv_Atk_Std6C", }
+	},
+	
+	//
+	Atk_BattouAir6A = 
+	{
+		num = def_CN_AtkJ6A_Add, name = "Cmd_Atk_BattouAir6A", command = "A", posstatus = _PosState_Air,
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.LimitA() ) return 0;
+			return 1;
+		},
+		CmdCheck =
+		{
+			PosState = "Air",
+			MvCheck = {Fail = "Mv_Atk_Air6A"},
+		},
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			BattouFunc.Use.A();
+			return 1;
+		},
+		UpdateTable = { name = "Mv_Atk_Air6A", }
+	},
+
+	Atk_BattouAir6B = 
+	{
+		num = def_CN_AtkJ6B_Add, name = "Cmd_Atk_BattouAir6B", command = "B", posstatus = _PosState_Air,
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.LimitB() ) return 0;
+			return 1;
+		},
+		CmdCheck =
+		{
+			PosState = "Air",
+			MvCheck = {Fail = "Mv_Atk_Air6B"},
+		},
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			BattouFunc.Use.B();
+			return 1;
+		},
+		UpdateTable = { name = "Mv_Atk_Air6B", }
+	},
+
+	Atk_BattouAir6C = 
+	{
+		num = def_CN_AtkJ6C_Add, name = "Cmd_Atk_BattouAir6C", command = "C", posstatus = _PosState_Air,
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.LimitC() ) return 0;
+			return 1;
+		},
+		CmdCheck = 
+		{
+			PosState = "Air",
+			MvCheck = {Fail = "Mv_Atk_Air6C"},
+		},
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			BattouFunc.Use.C();
+			return 1;
+		},
+		UpdateTable = { name = "Mv_Atk_Air6C", }
+	},
+	
+	//抜刀ジャンプ
+	BattouJump_F =
+	{
+		num = def_CN_Skill_AddCommand1, name = "Cmd_BattouJump_F", command = "9",
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.IsMode() ) return 0;
+			local hs = BMvTbl.GetMvHitStatus();
+			if( hs.Type & _HitType_Damage && hs.isCatchFlag==0 )
+			{
+				if( Battle_Std.EnemyDamageFlag_Check( def_DF_JumpCanseled ) ) return 0; // コンボ中はジャンプキャンセル１回のみ
+			}
+			return 1;
+		},
+		CmdCheck = 
+		{
+			//SkillType = "None",
+			//HitStatus="Damage",
+			FrameIDCheck = { Fail = 666 },
+		},
+		UpdateTable = { name = "Mv_Skill_BS_JumpF", }
+	},
+	
+	//抜刀ジャンプ
+	BattouJump_N =	
+	{
+		num = def_CN_Skill_AddCommand2, name = "Cmd_BattouJump_N", command = "8",
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.IsMode() ) return 0;
+			local hs = BMvTbl.GetMvHitStatus();
+			if( hs.Type & _HitType_Damage && hs.isCatchFlag==0 )
+			{
+				if( Battle_Std.EnemyDamageFlag_Check( def_DF_JumpCanseled ) ) return 0; // コンボ中はジャンプキャンセル１回のみ
+			}
+			return 1;
+		},
+		CmdCheck = 
+		{
+			//SkillType = "None",
+			//HitStatus="Damage",
+			FrameIDCheck = { Fail = 666 },
+		},
+		UpdateTable = { name = "Mv_Skill_BS_JumpN", }
+	},
+	
+	//抜刀ジャンプ
+	BattouJump_B =
+	{
+		num = def_CN_Skill_AddCommand3, name = "Cmd_BattouJump_B", command = "7",
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.IsMode() ) return 0;
+			local hs = BMvTbl.GetMvHitStatus();
+			if( hs.Type & _HitType_Damage && hs.isCatchFlag==0 )
+			{
+				if( Battle_Std.EnemyDamageFlag_Check( def_DF_JumpCanseled ) ) return 0; // コンボ中はジャンプキャンセル１回のみ
+			}
+			return 1;
+		},
+		CmdCheck = 
+		{
+			//SkillType = "None",
+			//HitStatus="Damage",
+			FrameIDCheck = { Fail = 666 },
+		},
+		UpdateTable = { name = "Mv_Skill_BS_JumpB", }
+	},//------------------------------		
+	
+	
+	//新規追加二段ジャンプ
+	//抜刀ジャンプ
+	BattouAirJump_F =
+	{
+		num = def_CN_Skill_AddCommand11, name = "Cmd_BattouAirJump_F", command = "9", posstatus = _PosState_Air,
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( BMvTbl.AddAirCount( 0, 0 ) >= 1 ) return 0;
+			if( !BattouFunc.Check.IsMode() ) return 0;
+			local hs = BMvTbl.GetMvHitStatus();
+			if( hs.Type & _HitType_Damage && hs.isCatchFlag==0 )
+			{
+				if( Battle_Std.EnemyDamageFlag_Check( def_DF_JumpCanseled ) ) return 0; // コンボ中はジャンプキャンセル１回のみ
+			}
+			if( Battle_Std.MoveCode.CheckFlag( def_MC_Shield ) ) return 0; // シールドとられるとできない
+			return 1;
+		},
+		CmdCheck = 
+		{
+			//SkillType = "None",
+			HitStatus="Hit",
+			MvCheck = {Fail = [
+			"Mv_Skill_BS_JumpF","Mv_Skill_BS_JumpN","Mv_Skill_BS_JumpB",
+			"Mv_Skill_BA_JumpF","Mv_Skill_BA_JumpN","Mv_Skill_BA_JumpB",
+			"Mv_Skill_JBAir",
+			]},
+			FrameIDCheck = { Fail = 666 },
+		},
+		UpdateTable = { name = "Mv_Skill_BA_JumpF", }
+	},
+	
+	//抜刀ジャンプ
+	BattouAirJump_N =	
+	{
+		num = def_CN_Skill_AddCommand12, name = "Cmd_BattouAirJump_N", command = "8", posstatus = _PosState_Air,
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( BMvTbl.AddAirCount( 0, 0 ) >= 1 ) return 0;
+			if( !BattouFunc.Check.IsMode() ) return 0;
+			local hs = BMvTbl.GetMvHitStatus();
+			if( hs.Type & _HitType_Damage && hs.isCatchFlag==0 )
+			{
+				if( Battle_Std.EnemyDamageFlag_Check( def_DF_JumpCanseled ) ) return 0; // コンボ中はジャンプキャンセル１回のみ
+			}
+			if( Battle_Std.MoveCode.CheckFlag( def_MC_Shield ) ) return 0; // シールドとられるとできない
+			return 1;
+		},
+		CmdCheck = 
+		{
+			//SkillType = "None",
+			HitStatus="Hit",
+			MvCheck = {Fail = [
+			"Mv_Skill_BS_JumpF","Mv_Skill_BS_JumpN","Mv_Skill_BS_JumpB",
+			"Mv_Skill_BA_JumpF","Mv_Skill_BA_JumpN","Mv_Skill_BA_JumpB",
+			"Mv_Skill_JBAir",
+			]},
+			FrameIDCheck = { Fail = 666 },
+		},
+		UpdateTable = { name = "Mv_Skill_BA_JumpN", }
+	},
+	
+	//抜刀ジャンプ
+	BattouAirJump_B =
+	{
+		num = def_CN_Skill_AddCommand13, name = "Cmd_BattouAirJump_B", command = "7", posstatus = _PosState_Air,
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( BMvTbl.AddAirCount( 0, 0 ) >= 1 ) return 0;
+			if( !BattouFunc.Check.IsMode() ) return 0;
+			local hs = BMvTbl.GetMvHitStatus();
+			if( hs.Type & _HitType_Damage && hs.isCatchFlag==0 )
+			{
+				if( Battle_Std.EnemyDamageFlag_Check( def_DF_JumpCanseled ) ) return 0; // コンボ中はジャンプキャンセル１回のみ
+			}
+			if( Battle_Std.MoveCode.CheckFlag( def_MC_Shield ) ) return 0; // シールドとられるとできない
+			return 1;
+		},
+		CmdCheck = 
+		{
+			//SkillType = "None",
+			HitStatus="Hit",
+			MvCheck = {Fail = [
+			"Mv_Skill_BS_JumpF","Mv_Skill_BS_JumpN","Mv_Skill_BS_JumpB",
+			"Mv_Skill_BA_JumpF","Mv_Skill_BA_JumpN","Mv_Skill_BA_JumpB",
+			"Mv_Skill_JBAir",
+			]},
+			FrameIDCheck = { Fail = 666 },
+		},
+		UpdateTable = { name = "Mv_Skill_BA_JumpB", }
+	},//------------------------------		
+
+	
+	
+	Atk_StdBandC = {
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.BandC() ) return 0;
+			return 1;
+		},
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			BattouFunc.Use.BandC();
+			// 消費はMvで行う・・・
+			return 1;
+		}
+	},
+	
+	Atk_AirBandC = {
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.BandC() ) return 0;
+			return 1;
+		},
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			BattouFunc.Use.BandC();
+			// 消費はMvで行う・・・
+			return 1;
+		}
+	},	
+
+	
+	//B+Cからの派生
+	BandC_Dash_F =
+	{
+		num = def_CN_Basic_AddMove3, name = "Cmd_BandC_Dash_F", command = "0606",
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.IsMode() ) return 0;
+			return 1;
+		},
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = {Only = ["Mv_Atk_StdBandC"] },
+			FrameIDCheck = { Only = [100,105,110] },
+		},
+		UpdateTable = { name = "Mv_Skill_BS_Dash_F", }
+	},
+	//抜刀後ろダッシュ
+	BandC_Dash_B =
+	{
+		num = def_CN_Basic_AddMove4, name = "Cmd_BandC_Dash_B", command = "0404",
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.IsMode() ) return 0;
+			return 1;
+		},
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = {Only = ["Mv_Atk_StdBandC"]},
+			FrameIDCheck = { Only = [100,105,110] },
+		},
+		UpdateTable = { name = "Mv_Skill_BS_Dash_B", }
+	},
+	
+	BandCAtk_Dash_F =
+	{
+		num = def_CN_Basic_AddMove1, name = "Cmd_BandC_Dash_F", command = "0606",
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.IsMode() ) return 0;
+			return 1;
+		},
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = {Only = ["Mv_Atk_StdBandC_AddAtkLV1","Mv_Atk_StdBandC_AddAtkLV2","Mv_Atk_StdBandC_AddA"] },
+			HitStatus = "Hit",
+			FrameIDCheck = { Only = [100,105,110] },
+		},
+		UpdateTable = { name = "Mv_Skill_BS_Dash_F", }
+	},
+	//抜刀後ろダッシュ
+	BandCAtk_Dash_B =
+	{
+		num = def_CN_Basic_AddMove2, name = "Cmd_BandC_Dash_B", command = "0404",
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.IsMode() ) return 0;
+			return 1;
+		},
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = {Only = ["Mv_Atk_StdBandC_AddAtkLV1","Mv_Atk_StdBandC_AddAtkLV2","Mv_Atk_StdBandC_AddA"]},
+			HitStatus = "Hit",
+			FrameIDCheck = { Only = [100,105,110] },
+		},
+		UpdateTable = { name = "Mv_Skill_BS_Dash_B", }
+	},
+	
+	// 190212 移動攻撃追加
+	BandC_AddA =
+	{
+		num = def_CN_Skill_AddCommand16, name = "Cmd_BandC_AddA", command = "A",
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.IsMode() ) return 0;
+			return 1;
+		},
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = {Only = ["Mv_Atk_StdBandC"] },
+			FrameIDCheck = { Only = [100,105,110] },
+		},
+		function CmdAfterFunc() : (BattouFunc)
+		{
+			// BattouFunc.Use.A(); //※FF使用した時点でストック消費しているので、この技では消費しない
+			return 1;
+		},
+		UpdateTable = { name = "Mv_Atk_StdBandC_AddA", }
+	},
+	
+	AirBandCAtk_Dash_F =
+	{
+		num = def_CN_Basic_AddMove8, name = "Cmd_AirBandC_Dash_F", command = "0606",posstatus = _PosState_Air,
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.IsMode() ) return 0;
+			return 1;
+		},
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = {Only = ["Mv_Atk_AirBandC"] },
+			HitStatus = "Hit",
+			FrameIDCheck = { Only = [100,500] },
+		},
+		UpdateTable = { name = "Mv_Skill_JBA_JDashF", }
+	},
+	//抜刀後ろダッシュ
+	AirBandCAtk_Dash_B =
+	{
+		num = def_CN_Basic_AddMove9, name = "Cmd_AirBandC_Dash_B", command = "0404",posstatus = _PosState_Air,
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.IsMode() ) return 0;
+			return 1;
+		},
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = {Only = ["Mv_Atk_AirBandC"]},
+			HitStatus = "Hit",
+			FrameIDCheck = { Only = [100,500] },
+		},
+		UpdateTable = { name = "Mv_Skill_JBA_JDashB", }
+	},	
+	
+	//ジャンプキャンセルも追加
+	//抜刀ジャンプ
+	BandCAtk_Jump_F =
+	{
+		num = def_CN_Basic_AddMove5, name = "Cmd_BandCAtk_Jump_F", command = "9",
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.IsMode() ) return 0;
+			local hs = BMvTbl.GetMvHitStatus();
+			if( hs.Type & _HitType_Damage && hs.isCatchFlag==0 )
+			{
+				if( Battle_Std.EnemyDamageFlag_Check( def_DF_JumpCanseled ) ) return 0; // コンボ中はジャンプキャンセル１回のみ
+			}
+			return 1;
+		},
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = {Only = ["Mv_Atk_StdBandC_AddAtkLV1","Mv_Atk_StdBandC_AddAtkLV2"]},
+			HitStatus = "Hit",
+			FrameIDCheck = { Only = [100,105,110] },
+		},
+		UpdateTable = { name = "Mv_Skill_BS_JumpF", }
+	},
+	
+	//抜刀ジャンプ
+	BandCAtk_Jump_N =	
+	{
+		num = def_CN_Basic_AddMove6, name = "Cmd_BandCAtk_Jump_N", command = "8",
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.IsMode() ) return 0;
+			local hs = BMvTbl.GetMvHitStatus();
+			if( hs.Type & _HitType_Damage && hs.isCatchFlag==0 )
+			{
+				if( Battle_Std.EnemyDamageFlag_Check( def_DF_JumpCanseled ) ) return 0; // コンボ中はジャンプキャンセル１回のみ
+			}
+			return 1;
+		},
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = {Only = ["Mv_Atk_StdBandC_AddAtkLV1","Mv_Atk_StdBandC_AddAtkLV2"]},
+			HitStatus = "Hit",
+			FrameIDCheck = { Only = [100,105,110] },
+		},
+		UpdateTable = { name = "Mv_Skill_BS_JumpN", }
+	},
+	
+	//抜刀ジャンプ
+	BandCAtk_Jump_B =
+	{
+		num = def_CN_Basic_AddMove7, name = "Cmd_BandCAtk_Jump_B", command = "7",
+		function CmdBeforeFunc() : (BattouFunc)
+		{
+			if( !BattouFunc.Check.IsMode() ) return 0;
+			local hs = BMvTbl.GetMvHitStatus();
+			if( hs.Type & _HitType_Damage && hs.isCatchFlag==0 )
+			{
+				if( Battle_Std.EnemyDamageFlag_Check( def_DF_JumpCanseled ) ) return 0; // コンボ中はジャンプキャンセル１回のみ
+			}
+			return 1;
+		},
+		CmdCheck = 
+		{
+			SkillType = "AddCommand",
+			MvCheck = {Only = ["Mv_Atk_StdBandC_AddAtkLV1","Mv_Atk_StdBandC_AddAtkLV2"]},
+			HitStatus = "Hit",
+			FrameIDCheck = { Only = [100,105,110] },
+		},
+		UpdateTable = { name = "Mv_Skill_BS_JumpB", }
+	},//------------------------------			
+	
+	
+}
+
+
+// Skill_236_AddA でスマートステア何個目かチェックして暴発防いでるので、配列更新したら注意
+local ar =
+[
+	{
+		CheckMoveName="Mv_Atk_StdA",
+		UpdateMoveName="Mv_Atk_StdB",
+	},
+	{
+		CheckMoveName="Mv_Atk_StdB",
+		UpdateMoveName="Mv_Atk_StdC",
+		ResetTmplName="Atk_StdB",
+	},
+	{
+		CheckMoveName="Mv_Atk_StdC",
+		UpdateMoveName="Mv_Atk_Std4C",
+		ResetTmplName="Atk_StdC",
+	},
+	{
+		CheckMoveName="Mv_Atk_Std4C",
+		UpdateMoveName="Mv_Skill_236B",
+		ResetTmplName="Atk_Std4C",
+		CmdTmplFlags=def_CMDFlags_AnnounceSmaetSteer, //スマートステアアナウンスの追加
+	},
+	{
+		CheckMoveName="Mv_Skill_236B",
+		UpdateMoveName="Mv_Skill_214EX",
+		ResetTmplName="Skill_236BorC",
+		CmdCheck = 
+		{
+			Cost = { ComboGauge = 10000 },
+			SkillType = "ExSpecial",
+			HitStatus="Damage",
+		}	
+	},
+]
+Battle_Std.MakeStdCombo( t, ar );
+
+YUZ_CommandTable <- Battle_Std.MakeCommandTable( t );

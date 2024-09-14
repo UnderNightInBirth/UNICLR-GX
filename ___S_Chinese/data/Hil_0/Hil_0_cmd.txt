@@ -1,0 +1,536 @@
+//コマンドテーブル skillは格ゲーコマンド表記
+btl_debPrint2("\n[HIL_CommandTable]");
+
+//受け身に使ったボタンのホールドは無効にする
+local HoldCheck = function(button=1)
+{
+	local pp = BMvTbl.GetPP(def_PP_RecoverHoldMask);
+	//_dm("結果："+pp+" button:"+button);
+	if( (BMvTbl.GetPP(def_PP_RecoverHoldMask)&button) !=0 )
+	{
+		return 0; //使えない
+	}
+	else
+	{
+		return 1; //使える
+	}
+};
+
+local t =
+{
+	Skill_41236SP_ABC = {},
+	Skill_41236SP = {},
+	
+	Skill_41236EX = {},
+	
+	Skill_236EX = {},
+	Skill_236BorC = {},
+	Skill_236A = {}
+	
+	Skill_623EX = {},
+	Skill_623BorC = {},
+	Skill_623A = {},
+	
+	Skill_214EX = 
+	{
+		CmdCheck = { BallLimit = { [1] = 1 } },
+	},
+	Skill_214BorC =
+	{
+		CmdCheck = { BallLimit = { [1] = 1 } },
+	},	
+	Skill_214A =
+	{
+		CmdCheck = { BallLimit = { [1] = 1 } },
+	},
+	
+	Skill_J214EX =
+	{
+		CmdCheck = { BallLimit = { [1] = 1 } },
+	},
+	Skill_J214BorC =
+	{
+		CmdCheck = { BallLimit = { [1] = 1 } },
+	},
+	Skill_J214A = 
+	{
+		CmdCheck = { BallLimit = { [1] = 1 } },
+	},	
+	
+	Skill_J41236EX = {},
+	
+
+	//文鎮
+	Skill_63214C = 
+	{
+		command = ["@B,C,480@@X,C@","@B,C,240@@X,C@","@B,C,180@@X,C@","@B,C,120@@X,C@","@B,C,45@@X,C@"],
+		function CmdBeforeFunc() : (HoldCheck)
+		{
+			if( !HoldCheck(1<<2) ) return 0;
+			return 1;
+		},
+		function CmdAfterFunc()
+		{
+			if( BMvTbl.IsCpu()==0 ) // プレイヤーの時
+			{
+				//タメレベルを記憶する
+				local lv = BCMDTbl.GetSuccessButtonPos();
+				if( lv < 0 ) lv = 0;
+				if( lv > 4 ) lv = 4;
+				lv = 4 - lv; // コマンド優先度の関係上、最大溜めから記述するので、分かりやすく逆にする
+				BMvTbl.SetPP(def_PP_Hil_HoldLv,lv);
+			}
+			else // CPUの時
+			{
+				BMvTbl.SetPP(def_PP_Hil_HoldLv,1);
+			}
+			return 1;
+		},
+	},
+	Skill_63214B =
+	{
+		command = ["@B,B,480@@X,B@","@B,B,230@@X,B@","@B,B,170@@X,B@","@B,B,110@@X,B@","@B,B,45@@X,B@"],
+		function CmdBeforeFunc() : (HoldCheck)
+		{
+			if( !HoldCheck(1<<1) ) return 0;
+			return 1;
+		},
+		function CmdAfterFunc()
+		{
+			if( BMvTbl.IsCpu()==0 ) // プレイヤーの時
+			{
+				//タメレベルを記憶する
+				local lv = BCMDTbl.GetSuccessButtonPos();
+				if( lv < 0 ) lv = 0;
+				if( lv > 4 ) lv = 4;
+				lv = 4 - lv; // 最大溜めから記述するので、分かりやすく逆にする
+				BMvTbl.SetPP(def_PP_Hil_HoldLv,lv);
+			}
+			else // CPUの時
+			{
+				BMvTbl.SetPP(def_PP_Hil_HoldLv,1);
+			}
+			return 1;
+		},
+	},
+	Skill_63214A =
+	{
+		command = ["@B,A,480@@X,A@","@B,A,220@@X,A@","@B,A,160@@X,A@","@B,A,100@@X,A@","@B,A,45@@X,A@"],
+		function CmdBeforeFunc() : (HoldCheck)
+		{
+			if( !HoldCheck(1<<0) ) return 0;
+			return 1;
+		},
+		function CmdAfterFunc()
+		{
+			if( BMvTbl.IsCpu()==0 ) // プレイヤーの時
+			{
+				//タメレベルを記憶する
+				local lv = BCMDTbl.GetSuccessButtonPos();
+				if( lv < 0 ) lv = 0;
+				if( lv > 4 ) lv = 4;
+				lv = 4 - lv; // 最大溜めから記述するので、分かりやすく逆にする
+				BMvTbl.SetPP(def_PP_Hil_HoldLv,lv);
+			}
+			else // CPUの時
+			{
+				BMvTbl.SetPP(def_PP_Hil_HoldLv,1);
+			}
+			return 1;
+		},
+	},	
+	
+	Skill_421C = {
+		function CmdBeforeFunc()
+		{
+			if( BMvEff.GRD_GetJudgeResult() <= 0 )
+			{
+				// 通常
+				if( BMvTbl.AddAirCount( 0, 0 ) ) return 0;
+			}
+			else
+			{
+				// ヴォーパル
+				if( BMvTbl.AddAirCount( 1, 0 ) ) return 0;
+			}
+			if( BMvTbl.AddAirCount( 0, 0 ) ) return 0;
+			return 1;
+		}
+	},
+	Skill_421B = {
+		function CmdBeforeFunc()
+		{
+			if( BMvEff.GRD_GetJudgeResult() <= 0 )
+			{
+				// 通常
+				if( BMvTbl.AddAirCount( 0, 0 ) ) return 0;
+			}
+			else
+			{
+				// ヴォーパル
+				if( BMvTbl.AddAirCount( 1, 0 ) ) return 0;
+			}
+			return 1;
+		}
+	},
+	Skill_421A = {
+		function CmdBeforeFunc()
+		{
+			if( BMvEff.GRD_GetJudgeResult() <= 0 )
+			{
+				// 通常
+				if( BMvTbl.AddAirCount( 0, 0 ) ) return 0;
+			}
+			else
+			{
+				// ヴォーパル
+				if( BMvTbl.AddAirCount( 1, 0 ) ) return 0;
+			}
+			return 1;
+		}
+	},
+	
+	Skill_J421C = {
+		function CmdBeforeFunc()
+		{
+			if( BMvEff.GRD_GetJudgeResult() <= 0 )
+			{
+				// 通常
+				if( BMvTbl.AddAirCount( 0, 0 ) ) return 0;
+			}
+			else
+			{
+				// ヴォーパル
+				if( BMvTbl.AddAirCount( 1, 0 ) ) return 0;
+			}
+			return 1;
+		}
+	},
+	Skill_J421B = {
+		function CmdBeforeFunc()
+		{
+			if( BMvEff.GRD_GetJudgeResult() <= 0 )
+			{
+				// 通常
+				if( BMvTbl.AddAirCount( 0, 0 ) ) return 0;
+			}
+			else
+			{
+				// ヴォーパル
+				if( BMvTbl.AddAirCount( 1, 0 ) ) return 0;
+			}
+			return 1;
+		}
+	},
+	Skill_J421A = {
+		function CmdBeforeFunc()
+		{
+			if( BMvEff.GRD_GetJudgeResult() <= 0 )
+			{
+				// 通常
+				if( BMvTbl.AddAirCount( 0, 0 ) ) return 0;
+			}
+			else
+			{
+				// ヴォーパル
+				if( BMvTbl.AddAirCount( 1, 0 ) ) return 0;
+			}
+			return 1;
+		}	
+	},	
+	
+	Skill_J236EX = {},
+	Skill_J236BorC = {},
+	Skill_J236A = {},	
+	
+	// 181019 派生ワープ追加
+	Skill_J236AddWarpC = {
+		num = def_CN_Skill_AddCommand6,
+		name = "Cmd_Skill_J236AddWarpC",
+		flags = [ "lastdelay" ],
+		command = [">+A",">+B",">+C",]
+		posstatus = _PosState_Air,
+		function CmdBeforeFunc()
+		{
+			if( BCMDTbl.CheckCancel( _SkillType_Ex|_SkillType_ChainShift ) == 0 ) return 0; // EXorCSキャンセル不可の時は失敗
+			
+			if( BMvEff.GRD_GetJudgeResult() <= 0 )
+			{
+				// 通常
+				if( BMvTbl.AddAirCount( 0, 0 ) ) return 0;
+			}
+			else
+			{
+				// ヴォーパル
+				if( BMvTbl.AddAirCount( 1, 0 ) ) return 0;
+			}
+			return 1;
+		}	
+		CmdCheck = 
+		{
+			SkillType = "AddCommand", MvCheck = { Only = ["Mv_Skill_J236A","Mv_Skill_J236B"] }
+			PosState="Air",
+			
+		}
+		UpdateTable = { name = "Mv_Skill_J236AddWarpC", }
+	}
+	Skill_J236AddWarpB = {
+		num = def_CN_Skill_AddCommand5,
+		name = "Cmd_Skill_J236AddWarpB",
+		flags = [ "lastdelay" ],
+		command = ["v+A","v+B","v+C",]
+		posstatus = _PosState_Air,
+		function CmdBeforeFunc()
+		{
+			if( BCMDTbl.CheckCancel( _SkillType_Ex|_SkillType_ChainShift ) == 0 ) return 0; // EXorCSキャンセル不可の時は失敗
+			
+			if( BMvEff.GRD_GetJudgeResult() <= 0 )
+			{
+				// 通常
+				if( BMvTbl.AddAirCount( 0, 0 ) ) return 0;
+			}
+			else
+			{
+				// ヴォーパル
+				if( BMvTbl.AddAirCount( 1, 0 ) ) return 0;
+			}
+			return 1;
+		}	
+		CmdCheck = 
+		{
+			SkillType = "AddCommand", MvCheck = { Only = ["Mv_Skill_J236A","Mv_Skill_J236B"] }
+			PosState="Air",
+			
+		}
+		UpdateTable = { name = "Mv_Skill_J236AddWarpB", }
+	}
+	Skill_J236AddWarpA = {
+		num = def_CN_Skill_AddCommand7,
+		name = "Cmd_Skill_J236AddWarpA",
+		flags = [ "lastdelay" ],
+		command = ["<+A","<+B","<+C",]
+		posstatus = _PosState_Air,
+		function CmdBeforeFunc()
+		{
+			if( BCMDTbl.CheckCancel( _SkillType_Ex|_SkillType_ChainShift ) == 0 ) return 0; // EXorCSキャンセル不可の時は失敗
+			
+			if( BMvEff.GRD_GetJudgeResult() <= 0 )
+			{
+				// 通常
+				if( BMvTbl.AddAirCount( 0, 0 ) ) return 0;
+			}
+			else
+			{
+				// ヴォーパル
+				if( BMvTbl.AddAirCount( 1, 0 ) ) return 0;
+			}
+			return 1;
+		}	
+		CmdCheck = 
+		{
+			SkillType = "AddCommand", MvCheck = { Only = ["Mv_Skill_J236A","Mv_Skill_J236B"] }
+			PosState="Air",
+			
+		}
+		UpdateTable = { name = "Mv_Skill_J236AddWarpA", }
+	}
+	
+	Skill_0202EX = {},	
+	Skill_0202BorC = {},
+	Skill_0202A = {},	
+	
+	
+	Skill_ChangeCorner =
+	{
+		command = ["7+A+B"],
+		flags = [ "lastdelay" ],
+		num = def_CN_Skill_AddCommand4,
+		function CmdBeforeFunc() : (HoldCheck)
+		{
+			if( !Battle_Std.CheckBackStageDistance( 64 ) ) return 0;
+		},
+		CmdCheck = { SkillType = "AddCommand", MvCheck={ Only = ["Mv_Dash_B"], SkillFail="Mv_Skill_ChangeCorner"}, ParamFlagCheck = { Only = { [2]=4 } } },
+		UpdateTable = { name = "Mv_Skill_ChangeCorner", }		
+	}
+	
+
+	Atk_Cro3B = {},
+	Atk_Cro3C = {}, //★3C自体はあるよ(2Cと同じ技扱いでレバー分岐)
+	Atk_Air2C = {},
+
+	Atk_B_B = {
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Atk_StdB"] },
+			FrameIDCheck = { Only = 150 },//空振りでも出せるように
+		},
+	},
+	
+	Atk_C_C = {
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Atk_StdC"] },
+			FrameIDCheck = { Only = 150 },//空振りでも出せるように
+		},
+	},
+	
+	Atk_2C_2C = {
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Atk_CroC"] },
+			FrameIDCheck = { Only = 150 },//空振りでも出せるように
+		},
+	},
+	
+	Atk_JC_JC = {
+		posstatus = _PosState_Air,
+		CmdCheck =
+		{
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Atk_AirC"] },
+			PosState="Air",
+			FrameIDCheck = { Only = [150,0xFA] },//空振りでも出せるように
+		},
+	},
+	
+	Atk_3C_3C = 
+	{ //-------------------------------
+		num = def_CN_Atk_2C_2C-100, name = "Cmd_Atk_3C_3C", command = ["3+C"],
+		CmdBeforeStdFunc = function()
+		{
+			if( Battle_Std.CancelCheck_NormalAtk()==0 ) return 0;
+			return 1;
+		},
+		
+		CmdCheck =
+		{
+			HitStatus = "Hit",
+			SkillType = "AddCommand"
+			MvCheck = { Only = ["Mv_Atk_Cro3C"] },
+			FrameIDCheck = { Only = 150 },//空振りでも出せるように
+			CommandButton = def_PP_CBS_ButtonC
+		},
+		
+		function CmdAfterFunc()
+		{
+			BMvTbl.SetPP( def_PP_Hil_3CCommand, 11 );
+			return 1;
+		},
+		
+		UpdateTable = { name = "Mv_Atk_3C_3C", }
+	}
+	
+	Atk_StdBandC = {},
+	Atk_AirBandC = {
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.AddAirCount( 2, 0 ) ) return 0;
+			return 1;
+		}	
+	},
+	
+	Atk_StdBandC_AddA = {
+		num = def_CN_Skill_AddCommand2, name = "Cmd_Atk_StdBandC_AddA", command = "A", posstatus = _PosState_Air,
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			PosState = "Air",
+			MvCheck = { Only = ["Mv_Atk_StdBandC","Mv_Atk_AirBandC"] },
+			FrameIDCheck = { Only = [100,101] },
+		},
+		UpdateTable = { name = "Mv_Atk_StdBandC_AddA", }		
+	},
+	
+	Atk_StdBandC_Add2A = {
+		num = def_CN_Skill_AddCommand1, name = "Cmd_Atk_StdBandC_Add2A", command = "2+A", posstatus = _PosState_Air,
+		CmdCheck = 
+		{
+			SkillType = "AddCommand"
+			PosState = "Air",
+			MvCheck = { Only = ["Mv_Atk_StdBandC","Mv_Atk_AirBandC"] },
+			FrameIDCheck = { Only = [100,101] },
+		},
+		UpdateTable = { name = "Mv_Atk_StdBandC_Add2A", }		
+	},
+	
+	Skill_J0202B = 
+	{
+		command = ["0404","4+A+B"],
+		flags = [ "lastdelay" ],
+		function CmdBeforeFunc()
+		{
+			if( BMvTbl.AddAirCount( 3, 0 ) ) return 0;
+			
+			// ワープ系と同じ制限をかける
+			if( BMvEff.GRD_GetJudgeResult() <= 0 )
+			{
+				// 通常
+				if( BMvTbl.AddAirCount( 0, 0 ) ) return 0;
+			}
+			else
+			{
+				// ヴォーパル
+				if( BMvTbl.AddAirCount( 1, 0 ) ) return 0;
+			}
+			
+			return 1;
+		}
+		CmdCheck = {
+			SkillType="SpecialDouji",
+		}
+	},	
+	
+}
+
+//CheckMoveName	: この攻撃中にＡを押すとでる
+//UpdateMoveName	: 出る攻撃
+//ResetTmplName	: この攻撃を本来のコマンドで入力して出した場合、Ａ連状態は解除される
+
+local ar =
+[
+	{
+		UpdateMoveName="Mv_Atk_StdB", //B
+		CheckMoveName="Mv_Atk_StdA",
+	},
+	{
+		UpdateMoveName="Mv_Atk_CroB", //2B
+		CheckMoveName="Mv_Atk_StdB",
+		ResetTmplName="Atk_StdB",
+	},
+	{
+		UpdateMoveName="Mv_Atk_CroC", //2C
+		CheckMoveName="Mv_Atk_CroB",
+		ResetTmplName="Atk_CroB",
+	},	
+	{
+		UpdateMoveName="Mv_Atk_2C_2C", //2C追加2C
+		CheckMoveName="Mv_Atk_CroC",
+		ResetTmplName="Atk_CroC",
+	},
+	{
+		UpdateMoveName="Mv_Skill_0202A", //22A
+		CheckMoveName="Mv_Atk_2C_2C",
+		ResetTmplName="Atk_2C_2C",
+		CmdTmplFlags=def_CMDFlags_AnnounceSmaetSteer, //スマートステアアナウンスの追加
+	},
+	{
+		UpdateMoveName="Mv_Skill_0202EX", //22EX
+		CheckMoveName="Mv_Skill_0202A",
+		ResetTmplName="Skill_0202A",
+		CmdCheck = 
+		{
+			Cost = { ComboGauge = 10000 },
+			SkillType = "ExSpecial",
+			HitStatus="Damage",
+		}	
+	},
+	
+]
+Battle_Std.MakeStdCombo( t, ar );
+
+HIL_CommandTable <- Battle_Std.MakeCommandTable( t );
+
+

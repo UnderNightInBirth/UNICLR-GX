@@ -1,0 +1,14 @@
+[System]
+ProjectName=Wag
+[DataFile]
+FileNum= 4
+File00=_temp.HA6
+File01=Wag.HA6
+File02=Wag_GX.HA6
+File03=../BaseData.HA6
+[BmpcutFile]
+FileNum= 1
+File00=Wag.cg
+[PAniFile]
+FileNum= 1
+File00=Wag_ef00.pat

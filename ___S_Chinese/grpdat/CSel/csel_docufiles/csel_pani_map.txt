@@ -1,0 +1,5 @@
+PANA icon_1_05 = fully rendered character select frame (entire csel base image constructed)
+
+icon_chrnm_1p00 = first selected idle frame
+icon_chrnm_1p01 = second selected idle frame
+icon_chrnm_1p02 = selection anim frame

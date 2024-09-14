@@ -1,0 +1,18 @@
+[Project]
+File=effect
+[DataFile]
+FileNum= 4
+File00=effect.HA6
+File01=effect_s.HA6
+File02=effect_el.HA6
+File03=effect_s_el.HA6
+[BmpcutFile]
+FileNum= 0
+//File00=effect.CG
+
+[PAniFile]
+FileNum= 1
+//File00=effect.PAT
+File00=sys_effect.pat
+[System]
+ProjectName=effect
